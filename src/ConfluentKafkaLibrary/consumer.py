@@ -1,8 +1,35 @@
 import sys
 import uuid
-import logging
-#from robot.api.deco import keyword
+import copy
+import json
+import threading
+from threading import Thread, Timer
+from confluent_kafka.avro.serializer import SerializerError
 from confluent_kafka import Consumer, KafkaError, TopicPartition
+
+class GetMessagesThread(Thread):
+
+    def __init__(self,
+                 server='127.0.0.1',
+                 port='9092',
+                 topics='',
+                 ):
+
+        super(GetMessagesThread, self).__init__()
+        self.daemon = True
+        self.consumer = KafkaConsumer()
+        self.group_id = self.consumer.create_consumer(server=server, port=port)
+        if not isinstance(topics, list):
+            topics = [topics]
+        self.consumer.subscribe_topic(self.group_id, topics=topics)
+        self.messages = self.consumer.get_messages(group_id=self.group_id)
+
+    def run(self):
+        threading.Timer(1, self.run).start()
+        self.messages += self.consumer.get_messages(group_id=self.group_id)
+
+    def stop(self):
+        self._is_running = False
 
 
 class KafkaConsumer(object):
@@ -67,5 +94,44 @@ class KafkaConsumer(object):
     def close_consumer(self, group_id):
         self.__consumers[group_id].close()
 
-    def print_hello(self):
-        print('aa')
+    def get_messages(self, max_records=499, timeout=1, data_type=None, empty_stabilization_polls=5, group_id=None):
+        messages = []
+
+        while empty_stabilization_polls > 0:
+            try:
+                msg = self.__consumers[group_id].poll(timeout=timeout)
+            except SerializerError as e:
+                print('Message deserialization failed for {}: {}'.format(msg, e))
+                break
+
+            if msg is None:
+                empty_stabilization_polls -= 1
+                continue
+
+            if msg.error():
+                if msg.error().code() == KafkaError._PARTITION_EOF:
+                    empty_stabilization_polls = 0
+                    continue
+                else:
+                    print(msg.error())
+                    break
+
+            if len(messages) == max_records:
+                return list(messages)
+
+            messages.append(msg.value())
+
+        return list(messages)
+
+    # Experimental - getting messages from kafka topic every second
+    def start_messages_threaded(self, server='127.0.0.1', port='9092', topics=''):
+        t = GetMessagesThread(server, port, topics)
+        t.start()
+        t.join()
+        return t
+
+    def get_messages_threaded(self, running_thread):
+        return running_thread.messages
+
+    def stop_thread(self, running_thread):
+        return running_thread.stop()
