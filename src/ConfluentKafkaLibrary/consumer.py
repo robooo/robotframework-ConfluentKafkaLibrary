@@ -134,4 +134,4 @@ class KafkaConsumer(object):
         return running_thread.messages
 
     def stop_thread(self, running_thread):
-        return running_thread.stop()
+        running_thread.stop()
