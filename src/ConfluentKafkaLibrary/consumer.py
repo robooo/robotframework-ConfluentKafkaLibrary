@@ -60,6 +60,12 @@ class KafkaConsumer(object):
         self.__consumers[group_id] = consumer
         return group_id
 
+    def _is_assigned(self, group_id, topic_partition):
+        for tp in topic_partition:
+            if tp in self.__consumers[group_id].assignment():
+                return True
+        return False
+
     def assign_to_topic_partition(self, group_id, topic_partition=None):
         """Assign a list of TopicPartitions.
 
