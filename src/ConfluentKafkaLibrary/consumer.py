@@ -136,7 +136,7 @@ class KafkaConsumer(object):
         t.join()
         return t
 
-    def get_messages_threaded(self, running_thread):
+    def get_messages_from_thread(self, running_thread):
         return running_thread.messages
 
     def stop_thread(self, running_thread):
