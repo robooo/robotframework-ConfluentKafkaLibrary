@@ -74,7 +74,7 @@ class KafkaConsumer(object):
 
         if isinstance(topic_partition, TopicPartition):
             topic_partition = [topic_partition]
-        if not self._is_assigned(topic_partition):
+        if not self._is_assigned(group_id, topic_partition):
             self.__consumers[group_id].assign(topic_partition)
 
     def subscribe_topic(self, group_id, topics=[]):
@@ -100,10 +100,13 @@ class KafkaConsumer(object):
     def close_consumer(self, group_id):
         self.__consumers[group_id].close()
 
-    def get_messages(self, max_records=499, timeout=1, data_type=None, empty_stabilization_polls=5, group_id=None):
-        messages = []
-
-        while empty_stabilization_polls > 0:
+    def get_messages(self,
+                     timeout=1,
+                     format=None,
+                     remove_zero_bytes=False,
+                     data_type=None,
+                     group_id=None):
+        while True:
             try:
                 msg = self.__consumers[group_id].poll(timeout=timeout)
             except SerializerError as e:
@@ -111,23 +114,25 @@ class KafkaConsumer(object):
                 break
 
             if msg is None:
-                empty_stabilization_polls -= 1
                 continue
 
             if msg.error():
                 if msg.error().code() == KafkaError._PARTITION_EOF:
-                    empty_stabilization_polls = 0
                     continue
                 else:
                     print(msg.error())
                     break
+            return [msg.value()]
 
-            if len(messages) == max_records:
-                return list(messages)
-
-            messages.append(msg.value())
-
-        return list(messages)
+    def decode_data(self, data, decode_format, remove_zero_bytes):
+        if decode_format and remove_zero_bytes:
+            return [record.decode(str(decode_format)).replace('\x00', '') for record in data]
+        elif decode_format and not remove_zero_bytes:
+            return [record.decode(str(format)) for record in data]
+        elif not decode_format and remove_zero_bytes:
+            return [record.replace('\x00', '') for record in data]
+        else:
+            return data
 
     # Experimental - getting messages from kafka topic every second
     def start_messages_threaded(self, server='127.0.0.1', port='9092', topics=''):
@@ -136,8 +141,9 @@ class KafkaConsumer(object):
         t.join()
         return t
 
-    def get_messages_from_thread(self, running_thread):
-        return running_thread.messages
+    def get_messages_from_thread(self, running_thread, decode_format=None, remove_zero_bytes=False):
+        records = self.decode_data(data=running_thread.messages, decode_format=decode_format, remove_zero_bytes=remove_zero_bytes)
+        return records
 
     def stop_thread(self, running_thread):
         running_thread.stop()
