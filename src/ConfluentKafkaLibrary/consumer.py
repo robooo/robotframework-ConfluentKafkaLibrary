@@ -7,18 +7,20 @@ from threading import Thread, Timer
 from confluent_kafka.avro.serializer import SerializerError
 from confluent_kafka import Consumer, KafkaError, TopicPartition
 
+
 class GetMessagesThread(Thread):
 
     def __init__(self,
                  server='127.0.0.1',
                  port='9092',
                  topics='',
+                 group_id='',
                  ):
 
         super(GetMessagesThread, self).__init__()
         self.daemon = True
         self.consumer = KafkaConsumer()
-        self.group_id = self.consumer.create_consumer(server=server, port=port)
+        self.group_id = self.consumer.create_consumer(server=server, port=port, group_id=group_id)
         if not isinstance(topics, list):
             topics = [topics]
         self.consumer.subscribe_topic(self.group_id, topics=topics)
@@ -100,6 +102,7 @@ class KafkaConsumer(object):
     def close_consumer(self, group_id):
         self.__consumers[group_id].close()
 
+    # Experimental keywords
     def get_messages(self,
                      timeout=1,
                      format=None,
@@ -135,8 +138,11 @@ class KafkaConsumer(object):
             return data
 
     # Experimental - getting messages from kafka topic every second
-    def start_messages_threaded(self, server='127.0.0.1', port='9092', topics=''):
-        t = GetMessagesThread(server, port, topics)
+    def start_messages_threaded(self, server='127.0.0.1', port='9092', topics='', group_id=None):
+        if group_id is None:
+            group_id = str(uuid.uuid4())
+
+        t = GetMessagesThread(server, port, topics, group_id=group_id)
         t.start()
         t.join()
         return t
