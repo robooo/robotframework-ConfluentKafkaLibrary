@@ -15,20 +15,21 @@ class GetMessagesThread(Thread):
                  port='9092',
                  topics='',
                  group_id='',
+                 func_to_run=None,
                  ):
 
         super(GetMessagesThread, self).__init__()
         self.daemon = True
         self.consumer = KafkaConsumer()
-        self.group_id = self.consumer.create_consumer(server=server, port=port, group_id=group_id)
+        self.group_id = getattr(self.consumer, func_to_run)(server=server, port=port, group_id=group_id)
         if not isinstance(topics, list):
             topics = [topics]
         self.consumer.subscribe_topic(self.group_id, topics=topics)
-        self.messages = self.consumer.get_messages(group_id=self.group_id)
+        self.messages = self.consumer.poll(group_id=self.group_id)
 
     def run(self):
         threading.Timer(1, self.run).start()
-        self.messages += self.consumer.get_messages(group_id=self.group_id)
+        self.messages += self.consumer.poll(group_id=self.group_id)
 
     def stop(self):
         self._is_running = False
@@ -98,14 +99,23 @@ class KafkaConsumer(object):
     def close_consumer(self, group_id):
         self.__consumers[group_id].close()
 
-    # Experimental keywords
-    def get_messages(self,
-                     timeout=1,
-                     format=None,
-                     remove_zero_bytes=False,
-                     data_type=None,
-                     group_id=None):
-        while True:
+    def poll(
+        self,
+        group_id=None,
+        timeout=1,
+        max_records=1,
+        poll_attempts=10
+    ):
+
+        """Fetch messages from assigned topics / partitions.
+        - ``max_records`` (int): maximum number of messages to get from poll. Default: 1.
+        - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.
+        If 0, returns immediately with any records that are available currently in the buffer, else returns empty.
+        Must not be negative. Default: `1`
+        """
+
+        messages = []
+        while poll_attempts > 0:
             try:
                 msg = self.__consumers[group_id].poll(timeout=timeout)
             except SerializerError as e:
@@ -113,16 +123,25 @@ class KafkaConsumer(object):
                 break
 
             if msg is None:
+                poll_attempts -= 1
                 continue
 
             if msg.error():
                 if msg.error().code() == KafkaError._PARTITION_EOF:
+                    poll_attempts = 0
                     continue
                 else:
                     print(msg.error())
                     break
-            return [msg.value()]
 
+            messages.append(msg.value())
+
+            if len(messages) == max_records:
+                return messages
+
+        return messages
+
+    # Experimental keywords
     def decode_data(self, data, decode_format, remove_zero_bytes):
         if decode_format and remove_zero_bytes:
             return [record.decode(str(decode_format)).replace('\x00', '') for record in data]
@@ -134,11 +153,11 @@ class KafkaConsumer(object):
             return data
 
     # Experimental - getting messages from kafka topic every second
-    def start_messages_threaded(self, server='127.0.0.1', port='9092', topics='', group_id=None):
+    def start_messages_threaded(self, server='127.0.0.1', port='9092', topics='', group_id=None, func_to_run='connect_consumer'):
         if group_id is None:
             group_id = str(uuid.uuid4())
 
-        t = GetMessagesThread(server, port, topics, group_id=group_id)
+        t = GetMessagesThread(server, port, topics, group_id=group_id, func_to_run=func_to_run)
         t.start()
         t.join()
         return t
