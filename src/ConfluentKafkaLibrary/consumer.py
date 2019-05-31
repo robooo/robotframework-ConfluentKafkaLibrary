@@ -56,7 +56,8 @@ class KafkaConsumer(object):
             'enable.auto.commit': enable_auto_commit,
             'default.topic.config': {
                 'auto.offset.reset': auto_offset_reset
-            }
+            },
+            **kwargs
         })
 
         self.__consumers[group_id] = consumer
