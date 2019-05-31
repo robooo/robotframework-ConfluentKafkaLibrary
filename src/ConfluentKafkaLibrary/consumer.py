@@ -90,15 +90,10 @@ class KafkaConsumer(object):
             topics = [topics]
         self.__consumers[group_id].subscribe(topics)
 
-    def unsubscribe_topic(self, group_id, topics=[]):
-        """Unsubscribe to a list of topics, or a topic regex pattern.
-
-        - ``topics`` (list): List of topics for subscription.
+    def unsubscribe_topic(self, group_id):
+        """Unsubscribe of topics.
         """
-
-        if not isinstance(topics, list):
-            topics = [topics]
-        self.__consumers[group_id].unsubscribe(topics)
+        self.__consumers[group_id].unsubscribe()
 
     def close_consumer(self, group_id):
         self.__consumers[group_id].close()
