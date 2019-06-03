@@ -115,7 +115,7 @@ class KafkaConsumer(object):
             topics = [topics]
         self.__consumers[group_id].subscribe(topics)
 
-    def unsubscribe_topic(self, group_id):
+    def unsubscribe(self, group_id):
         """Unsubscribe of topics.
         """
         self.__consumers[group_id].unsubscribe()
