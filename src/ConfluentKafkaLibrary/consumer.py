@@ -6,6 +6,7 @@ import threading
 from threading import Thread, Timer
 from confluent_kafka.avro.serializer import SerializerError
 from confluent_kafka import Consumer, KafkaError, TopicPartition
+from confluent_kafka.avro import AvroConsumer
 
 
 class GetMessagesThread(Thread):
@@ -16,12 +17,13 @@ class GetMessagesThread(Thread):
                  topics='',
                  group_id='',
                  func_to_run=None,
+                 **kwargs
                  ):
 
         super(GetMessagesThread, self).__init__()
         self.daemon = True
         self.consumer = KafkaConsumer()
-        self.group_id = getattr(self.consumer, func_to_run)(server=server, port=port, group_id=group_id)
+        self.group_id = getattr(self.consumer, func_to_run)(server=server, port=port, group_id=group_id, **kwargs)
         if not isinstance(topics, list):
             topics = [topics]
         self.consumer.subscribe_topic(self.group_id, topics=topics)
@@ -47,11 +49,33 @@ class KafkaConsumer(object):
                         port="9092",
                         group_id=str(uuid.uuid4()),
                         enable_auto_commit=True,
-                        auto_offset_reset="earliest",
+                        auto_offset_reset="latest",
                         **kwargs
                         ):
 
         consumer = Consumer({
+            'bootstrap.servers': '{}:{}'.format(server, port),
+            'group.id': group_id,
+            'enable.auto.commit': enable_auto_commit,
+            'default.topic.config': {
+                'auto.offset.reset': auto_offset_reset
+            },
+            **kwargs
+        })
+
+        self.__consumers[group_id] = consumer
+        return group_id
+
+    def create_avro_consumer(self,
+                             server="127.0.0.1",
+                             port="9092",
+                             group_id=str(uuid.uuid4()),
+                             enable_auto_commit=True,
+                             auto_offset_reset='latest',
+                             **kwargs
+                             ):
+
+        consumer = AvroConsumer({
             'bootstrap.servers': '{}:{}'.format(server, port),
             'group.id': group_id,
             'enable.auto.commit': enable_auto_commit,
@@ -153,11 +177,20 @@ class KafkaConsumer(object):
             return data
 
     # Experimental - getting messages from kafka topic every second
-    def start_messages_threaded(self, server='127.0.0.1', port='9092', topics='', group_id=None, func_to_run='connect_consumer'):
+    def start_messages_threaded(
+        self,
+        server='127.0.0.1',
+        port='9092',
+        group_id=None,
+        topics='',
+        func_to_run='create_consumer',
+        **kwargs
+    ):
+
         if group_id is None:
             group_id = str(uuid.uuid4())
 
-        t = GetMessagesThread(server, port, topics, group_id=group_id, func_to_run=func_to_run)
+        t = GetMessagesThread(server, port, topics, group_id=group_id, func_to_run=func_to_run, **kwargs)
         t.start()
         t.join()
         return t
