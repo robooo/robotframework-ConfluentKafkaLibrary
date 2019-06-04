@@ -203,15 +203,14 @@ class KafkaConsumer(object):
     # Experimental - getting messages from kafka topic every second
     def start_consumer_threaded(
         self,
-        group_id,
         topics,
+        group_id=str(uuid.uuid4()),
         server='127.0.0.1',
         port='9092',
         **kwargs
     ):
-
-        if group_id is None:
-            group_id = str(uuid.uuid4())
+        if topics is None:
+            raise ValueError("Topics can not be empty!")
 
         t = GetMessagesThread(server, port, topics, group_id=group_id, **kwargs)
         t.start()

@@ -24,6 +24,7 @@ class ConfluentKafkaLibrary(KafkaConsumer):
     | ${result}= | `Poll` | group_id=${group_id} | max_records=5 |
     | `Log` | ${result} |
     | `Unsubscribe` | ${group_id} |
+    | `Close Consumer` | ${group_id} |
 
     *More Consumers*
 
@@ -35,12 +36,14 @@ class ConfluentKafkaLibrary(KafkaConsumer):
     | ${result_2}= | `Poll` | group_id=${group_id_2} | max_records=2 |
     | `Unsubscribe` | ${group_id_1} |
     | `Unsubscribe` | ${group_id_2} |
+    | `Close Consumer` | ${group_id_1} |
+    | `Close Consumer` | ${group_id_2} |
 
     *Run Avro Consumer over HTTPS and threaded:*
 
-    | ${thread}= | `Start Messages Threaded` |
+    | ${thread}= | `Start Consumer Threaded` |
     | | ...  topics=test_topic |
-    | | ...  schema_registry_url=https://myschema.io |
+    | | ...  schema_registry_url=https://localhost:8081 |
     | | ...  auto_offset_reset=earliest | # We want to get all messages |
     | | ...  security.protocol=ssl |
     | | ...  schema.registry.ssl.ca.location=/home/user/cert/caproxy.pem |
@@ -49,6 +52,7 @@ class ConfluentKafkaLibrary(KafkaConsumer):
     | | ...  ssl.key.location=/home/user/cert/kafka-client-key.pem |
     | `Log` | `Execute commands which should push some data to topic` |
     | ${messages}= | `Get Messages From Thread` | ${thread} |
+    | Stop Thread | ${thread} |
 
     """
 
