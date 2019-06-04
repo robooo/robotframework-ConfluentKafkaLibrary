@@ -4,7 +4,7 @@ ConfluentKafkaLibrary library is wrapper for [confluent-kafka-python](https://gi
 
 Still in development, right now supports:
 
-* [] Consumer
+* [ ] Consumer
   * [X] Poll
   * [X] Un/Subscribe
   * [X] Create / Stop consumer
