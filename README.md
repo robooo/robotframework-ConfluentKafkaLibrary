@@ -29,3 +29,14 @@ How to generate documentation:
 ```
 python -m robot.libdoc -f html src/ConfluentKafkaLibrary docs/index.html
 ```
+
+## Installation
+
+```
+pip install robotframework-confluentkafkalibrary
+```
+
+## Usage Examples
+
+See https://robooo.github.io/robotframework-ConfluentKafkaLibrary/#Examples
+
