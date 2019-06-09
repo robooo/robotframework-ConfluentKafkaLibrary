@@ -5,7 +5,7 @@ services:
 
 before_install:
 - docker pull johnnypark/kafka-zookeeper
-- docker run -p 2181:2181 -p 9092:9092 -e ADVERTISED_HOST=127.0.0.1 -e NUM_PARTITIONS=10 johnnypark/kafka-zookeeper
+- docker run -td -p 2181:2181 -p 9092:9092 -e ADVERTISED_HOST=127.0.0.1 -e NUM_PARTITIONS=10 johnnypark/kafka-zookeeper
 - docker ps -a
 
 script:
