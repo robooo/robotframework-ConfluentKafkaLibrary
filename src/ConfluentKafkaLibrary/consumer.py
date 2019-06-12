@@ -34,6 +34,7 @@ class GetMessagesThread(Thread):
         self.messages += self.consumer.poll(group_id=self.group_id)
 
     def stop(self):
+        self.consumer.close_consumer(self.group_id)
         self._is_running = False
 
 
