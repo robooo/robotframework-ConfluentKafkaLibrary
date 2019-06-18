@@ -22,22 +22,29 @@ class GetMessagesThread(Thread):
 
         super(GetMessagesThread, self).__init__()
         self.daemon = True
+        self._is_running = True
         self.consumer = KafkaConsumer()
         self.group_id = self.consumer.create_consumer(server=server, port=port, group_id=group_id, **kwargs)
         if not isinstance(topics, list):
             topics = [topics]
         self.consumer.subscribe_topic(self.group_id, topics=topics)
-        self.messages = self.consumer.poll(group_id=self.group_id)
+        self.messages = []
+        self.start()
 
     def run(self):
-        threading.Timer(1, self.run).start()
-        self.messages += self.consumer.poll(group_id=self.group_id)
+        while self._is_running:
+            try:
+                self.messages += self.consumer.poll(group_id=self.group_id)
+            except RuntimeError:
+                self._is_running = False
 
     def stop(self):
         self.consumer.unsubscribe(self.group_id)
         self.consumer.close_consumer(self.group_id)
         self._is_running = False
 
+    def get_messages(self):
+        return self.messages
 
 class KafkaConsumer(object):
 
@@ -215,8 +222,6 @@ class KafkaConsumer(object):
             raise ValueError("Topics can not be empty!")
 
         t = GetMessagesThread(server, port, topics, group_id=group_id, **kwargs)
-        t.start()
-        t.join()
         return t
 
     def get_messages_from_thread(self, running_thread, decode_format=None, remove_zero_bytes=False):
@@ -228,7 +233,7 @@ class KafkaConsumer(object):
                 you can end up with a lot of '\\x00' bytes you want to remove. Default: False.
         """
         records = self.decode_data(
-            data=running_thread.messages,
+            data=running_thread.get_messages(),
             decode_format=decode_format,
             remove_zero_bytes=remove_zero_bytes
         )
