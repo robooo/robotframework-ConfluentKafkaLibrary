@@ -9,4 +9,4 @@ before_install:
 - docker ps -a
 
 script:
-- echo test
+- pip install . && robot examples/test.robot
