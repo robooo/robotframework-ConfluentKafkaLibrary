@@ -1,36 +1,38 @@
 *** Settings ***
 Library  ConfluentKafkaLibrary
+Library  Collections
 
 Suite Setup  Starting Test
+Suite Teardown  Stop Thread  ${MAIN_THREAD}
 
 
 *** Test Cases ***
-My Test
-    ${group_id}=  Create Consumer  group_id=my_id
-    Log To Console  ${MAIN_THREAD}
-    Get Kafka Messages Key  ${MAIN_THREAD}
+Basic Consumer
+    ${group_id}=  Create Consumer  auto_offset_reset=earliest
+    Subscribe Topic  group_id=${group_id}  topics=test
+    ${messages}=  Poll  group_id=${group_id}  max_records=3
+    ${messages}=  Decode Data  ${messages}  decode_format=utf8
+    ${data}=  Create List  Hello  World  {'test': 1}
+    Lists Should Be Equal  ${messages}  ${data}
+    Unsubscribe  ${group_id}
+    Close Consumer  ${group_id}
 
-My Test New
-    Sleep  5sec
-    Log To Console  ${MAIN_THREAD}
-    Get Kafka Messages Key  ${MAIN_THREAD}
-
-My Test Threaded
-    ${thread}=  Start Messages Threaded  topics=test
-    ${messages}=  Get Messages From Thread  ${thread}
-    Log To Console  ${messages}
-    Sleep  10s
-    ${messages}=  Get Messages From Thread  ${thread}
-    Log To Console  ${messages}
-    Get Kafka Messages Key  ${MAIN_THREAD}
-
+Verify Threaded Consumer
+    ${thread_messages}=  Get Messages From Thread  ${MAIN_THREAD}
+    ${group_id}=  Create Consumer  auto_offset_reset=earliest
+    Subscribe Topic  group_id=${group_id}  topics=test
+    ${messages}=  Poll  group_id=${group_id}  max_records=3
+    List Should Contain Sub List  ${thread_messages}  ${messages}
+    Unsubscribe  ${group_id}
+    Close Consumer  ${group_id}
 
 *** Keywords ***
 Starting Test
-    ${thread}=  Start Messages Threaded  topics=foobar
+    ${thread}=  Start Consumer Threaded  topics=test  auto_offset_reset=earliest
     Set Global Variable  ${MAIN_THREAD}  ${thread}
 
-Get Kafka Messages Key
-    [Arguments]  ${thread}
-    ${messages}=  Get Messages From Thread  ${thread}  decode_format=utf8  remove_zero_bytes=True
-    Log To Console  ${messages}
+    ${producer_group_id}=  Create Producer
+    Produce  group_id=${producer_group_id}  topic=test  value=Hello
+    Produce  group_id=${producer_group_id}  topic=test  value=World
+    Produce  group_id=${producer_group_id}  topic=test  value={'test': 1}
+    Flush  ${producer_group_id}
