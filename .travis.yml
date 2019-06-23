@@ -8,6 +8,9 @@ before_install:
 - docker run -td -p 2181:2181 -p 9092:9092 -e ADVERTISED_HOST=127.0.0.1 -e NUM_PARTITIONS=10 johnnypark/kafka-zookeeper
 - docker ps -a
 - pip install -r requirements.txt
+- pip install requests
+- pip install avro-python3
+- pip install fastavro
 - pip install .
 
 script:
