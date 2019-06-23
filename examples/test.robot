@@ -3,7 +3,6 @@ Library  ConfluentKafkaLibrary
 Library  Collections
 
 Suite Setup  Starting Test
-Suite Teardown  Stop Thread  ${MAIN_THREAD}
 
 
 *** Test Cases ***
