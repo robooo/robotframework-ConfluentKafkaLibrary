@@ -1,5 +1,7 @@
 # Robot Framework - ConfluentKafkaLibrary
 
+[![Build Status](https://travis-ci.org/robooo/robotframework-ConfluentKafkaLibrary.svg?branch=master)](https://travis-ci.org/robooo/robotframework-ConfluentKafkaLibrary)
+
 ConfluentKafkaLibrary library is wrapper for [confluent-kafka-python](https://github.com/confluentinc/confluent-kafka-python).
 
 Still in development, right now supports:
@@ -9,12 +11,12 @@ Still in development, right now supports:
   * [X] Un/Subscribe
   * [X] Create / Stop consumer
   * [X] Assign
-  * [ ] List topics
+  * [X] List topics
   * [ ] commit
   * [ ] offsets
   * [X] Run in thread
   * [X] Decode option of data from topic
-* [ ] Producer
+* [X] Producer
 
 
 ConfluentKafkaLibrary works with latest confluent-kafka-python 1.0.0.

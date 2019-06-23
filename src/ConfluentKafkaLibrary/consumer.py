@@ -16,7 +16,7 @@ class GetMessagesThread(Thread):
         server='127.0.0.1',
         port='9092',
         topics='',
-        group_id='',
+        group_id=None,
         **kwargs
     ):
 
@@ -29,6 +29,7 @@ class GetMessagesThread(Thread):
             topics = [topics]
         self.consumer.subscribe_topic(self.group_id, topics=topics)
         self.messages = []
+        self.messages += self.consumer.poll(group_id=self.group_id)
         self.start()
 
     def run(self):
@@ -48,17 +49,15 @@ class GetMessagesThread(Thread):
 
 class KafkaConsumer(object):
 
-    ROBOT_LIBRARY_SCOPE = 'GLOBAL'
-
     def __init__(self):
         self.__consumers = {}
 
     def create_consumer(
         self,
+        group_id=None,
         server="127.0.0.1",
         port="9092",
         client_id='Robot',
-        group_id=str(uuid.uuid4()),
         enable_auto_commit=True,
         auto_offset_reset="latest",
         schema_registry_url=None,
@@ -92,6 +91,8 @@ class KafkaConsumer(object):
         Configuration parameters are described in more detail at
         https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md \n
         """
+        if group_id is None:
+            group_id = str(uuid.uuid4())
 
         if schema_registry_url:
             consumer = AvroConsumer({
@@ -197,13 +198,13 @@ class KafkaConsumer(object):
         return messages
 
     # Experimental keywords
-    def decode_data(self, data, decode_format, remove_zero_bytes):
+    def decode_data(self, data, decode_format, remove_zero_bytes=False):
         """ TODO
         """
         if decode_format and remove_zero_bytes:
             return [record.decode(str(decode_format)).replace('\x00', '') for record in data]
         elif decode_format and not remove_zero_bytes:
-            return [record.decode(str(format)) for record in data]
+            return [record.decode(str(decode_format)) for record in data]
         elif not decode_format and remove_zero_bytes:
             return [record.replace('\x00', '') for record in data]
         else:
@@ -213,11 +214,13 @@ class KafkaConsumer(object):
     def start_consumer_threaded(
         self,
         topics,
-        group_id=str(uuid.uuid4()),
+        group_id=None,
         server='127.0.0.1',
         port='9092',
         **kwargs
     ):
+        if group_id is None:
+            group_id = str(uuid.uuid4())
         if topics is None:
             raise ValueError("Topics can not be empty!")
 

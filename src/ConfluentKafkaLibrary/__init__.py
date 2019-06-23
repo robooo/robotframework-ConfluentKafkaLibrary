@@ -1,11 +1,12 @@
 from .consumer import KafkaConsumer
+from .producer import KafkaProducer
 from .version import VERSION
 
 
-class ConfluentKafkaLibrary(KafkaConsumer):
+class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer):
     """ConfluentKafkaLibrary is a Robot Framework library which wraps up
     [https://github.com/confluentinc/confluent-kafka-python | confluent-kafka-python].
-    Keywords are influenced by [https://github.com/s4int/robotframework-KafkaLibrary | robotframework-KafkaLibrary]
+    Keywords are inspired by [https://github.com/s4int/robotframework-KafkaLibrary | robotframework-KafkaLibrary]
     which is based on [https://github.com/Parsely/pykafka | pykafka project]
     and support more functionality like running more clients based on `group_id` or running them in threaded mode
     during the tests, decoding of gathered data etc. (`See` `Examples`).
@@ -19,7 +20,7 @@ class ConfluentKafkaLibrary(KafkaConsumer):
     
     *Basic Consumer with predefined group_id*
 
-    | ${group_id}= | `Create Consumer` | group_id=mygroup | #if group_id is not defined uuid4() is gemerated |
+    | ${group_id}= | `Create Consumer` | group_id=mygroup | # if group_id is not defined uuid4() is gemerated |
     | `Subscribe Topic` | group_id=${group_id} | topics=test_topic |
     | ${result}= | `Poll` | group_id=${group_id} | max_records=5 |
     | `Log` | ${result} |
@@ -58,3 +59,7 @@ class ConfluentKafkaLibrary(KafkaConsumer):
 
     ROBOT_LIBRARY_VERSION = VERSION
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
+
+    def __init__(self):
+        KafkaConsumer.__init__(self)
+        KafkaProducer.__init__(self)
