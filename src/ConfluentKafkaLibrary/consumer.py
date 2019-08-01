@@ -37,12 +37,9 @@ class GetMessagesThread(Thread):
             try:
                 self.messages += self.consumer.poll(group_id=self.group_id)
             except RuntimeError:
+                self.consumer.unsubscribe(self.group_id)
+                self.consumer.close_consumer(self.group_id)
                 self._is_running = False
-
-    def stop(self):
-        self.consumer.unsubscribe(self.group_id)
-        self.consumer.close_consumer(self.group_id)
-        self._is_running = False
 
     def get_messages(self):
         return self.messages
@@ -241,6 +238,3 @@ class KafkaConsumer(object):
             remove_zero_bytes=remove_zero_bytes
         )
         return records
-
-    def stop_thread(self, running_thread):
-        running_thread.stop()
