@@ -6,6 +6,12 @@ Suite Setup  Starting Test
 
 
 *** Test Cases ***
+Verify Topics
+    ${group_id}=  Create Consumer  auto_offset_reset=earliest
+    ${topics}=  List Topics  ${group_id}
+    Dictionary Should Contain Key  ${topics}  test
+    Close Consumer  ${group_id}
+
 Basic Consumer
     ${group_id}=  Create Consumer  auto_offset_reset=earliest
     Subscribe Topic  group_id=${group_id}  topics=test
@@ -19,6 +25,8 @@ Basic Consumer
 Verify Threaded Consumer
     ${thread_messages}=  Get Messages From Thread  ${MAIN_THREAD}
     ${group_id}=  Create Consumer  auto_offset_reset=earliest
+    ${topics}=  List Topics  ${group_id}
+    Log To Console  ${topics}
     Subscribe Topic  group_id=${group_id}  topics=test
     ${messages}=  Poll  group_id=${group_id}  max_records=3
     List Should Contain Sub List  ${thread_messages}  ${messages}
@@ -34,4 +42,6 @@ Starting Test
     Produce  group_id=${producer_group_id}  topic=test  value=Hello
     Produce  group_id=${producer_group_id}  topic=test  value=World
     Produce  group_id=${producer_group_id}  topic=test  value={'test': 1}
+    ${topics}=  List Topics  ${producer_group_id}
+    Should Not Be Empty  ${topics}
     Flush  ${producer_group_id}
