@@ -63,3 +63,9 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer):
     def __init__(self):
         KafkaConsumer.__init__(self)
         KafkaProducer.__init__(self)
+
+    def list_topics(self, group_id, topic=None):
+        if group_id in self.consumers:
+            return self.consumers[group_id].list_topics(topic).topics
+        elif group_id in self.producers:
+            return self.producers[group_id].list_topics(topic).topics

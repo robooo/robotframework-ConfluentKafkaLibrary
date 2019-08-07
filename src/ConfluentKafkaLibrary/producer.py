@@ -11,7 +11,7 @@ from confluent_kafka.avro import AvroProducer
 class KafkaProducer(object):
 
     def __init__(self):
-        self.__producers = {}
+        self.producers = {}
 
     def create_producer(
         self,
@@ -68,7 +68,7 @@ class KafkaProducer(object):
                 'group.id': group_id,
                 **kwargs})
 
-        self.__producers[group_id] = producer
+        self.producers[group_id] = producer
         return group_id
 
     def produce(
@@ -89,7 +89,7 @@ class KafkaProducer(object):
         - ``key`` (object) : An object to serialize. Default: `None`.
             when the message has been successfully delivered or permanently fails delivery..
         """
-        self.__producers[group_id].produce(
+        self.producers[group_id].produce(
             topic=topic,
             value=value.encode(value_encoding),
             callback=callback_func,
@@ -101,7 +101,4 @@ class KafkaProducer(object):
         This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
         - `timeout` (real) : Optional timeout. Default: `1.0`.
         """
-        self.__producers[group_id].flush(timeout)
-
-    def list_topics(self, group_id,):
-        return self.__producers[group_id].list_topics()
+        self.producers[group_id].flush(timeout)

@@ -47,7 +47,7 @@ class GetMessagesThread(Thread):
 class KafkaConsumer(object):
 
     def __init__(self):
-        self.__consumers = {}
+        self.consumers = {}
 
     def create_consumer(
         self,
@@ -111,12 +111,12 @@ class KafkaConsumer(object):
                 },
                 **kwargs})
 
-        self.__consumers[group_id] = consumer
+        self.consumers[group_id] = consumer
         return group_id
 
     def _is_assigned(self, group_id, topic_partition):
         for tp in topic_partition:
-            if tp in self.__consumers[group_id].assignment():
+            if tp in self.consumers[group_id].assignment():
                 return True
         return False
 
@@ -129,7 +129,7 @@ class KafkaConsumer(object):
         if isinstance(topic_partition, TopicPartition):
             topic_partition = [topic_partition]
         if not self._is_assigned(group_id, topic_partition):
-            self.__consumers[group_id].assign(topic_partition)
+            self.consumers[group_id].assign(topic_partition)
 
     def subscribe_topic(self, group_id, topics):
         """Subscribe to a list of topics, or a topic regex pattern.
@@ -139,17 +139,17 @@ class KafkaConsumer(object):
 
         if not isinstance(topics, list):
             topics = [topics]
-        self.__consumers[group_id].subscribe(topics)
+        self.consumers[group_id].subscribe(topics)
 
     def unsubscribe(self, group_id):
         """Unsubscribe of topics.
         """
-        self.__consumers[group_id].unsubscribe()
+        self.consumers[group_id].unsubscribe()
 
     def close_consumer(self, group_id):
         """Close down and terminate the Kafka Consumer.
         """
-        self.__consumers[group_id].close()
+        self.consumers[group_id].close()
 
     def poll(
         self,
@@ -170,7 +170,7 @@ class KafkaConsumer(object):
         messages = []
         while poll_attempts > 0:
             try:
-                msg = self.__consumers[group_id].poll(timeout=timeout)
+                msg = self.consumers[group_id].poll(timeout=timeout)
             except SerializerError as e:
                 print('Message deserialization failed for {}: {}'.format(msg, e))
                 break
