@@ -23,20 +23,41 @@ Basic Consumer
     Close Consumer  ${group_id}
 
 Verify Threaded Consumer
-    ${thread_messages}=  Get Messages From Thread  ${MAIN_THREAD}
+    ${xxx}=  Get Messages From Thread  ${MAIN_THREAD}
     ${group_id}=  Create Consumer  auto_offset_reset=earliest
     ${topics}=  List Topics  ${group_id}
-    Log To Console  ${topics}
     Subscribe Topic  group_id=${group_id}  topics=test
     ${messages}=  Poll  group_id=${group_id}  max_records=3
-    List Should Contain Sub List  ${thread_messages}  ${messages}
+    # List Should Contain Sub List  ${xxx}  ${messages}
     Unsubscribe  ${group_id}
+    Log To Console  ${xxx}
+    Clear Messages From Thread  ${MAIN_THREAD}
+    ${thread_messages2}=  Get Messages From Thread  ${MAIN_THREAD}
+    Log To Console  ${xxx}
+    Log To Console  ${thread_messages2}
+    Log To Console  ${thread_messages2}
+    Log To Console  XXXXXXXXXX
+    # ${xxx}=  Set Variable  a
+    ${producer_group_id}=  Create Producer
+    Produce  group_id=${producer_group_id}  topic=test  value=After
+    Produce  group_id=${producer_group_id}  topic=test  value=Change
+    Sleep  1sec
+    ${thread_messages2}=  Get Messages From Thread  ${MAIN_THREAD}
+    Log To Console  ${xxx}
+    Log To Console  ${thread_messages2}
+    Produce  group_id=${producer_group_id}  topic=test  value=LAST
+    Sleep  2sec
+    ${thread_messages2}=  Get Messages From Thread  ${MAIN_THREAD}
+    Log To Console  ${xxx}
+    Log To Console  ${thread_messages2}
+    Log To Console  XXXXXXXXXX
+
     Close Consumer  ${group_id}
 
 *** Keywords ***
 Starting Test
-    ${thread}=  Start Consumer Threaded  topics=test  auto_offset_reset=earliest
-    Set Global Variable  ${MAIN_THREAD}  ${thread}
+    ${thread}=  Start Consumer Threaded  topics=test  auto_offset_reset=latest
+    Set Suite Variable  ${MAIN_THREAD}  ${thread}
 
     ${producer_group_id}=  Create Producer
     Produce  group_id=${producer_group_id}  topic=test  value=Hello

@@ -42,7 +42,11 @@ class GetMessagesThread(Thread):
                 self._is_running = False
 
     def get_messages(self):
-        return self.messages
+        xxx = self.messages
+        return xxx
+
+    def clear_messages(self):
+        self.messages.clear()
 
 class KafkaConsumer(object):
 
@@ -198,6 +202,7 @@ class KafkaConsumer(object):
     def decode_data(self, data, decode_format, remove_zero_bytes=False):
         """ TODO
         """
+        xxx = data
         if decode_format and remove_zero_bytes:
             return [record.decode(str(decode_format)).replace('\x00', '') for record in data]
         elif decode_format and not remove_zero_bytes:
@@ -205,7 +210,7 @@ class KafkaConsumer(object):
         elif not decode_format and remove_zero_bytes:
             return [record.replace('\x00', '') for record in data]
         else:
-            return data
+            return xxx
 
     # Experimental - getting messages from kafka topic every second
     def start_consumer_threaded(
@@ -216,6 +221,18 @@ class KafkaConsumer(object):
         port='9092',
         **kwargs
     ):
+        """Run consumer in daemon thread and store data from topics. To read and work with this collected
+           data use keyword `Get Messages From Thread`.
+           Could be used at the Test setup or in each test.
+           This is useful when you are reading always the same topics and you don't want to create consumer
+           in each test to poll data. You can create as many consumers in the Test setup as you want and
+           then in test just read data with `Get Messages From Thread` keyword.
+        - ``topics`` (list): List of topics for subscription.
+        - ``group_id`` (str or uuid.uuid4() if not set) : name of the consumer group to join for dynamic
+            partition assignment (if enabled), and to use for fetching and
+            committing offsets. If None, unique string is generated  (via uuid.uuid4())
+            and offset commits are disabled. Default: `None`.
+        """
         if group_id is None:
             group_id = str(uuid.uuid4())
         if topics is None:
@@ -225,16 +242,34 @@ class KafkaConsumer(object):
         return t
 
     def get_messages_from_thread(self, running_thread, decode_format=None, remove_zero_bytes=False):
-        """ Returns all records gathered from specific thread
-            - ``running_thread`` (Thread object) - thread which was executed by `Start Consumer Threaded`
-            - ``decode_data`` (str) - If you need to decode data to specific format
-                (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
-            - ``remove_zero_bytes`` (bool) - When you are working with byte streams
-                you can end up with a lot of '\\x00' bytes you want to remove. Default: False.
+        """Returns all records gathered from specific thread
+        - ``running_thread`` (Thread object) - thread which was executed by `Start Consumer Threaded`
+        - ``decode_data`` (str) - If you need to decode data to specific format
+            (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
+        - ``remove_zero_bytes`` (bool) - When you are working with byte streams
+            you can end up with a lot of '\\x00' bytes you want to remove. Default: False.
         """
         records = self.decode_data(
             data=running_thread.get_messages(),
-            decode_format=decode_format,
-            remove_zero_bytes=remove_zero_bytes
+            decode_format='utf-8',
+            remove_zero_bytes=True
         )
-        return records
+        if len(records) > 2:
+            return type(records[2])
+        else:
+            return 'a'
+        # return list(running_thread.messages)
+        # return running_thread.messages[:]
+
+    def clear_messages_from_thread(self, running_thread, decode_format=None, remove_zero_bytes=False):
+        """Remove all records gathered from specific thread
+        - ``running_thread`` (Thread object) - thread which was executed by `Start Consumer Threaded`
+        - ``decode_data`` (str) - If you need to decode data to specific format
+            (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
+        - ``remove_zero_bytes`` (bool) - When you are working with byte streams
+            you can end up with a lot of '\\x00' bytes you want to remove. Default: False.
+        """
+        try:
+            running_thread.clear_messages()
+        except:
+            print('Messages was not removed from thread %s!', running_thread)

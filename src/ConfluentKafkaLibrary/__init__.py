@@ -65,7 +65,16 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer):
         KafkaProducer.__init__(self)
 
     def list_topics(self, group_id, topic=None):
+        """Request Metadata from cluster. Could be executed with consumer or producer group_id too.
+        - ``topic`` (str):  If specified, only request info about this topic, else return for all topics in cluster. Default: `None`.
+        - ``group_id`` (str): *required* id of the created consumer or producer.
+        """
+        if group_id is None:
+            raise TypeError
+
         if group_id in self.consumers:
             return self.consumers[group_id].list_topics(topic).topics
         elif group_id in self.producers:
             return self.producers[group_id].list_topics(topic).topics
+        else:
+            raise ValueError('Consumer or producer group_id is wrong or does not exists!')
