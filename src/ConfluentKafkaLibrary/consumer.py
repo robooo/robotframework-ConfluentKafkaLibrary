@@ -42,8 +42,7 @@ class GetMessagesThread(Thread):
                 self._is_running = False
 
     def get_messages(self):
-        xxx = self.messages
-        return xxx
+        return self.messages
 
     def clear_messages(self):
         self.messages.clear()
@@ -202,7 +201,6 @@ class KafkaConsumer(object):
     def decode_data(self, data, decode_format, remove_zero_bytes=False):
         """ TODO
         """
-        xxx = data
         if decode_format and remove_zero_bytes:
             return [record.decode(str(decode_format)).replace('\x00', '') for record in data]
         elif decode_format and not remove_zero_bytes:
@@ -210,7 +208,7 @@ class KafkaConsumer(object):
         elif not decode_format and remove_zero_bytes:
             return [record.replace('\x00', '') for record in data]
         else:
-            return xxx
+            return [record for record in data]
 
     # Experimental - getting messages from kafka topic every second
     def start_consumer_threaded(
@@ -245,21 +243,16 @@ class KafkaConsumer(object):
         """Returns all records gathered from specific thread
         - ``running_thread`` (Thread object) - thread which was executed by `Start Consumer Threaded`
         - ``decode_data`` (str) - If you need to decode data to specific format
-            (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
+            (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: utf-8.
         - ``remove_zero_bytes`` (bool) - When you are working with byte streams
             you can end up with a lot of '\\x00' bytes you want to remove. Default: False.
         """
         records = self.decode_data(
             data=running_thread.get_messages(),
             decode_format='utf-8',
-            remove_zero_bytes=True
+            remove_zero_bytes=False
         )
-        if len(records) > 2:
-            return type(records[2])
-        else:
-            return 'a'
-        # return list(running_thread.messages)
-        # return running_thread.messages[:]
+        return records
 
     def clear_messages_from_thread(self, running_thread, decode_format=None, remove_zero_bytes=False):
         """Remove all records gathered from specific thread
