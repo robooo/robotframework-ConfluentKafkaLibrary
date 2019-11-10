@@ -42,7 +42,7 @@ class GetMessagesThread(Thread):
                 self._is_running = False
 
     def get_messages(self):
-        return self.messages
+        return self.messages[:]
 
     def clear_messages(self):
         self.messages.clear()
