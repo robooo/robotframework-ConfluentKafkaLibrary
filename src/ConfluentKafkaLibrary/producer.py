@@ -96,9 +96,10 @@ class KafkaProducer(object):
             key=key
         )
 
-    def flush(self, group_id, timeout=1.0):
-        """Wait for all messages in the Producer queue to be delivered.
+    def flush(self, group_id, timeout=0.1):
+        """Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
         This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
-        - `timeout` (real) : Optional timeout. Default: `1.0`.
+        - `timeout` (real) : Optional timeout. Default: `0.1`.
         """
-        self.producers[group_id].flush(timeout)
+        messages_in_queue = self.producers[group_id].flush(timeout)
+        return messages_in_queue
