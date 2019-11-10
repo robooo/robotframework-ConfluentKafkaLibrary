@@ -1,3 +1,6 @@
+from robot.libraries.BuiltIn import BuiltIn
+import confluent_kafka
+
 from .consumer import KafkaConsumer
 from .producer import KafkaProducer
 from .version import VERSION
@@ -17,7 +20,7 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer):
     For more information about Robot Framework, see http://robotframework.org.
 
     == Examples ==
-    
+
     *Basic Consumer with predefined group_id*
 
     | ${group_id}= | `Create Consumer` | group_id=mygroup | # if group_id is not defined uuid4() is gemerated |
@@ -63,10 +66,15 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer):
     def __init__(self):
         KafkaConsumer.__init__(self)
         KafkaProducer.__init__(self)
+        BuiltIn().set_global_variable('${OFFSET_BEGINNING}', confluent_kafka.OFFSET_BEGINNING)
+        BuiltIn().set_global_variable('${OFFSET_END}', confluent_kafka.OFFSET_END)
+        BuiltIn().set_global_variable('${OFFSET_STORED}', confluent_kafka.OFFSET_STORED)
+        BuiltIn().set_global_variable('${OFFSET_INVALID}', confluent_kafka.OFFSET_INVALID)
 
     def list_topics(self, group_id, topic=None):
         """Request Metadata from cluster. Could be executed with consumer or producer group_id too.
-        - ``topic`` (str):  If specified, only request info about this topic, else return for all topics in cluster. Default: `None`.
+        - ``topic`` (str):  If specified, only request info about this topic, else returnfor all topics in cluster.
+        Default: `None`.
         - ``group_id`` (str): *required* id of the created consumer or producer.
         """
         if group_id is None:
@@ -74,7 +82,7 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer):
 
         if group_id in self.consumers:
             return self.consumers[group_id].list_topics(topic).topics
-        elif group_id in self.producers:
+        if group_id in self.producers:
             return self.producers[group_id].list_topics(topic).topics
-        else:
-            raise ValueError('Consumer or producer group_id is wrong or does not exists!')
+
+        raise ValueError('Consumer or producer group_id is wrong or does not exists!')
