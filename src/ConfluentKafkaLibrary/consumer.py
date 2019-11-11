@@ -243,14 +243,14 @@ class KafkaConsumer(object):
         """Returns all records gathered from specific thread
         - ``running_thread`` (Thread object) - thread which was executed by `Start Consumer Threaded`
         - ``decode_data`` (str) - If you need to decode data to specific format
-            (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: utf-8.
+            (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
         - ``remove_zero_bytes`` (bool) - When you are working with byte streams
             you can end up with a lot of '\\x00' bytes you want to remove. Default: False.
         """
         records = self.decode_data(
             data=running_thread.get_messages(),
-            decode_format='utf-8',
-            remove_zero_bytes=False
+            decode_format=decode_format,
+            remove_zero_bytes=remove_zero_bytes
         )
         return records
 
