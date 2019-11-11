@@ -159,6 +159,9 @@ class KafkaConsumer(object):
         """
         self.consumers[group_id].close()
 
+    def seek(self, group_id, topic_partition):
+        self.consumers[group_id].seek(topic_partition)
+
     def poll(
         self,
         group_id,
