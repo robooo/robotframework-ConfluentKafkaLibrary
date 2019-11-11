@@ -123,16 +123,15 @@ class KafkaConsumer(object):
                 return True
         return False
 
-    def assign_to_topic_partition(self, group_id, topic_partition):
+    def assign_to_topic_partition(self, group_id, topic_partitions):
         """Assign a list of TopicPartitions.
 
         - ``partitions`` (list of `TopicPartition`): Assignment for this instance.
         """
-
-        if isinstance(topic_partition, TopicPartition):
-            topic_partition = [topic_partition]
-        if not self._is_assigned(group_id, topic_partition):
-            self.consumers[group_id].assign(topic_partition)
+        if isinstance(topic_partitions, TopicPartition):
+            topic_partitions = [topic_partitions]
+        if not self._is_assigned(group_id, topic_partitions):
+            self.consumers[group_id].assign(topic_partitions)
 
     def subscribe_topic(self, group_id, topics):
         """Subscribe to a list of topics, or a topic regex pattern.
