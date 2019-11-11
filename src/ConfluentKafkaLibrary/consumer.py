@@ -254,7 +254,7 @@ class KafkaConsumer(object):
         )
         return records
 
-    def clear_messages_from_thread(self, running_thread, decode_format=None, remove_zero_bytes=False):
+    def clear_messages_from_thread(self, running_thread):
         """Remove all records gathered from specific thread
         - ``running_thread`` (Thread object) - thread which was executed by `Start Consumer Threaded`
         - ``decode_data`` (str) - If you need to decode data to specific format
