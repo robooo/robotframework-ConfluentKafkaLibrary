@@ -117,8 +117,14 @@ class KafkaConsumer(object):
         self.consumers[group_id] = consumer
         return group_id
 
-    def _is_assigned(self, group_id, topic_partition):
-        for tp in topic_partition:
+    def create_topic_partition(self, topic_name, partition, offset):
+        return TopicPartition(topic_name, partition, offset)
+
+    def get_topic_partitions(self, topic):
+        return topic.partitions
+
+    def _is_assigned(self, group_id, topic_partitions):
+        for tp in topic_partitions:
             if tp in self.consumers[group_id].assignment():
                 return True
         return False
