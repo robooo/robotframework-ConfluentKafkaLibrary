@@ -1,9 +1,7 @@
 import sys
 import uuid
-import copy
-import json
-import threading
-from threading import Thread, Timer
+from threading import Thread
+from confluent_kafka import Consumer, KafkaError, TopicPartition
 from confluent_kafka.avro.serializer import SerializerError
 from confluent_kafka import Consumer, KafkaError, TopicPartition
 from confluent_kafka.avro import AvroConsumer
@@ -24,7 +22,11 @@ class GetMessagesThread(Thread):
         self.daemon = True
         self._is_running = True
         self.consumer = KafkaConsumer()
-        self.group_id = self.consumer.create_consumer(server=server, port=port, group_id=group_id, **kwargs)
+        self.group_id = self.consumer.create_consumer(server=server,
+                                                      port=port,
+                                                      group_id=group_id,
+                                                      **kwargs)
+
         if not isinstance(topics, list):
             topics = [topics]
         self.consumer.subscribe_topic(self.group_id, topics=topics)
@@ -47,7 +49,8 @@ class GetMessagesThread(Thread):
     def clear_messages(self):
         self.messages.clear()
 
-class KafkaConsumer(object):
+
+class KafkaConsumer():
 
     def __init__(self):
         self.consumers = {}
@@ -70,13 +73,8 @@ class KafkaConsumer(object):
             contact to bootstrap initial cluster metadata.
             Default: `127.0.0.1`.
         - ``port`` (int): Port number. Default: `9092`.
-        - ``client_id`` (str): a name for this client. This string is passed in
-            each request to servers and can be used to identify specific
-            server-side log entries that correspond to this client. Also
-            submitted to GroupCoordinator for logging with respect to
-            consumer group administration. Default: `Robot`.
-        - ``group_id`` (str or uuid.uuid4() if not set) : name of the consumer group to join for dynamic
-            partition assignment (if enabled), and to use for fetching and
+        - ``group_id`` (str or uuid.uuid4() if not set) : name of the consumer group
+            to join for dynamic partition assignment (if enabled), and to use for fetching and
             committing offsets. If None, unique string is generated  (via uuid.uuid4())
             and offset commits are disabled. Default: `None`.
         - ``auto_offset_reset`` (str): A policy for resetting offsets on
@@ -85,7 +83,8 @@ class KafkaConsumer(object):
             other value will raise the exception. Default: `latest`.
         - ``enable_auto_commit`` (bool): If true the consumer's offset will be
             periodically committed in the background. Default: `True`.
-        - ``schema_registry_url`` (str): *required* for Avro Consumer. Full URL to avro schema endpoint.
+        - ``schema_registry_url`` (str): *required* for Avro Consumer.
+            Full URL to avro schema endpoint.
 
         Note:
         Configuration parameters are described in more detail at
@@ -124,8 +123,8 @@ class KafkaConsumer(object):
         return topic.partitions
 
     def _is_assigned(self, group_id, topic_partitions):
-        for tp in topic_partitions:
-            if tp in self.consumers[group_id].assignment():
+        for topic_partition in topic_partitions:
+            if topic_partition in self.consumers[group_id].assignment():
                 return True
         return False
 
@@ -172,8 +171,8 @@ class KafkaConsumer(object):
         """Fetch and return messages from assigned topics / partitions as list.
         - ``max_records`` (int): maximum number of messages to get from poll. Default: 1.
         - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.
-        If 0, returns immediately with any records that are available currently in the buffer, else returns empty.
-        Must not be negative. Default: `1`
+        If 0, returns immediately with any records that are available currently in the buffer,
+        else returns empty. Must not be negative. Default: `1`
         -  ``poll_attempts`` (int): Attempts to consume messages and endless looping prevention.
         Sometimes the first messages are None or the topic could be empty. Default: `10`.
         """
@@ -182,8 +181,8 @@ class KafkaConsumer(object):
         while poll_attempts > 0:
             try:
                 msg = self.consumers[group_id].poll(timeout=timeout)
-            except SerializerError as e:
-                print('Message deserialization failed for {}: {}'.format(msg, e))
+            except SerializerError as err:
+                print('Message deserialization failed for {}: {}'.format(msg, err))
                 break
 
             if msg is None:
@@ -195,8 +194,8 @@ class KafkaConsumer(object):
                     poll_attempts = 0
                     continue
                 else:
-                    print(msg.error())
-                    break
+                print(msg.error())
+                break
 
             messages.append(msg.value())
 
@@ -227,15 +226,15 @@ class KafkaConsumer(object):
         port='9092',
         **kwargs
     ):
-        """Run consumer in daemon thread and store data from topics. To read and work with this collected
-           data use keyword `Get Messages From Thread`.
+        """Run consumer in daemon thread and store data from topics. To read and work with this
+           collected data use keyword `Get Messages From Thread`.
            Could be used at the Test setup or in each test.
-           This is useful when you are reading always the same topics and you don't want to create consumer
-           in each test to poll data. You can create as many consumers in the Test setup as you want and
-           then in test just read data with `Get Messages From Thread` keyword.
+           This is useful when you are reading always the same topics and you don't want to create
+           consumer in each test to poll data. You can create as many consumers in the Test setup
+           as you want and then in test just read data with `Get Messages From Thread` keyword.
         - ``topics`` (list): List of topics for subscription.
-        - ``group_id`` (str or uuid.uuid4() if not set) : name of the consumer group to join for dynamic
-            partition assignment (if enabled), and to use for fetching and
+        - ``group_id`` (str or uuid.uuid4() if not set) : name of the consumer group to join for
+            dynamic partition assignment (if enabled), and to use for fetching and
             committing offsets. If None, unique string is generated  (via uuid.uuid4())
             and offset commits are disabled. Default: `None`.
         """
@@ -244,12 +243,13 @@ class KafkaConsumer(object):
         if topics is None:
             raise ValueError("Topics can not be empty!")
 
-        t = GetMessagesThread(server, port, topics, group_id=group_id, **kwargs)
-        return t
+        consumer_thread = GetMessagesThread(server, port, topics, group_id=group_id, **kwargs)
+        return consumer_thread
 
     def get_messages_from_thread(self, running_thread, decode_format=None, remove_zero_bytes=False):
         """Returns all records gathered from specific thread
-        - ``running_thread`` (Thread object) - thread which was executed by `Start Consumer Threaded`
+        - ``running_thread`` (Thread object) - thread which was executed with
+            `Start Consumer Threaded` keyword
         - ``decode_data`` (str) - If you need to decode data to specific format
             (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
         - ``remove_zero_bytes`` (bool) - When you are working with byte streams
@@ -264,7 +264,8 @@ class KafkaConsumer(object):
 
     def clear_messages_from_thread(self, running_thread):
         """Remove all records gathered from specific thread
-        - ``running_thread`` (Thread object) - thread which was executed by `Start Consumer Threaded`
+        - ``running_thread`` (Thread object) - thread which was executed with
+            `Start Consumer Threaded` keyword
         - ``decode_data`` (str) - If you need to decode data to specific format
             (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
         - ``remove_zero_bytes`` (bool) - When you are working with byte streams
