@@ -1,9 +1,7 @@
-import sys
 import uuid
 from threading import Thread
 from confluent_kafka import Consumer, KafkaError, TopicPartition
 from confluent_kafka.avro.serializer import SerializerError
-from confluent_kafka import Consumer, KafkaError, TopicPartition
 from confluent_kafka.avro import AvroConsumer
 
 
@@ -60,7 +58,6 @@ class KafkaConsumer():
         group_id=None,
         server="127.0.0.1",
         port="9092",
-        client_id='Robot',
         enable_auto_commit=True,
         auto_offset_reset="latest",
         schema_registry_url=None,
@@ -166,7 +163,8 @@ class KafkaConsumer():
         group_id,
         timeout=1,
         max_records=1,
-        poll_attempts=10
+        poll_attempts=10,
+        decode_format=None
     ):
         """Fetch and return messages from assigned topics / partitions as list.
         - ``max_records`` (int): maximum number of messages to get from poll. Default: 1.
@@ -193,21 +191,22 @@ class KafkaConsumer():
                 if msg.error().code() == KafkaError._PARTITION_EOF:
                     poll_attempts = 0
                     continue
-                else:
                 print(msg.error())
                 break
 
             messages.append(msg.value())
 
             if len(messages) == max_records:
+                if decode_format:
+                    messages = self._decode_data(data=messages, decode_format=decode_format)
                 return messages
+
+        if decode_format:
+            messages = self._decode_data(data=messages, decode_format=decode_format)
 
         return messages
 
-    # Experimental keywords
-    def decode_data(self, data, decode_format, remove_zero_bytes=False):
-        """ TODO
-        """
+    def _decode_data(self, data, decode_format, remove_zero_bytes=False):
         if decode_format and remove_zero_bytes:
             return [record.decode(str(decode_format)).replace('\x00', '') for record in data]
         elif decode_format and not remove_zero_bytes:
@@ -215,7 +214,7 @@ class KafkaConsumer():
         elif not decode_format and remove_zero_bytes:
             return [record.replace('\x00', '') for record in data]
         else:
-            return [record for record in data]
+            return data
 
     # Experimental - getting messages from kafka topic every second
     def start_consumer_threaded(
@@ -250,12 +249,12 @@ class KafkaConsumer():
         """Returns all records gathered from specific thread
         - ``running_thread`` (Thread object) - thread which was executed with
             `Start Consumer Threaded` keyword
-        - ``decode_data`` (str) - If you need to decode data to specific format
+        - ``decode_format`` (str) - If you need to decode data to specific format
             (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
         - ``remove_zero_bytes`` (bool) - When you are working with byte streams
             you can end up with a lot of '\\x00' bytes you want to remove. Default: False.
         """
-        records = self.decode_data(
+        records = self._decode_data(
             data=running_thread.get_messages(),
             decode_format=decode_format,
             remove_zero_bytes=remove_zero_bytes
@@ -266,10 +265,6 @@ class KafkaConsumer():
         """Remove all records gathered from specific thread
         - ``running_thread`` (Thread object) - thread which was executed with
             `Start Consumer Threaded` keyword
-        - ``decode_data`` (str) - If you need to decode data to specific format
-            (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
-        - ``remove_zero_bytes`` (bool) - When you are working with byte streams
-            you can end up with a lot of '\\x00' bytes you want to remove. Default: False.
         """
         try:
             running_thread.clear_messages()
