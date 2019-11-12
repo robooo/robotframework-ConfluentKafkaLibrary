@@ -13,12 +13,14 @@ class GetMessagesThread(Thread):
         port='9092',
         topics='',
         group_id=None,
+        only_value=False,
         **kwargs
     ):
 
         super(GetMessagesThread, self).__init__()
         self.daemon = True
         self._is_running = True
+        self.only_value = only_value
         self.consumer = KafkaConsumer()
         self.group_id = self.consumer.create_consumer(server=server,
                                                       port=port,
@@ -29,13 +31,13 @@ class GetMessagesThread(Thread):
             topics = [topics]
         self.consumer.subscribe_topic(self.group_id, topics=topics)
         self.messages = []
-        self.messages += self.consumer.poll(group_id=self.group_id)
+        self.messages += self.consumer.poll(group_id=self.group_id, only_value=self.only_value)
         self.start()
 
     def run(self):
         while self._is_running:
             try:
-                self.messages += self.consumer.poll(group_id=self.group_id)
+                self.messages += self.consumer.poll(group_id=self.group_id, only_value=self.only_value)
             except RuntimeError:
                 self.consumer.unsubscribe(self.group_id)
                 self.consumer.close_consumer(self.group_id)
@@ -164,6 +166,7 @@ class KafkaConsumer():
         timeout=1,
         max_records=1,
         poll_attempts=10,
+        only_value=False,
         decode_format=None
     ):
         """Fetch and return messages from assigned topics / partitions as list.
@@ -188,18 +191,16 @@ class KafkaConsumer():
                 continue
 
             if msg.error():
-                if msg.error().code() == KafkaError._PARTITION_EOF:
-                    poll_attempts = 0
-                    continue
                 print(msg.error())
                 break
 
-            messages.append(msg.value())
+            if only_value:
+                messages.append(msg.value())
+            else:
+                messages.append(msg)
 
             if len(messages) == max_records:
-                if decode_format:
-                    messages = self._decode_data(data=messages, decode_format=decode_format)
-                return messages
+                break
 
         if decode_format:
             messages = self._decode_data(data=messages, decode_format=decode_format)
@@ -219,6 +220,7 @@ class KafkaConsumer():
         group_id=None,
         server='127.0.0.1',
         port='9092',
+        only_value=False,
         **kwargs
     ):
         """Run consumer in daemon thread and store data from topics. To read and work with this
@@ -238,7 +240,7 @@ class KafkaConsumer():
         if topics is None:
             raise ValueError("Topics can not be empty!")
 
-        consumer_thread = GetMessagesThread(server, port, topics, group_id=group_id, **kwargs)
+        consumer_thread = GetMessagesThread(server, port, topics, group_id=group_id, only_value=only_value, **kwargs)
         return consumer_thread
 
     def get_messages_from_thread(self, running_thread, decode_format=None):
