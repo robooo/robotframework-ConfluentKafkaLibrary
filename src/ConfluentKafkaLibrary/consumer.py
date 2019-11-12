@@ -191,8 +191,12 @@ class KafkaConsumer():
                 continue
 
             if msg.error():
-                print(msg.error())
-                break
+                if msg.error().code() == KafkaError._PARTITION_EOF:
+                    poll_attempts = 0
+                    continue
+                else:
+                    print(msg.error())
+                    break
 
             if only_value:
                 messages.append(msg.value())
