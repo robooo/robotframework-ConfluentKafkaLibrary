@@ -206,13 +206,9 @@ class KafkaConsumer():
 
         return messages
 
-    def _decode_data(self, data, decode_format, remove_zero_bytes=False):
-        if decode_format and remove_zero_bytes:
-            return [record.decode(str(decode_format)).replace('\x00', '') for record in data]
-        elif decode_format and not remove_zero_bytes:
+    def _decode_data(self, data, decode_format):
+        if decode_format:
             return [record.decode(str(decode_format)) for record in data]
-        elif not decode_format and remove_zero_bytes:
-            return [record.replace('\x00', '') for record in data]
         else:
             return data
 
@@ -245,19 +241,16 @@ class KafkaConsumer():
         consumer_thread = GetMessagesThread(server, port, topics, group_id=group_id, **kwargs)
         return consumer_thread
 
-    def get_messages_from_thread(self, running_thread, decode_format=None, remove_zero_bytes=False):
+    def get_messages_from_thread(self, running_thread, decode_format=None):
         """Returns all records gathered from specific thread
         - ``running_thread`` (Thread object) - thread which was executed with
             `Start Consumer Threaded` keyword
         - ``decode_format`` (str) - If you need to decode data to specific format
             (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
-        - ``remove_zero_bytes`` (bool) - When you are working with byte streams
-            you can end up with a lot of '\\x00' bytes you want to remove. Default: False.
         """
         records = self._decode_data(
             data=running_thread.get_messages(),
-            decode_format=decode_format,
-            remove_zero_bytes=remove_zero_bytes
+            decode_format=decode_format
         )
         return records
 
