@@ -76,8 +76,9 @@ class KafkaProducer(object):
         group_id,
         topic,
         value,
+        partition=None,
         key=None,
-        value_encoding='utf-8',
+         value_encoding='utf-8',
         callback_func=None
     ):
         """Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.
@@ -93,6 +94,7 @@ class KafkaProducer(object):
             topic=topic,
             value=value.encode(value_encoding),
             callback=callback_func,
+            partition=partition,
             key=key
         )
 

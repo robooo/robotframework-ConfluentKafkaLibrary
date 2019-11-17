@@ -25,13 +25,13 @@ Consumer With Assignment
     ${group_id}=  Create Consumer
     ${topics}=  List Topics  ${group_id}
     ${partitions}=  Get Topic Partitions  ${topics['${TEST_TOPIC}']}
-    Log To Console  ${partitions[0].id}
     ${partition_id}=  Set Variable  ${partitions[0].id}
-    ${tp}=  Create Topic Partition  ${TEST_TOPIC}  ${partition_id}  ${OFFSET_END}
+    ${tp}=  Create Topic Partition  ${TEST_TOPIC}  ${P_ID}  ${OFFSET_END}
     Assign To Topic Partition  ${group_id}  ${tp}
+    Sleep  1sec  # Need wait for assignment
     Prepare Data
     ${messages}=  Poll  group_id=${group_id}  max_records=6  only_value=${True}  decode_format=utf8
-    Lists Should Be Equal  ${TEST_DATA}  ${messages}
+    Lists Should Be Equal  ${TEST_DATA}  ${messages}  
     Unsubscribe  ${group_id}
     Close Consumer  ${group_id}
 
@@ -59,22 +59,25 @@ Verify Clean Of Threaded Consumer Messages
 
 Remove And Publish New Messages From Threaded Consumer
     [Setup]  Prepare Data
-    ${thread_messages1}=  Get Messages From Thread  ${MAIN_THREAD}  #decode_format=utf-8
+    ${thread_messages1}=  Get Messages From Thread  ${MAIN_THREAD}  decode_format=utf-8
     Clear Messages From Thread  ${MAIN_THREAD}
-
     ${producer_group_id}=  Create Producer
-    Produce  group_id=${producer_group_id}  topic=${TEST_TOPIC}  value=After
-    Produce  group_id=${producer_group_id}  topic=${TEST_TOPIC}  value=Change
-    Flush  ${producer_group_id}
-    All Messages Are Delivered  ${producer_group_id}
-    ${thread_messages2}=  Get Messages From Thread  ${MAIN_THREAD}
-    Log To Console  Thread2 messages: ${thread_messages2}
-    Produce  group_id=${producer_group_id}  topic=${TEST_TOPIC}  value=LAST
-    Flush  ${producer_group_id}
-    All Messages Are Delivered  ${producer_group_id}
-    ${thread_messages2}=  Get Messages From Thread  ${MAIN_THREAD}
-    Log To Console  Thread1 messages: ${thread_messages1}
-    Log To Console  Thread2 messages: ${thread_messages2}
+    Produce  group_id=${producer_group_id}  topic=${TEST_TOPIC}  value=After  partition=${P_ID}
+    Produce  group_id=${producer_group_id}  topic=${TEST_TOPIC}  value=Clear  partition=${P_ID}
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${PRODUCER_ID}
+    Sleep  1sec  # if next command is polling messages in thread we need to wait a second
+
+    ${thread_messages2}=  Get Messages From Thread  ${MAIN_THREAD}  decode_format=utf-8
+    ${data}=  Create List  After  Clear
+    Should Be Equal  ${data}  ${thread_messages2}
+
+    Produce  group_id=${producer_group_id}  topic=${TEST_TOPIC}  value=LAST  partition=${P_ID}
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${PRODUCER_ID}
+    Sleep  1sec
+    Append To List  ${data}  LAST
+    ${thread_messages2}=  Get Messages From Thread  ${MAIN_THREAD}  decode_format=utf-8
+    Should Be Equal  ${TEST_DATA}  ${thread_messages1}
+    Should Be Equal  ${data}  ${thread_messages2}
     [Teardown]  Clear Messages From Thread  ${MAIN_THREAD}
 
 
@@ -83,23 +86,32 @@ Starting Test
     Set Suite Variable  ${TEST_TOPIC}  test
     ${thread}=  Start Consumer Threaded  topics=${TEST_TOPIC}  only_value=${True}  auto_offset_reset=latest
     Set Suite Variable  ${MAIN_THREAD}  ${thread}
+    
     ${producer_group_id}=  Create Producer
+
+    ${topics}=  List Topics  ${producer_group_id}
+    ${partitions}=  Get Topic Partitions  ${topics['${TEST_TOPIC}']}
+    ${partition_id}=  Set Variable  ${partitions[0].id}
+    Set Suite Variable  ${P_ID}  ${partition_id}
+    ${tp}=  Create Topic Partition  ${TEST_TOPIC}  ${partition_id}  ${OFFSET_BEGINNING}
+
     Set Suite Variable  ${PRODUCER_ID}  ${producer_group_id}
     ${data}=  Create List  Hello  World  {'test': 1}  {'test': 2}  {'test': 3}  {'test': 4}
     Set Suite Variable  ${TEST_DATA}  ${data}
+    Prepare Data
 
 Prepare Data
-    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value=Hello
-    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value=World
-    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value={'test': 1}
-    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value={'test': 2}
-    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value={'test': 3}
-    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value={'test': 4}
+    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value=Hello  partition=${P_ID}
+    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value=World  partition=${P_ID}
+    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value={'test': 1}  partition=${P_ID}
+    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value={'test': 2}  partition=${P_ID}
+    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value={'test': 3}  partition=${P_ID}
+    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value={'test': 4}  partition=${P_ID}
     Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${PRODUCER_ID}
     Sleep  1sec  # if next command is polling messages in thread we need to wait a second
 
 All Messages Are Delivered
     [Arguments]  ${producer_id}
     ${count}=  Flush  ${producer_id}
-    Log To Console  Reaming: ${count}
+    Log  Reaming messages to be delivered: ${count}
     Should Be Equal As Integers  ${count}  0
