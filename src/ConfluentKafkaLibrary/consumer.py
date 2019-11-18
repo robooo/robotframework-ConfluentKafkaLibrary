@@ -140,6 +140,9 @@ class KafkaConsumer():
             if not self.is_assigned(group_id, topic_partition):
                 self.consumers[group_id].assign(topic_partitions)
 
+    def unassign(self, group_id):
+        self.consumers[group_id].unassign()
+
     def subscribe_topic(self, group_id, topics):
         """Subscribe to a list of topics, or a topic regex pattern.
 

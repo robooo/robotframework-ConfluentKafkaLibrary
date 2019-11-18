@@ -10,7 +10,7 @@ Verify Topics
     ${group_id}=  Create Consumer  auto_offset_reset=earliest
     ${topics}=  List Topics  ${group_id}
     Dictionary Should Contain Key  ${topics}  ${TEST_TOPIC}
-    Close Consumer  ${group_id}
+    [Teardown]  Close Consumer  ${group_id}
 
 Basic Consumer
     ${group_id}=  Create Consumer  auto_offset_reset=earliest
@@ -18,8 +18,7 @@ Basic Consumer
     ${messages}=  Poll  group_id=${group_id}  max_records=3  decode_format=utf8
     ${data}=  Create List  Hello  World  {'test': 1}
     Lists Should Be Equal  ${messages}  ${data}
-    Unsubscribe  ${group_id}
-    Close Consumer  ${group_id}
+    [Teardown]  Basic Teardown  ${group_id}
 
 Consumer With Assignment
     ${group_id}=  Create Consumer
@@ -32,8 +31,7 @@ Consumer With Assignment
     Prepare Data
     ${messages}=  Poll  group_id=${group_id}  max_records=6  decode_format=utf8
     Lists Should Be Equal  ${TEST_DATA}  ${messages}
-    Unsubscribe  ${group_id}
-    Close Consumer  ${group_id}
+    [Teardown]  Unassign Teardown  ${group_id}
 
 Verify Test And Threaded Consumer
     [Setup]  Clear Messages From Thread  ${MAIN_THREAD}
@@ -44,9 +42,8 @@ Verify Test And Threaded Consumer
     ${thread_messages}=  Get Messages From Thread  ${MAIN_THREAD}  decode_format=utf-8
     ${messages}=  Poll  group_id=${group_id}  max_records=6  decode_format=utf8
     Lists Should Be Equal  ${thread_messages}  ${messages}
-    Unsubscribe  ${group_id}
-    Close Consumer  ${group_id}
-    [Teardown]  Clear Messages From Thread  ${MAIN_THREAD}
+    [Teardown]  Run Keywords  Basic Teardown  ${group_id}  AND
+                ...  Clear Messages From Thread  ${MAIN_THREAD}
 
 Verify Clean Of Threaded Consumer Messages
     [Setup]  Prepare Data
@@ -114,3 +111,13 @@ All Messages Are Delivered
     ${count}=  Flush  ${producer_id}
     Log  Reaming messages to be delivered: ${count}
     Should Be Equal As Integers  ${count}  0
+
+Basic Teardown
+    [Arguments]  ${group_id}
+    Unsubscribe  ${group_id}
+    Close Consumer  ${group_id}
+
+Unassign Teardown
+    [Arguments]  ${group_id}
+    Unassign  ${group_id}
+    Close Consumer  ${group_id}
