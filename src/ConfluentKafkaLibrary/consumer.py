@@ -1,6 +1,6 @@
 import uuid
 from threading import Thread
-from confluent_kafka import Consumer, KafkaError, TopicPartition
+from confluent_kafka import Consumer, KafkaException, KafkaError, TopicPartition
 from confluent_kafka.avro.serializer import SerializerError
 from confluent_kafka.avro import AvroConsumer
 
@@ -191,8 +191,7 @@ class KafkaConsumer():
                 continue
 
             if msg.error():
-                print(msg.error())
-                break
+                raise KafkaException(msg.error())
 
             if only_value:
                 messages.append(msg.value())
