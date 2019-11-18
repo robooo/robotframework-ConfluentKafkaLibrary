@@ -31,7 +31,7 @@ Consumer With Assignment
     Sleep  1sec  # Need wait for assignment
     Prepare Data
     ${messages}=  Poll  group_id=${group_id}  max_records=6  decode_format=utf8
-    Lists Should Be Equal  ${TEST_DATA}  ${messages}  
+    Lists Should Be Equal  ${TEST_DATA}  ${messages}
     Unsubscribe  ${group_id}
     Close Consumer  ${group_id}
 
@@ -61,9 +61,8 @@ Remove And Publish New Messages From Threaded Consumer
     [Setup]  Prepare Data
     ${thread_messages1}=  Get Messages From Thread  ${MAIN_THREAD}  decode_format=utf-8
     Clear Messages From Thread  ${MAIN_THREAD}
-    ${producer_group_id}=  Create Producer
-    Produce  group_id=${producer_group_id}  topic=${TEST_TOPIC}  value=After  partition=${P_ID}
-    Produce  group_id=${producer_group_id}  topic=${TEST_TOPIC}  value=Clear  partition=${P_ID}
+    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value=After  partition=${P_ID}
+    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value=Clear  partition=${P_ID}
     Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${PRODUCER_ID}
     Sleep  1sec  # if next command is polling messages in thread we need to wait a second
 
@@ -71,7 +70,7 @@ Remove And Publish New Messages From Threaded Consumer
     ${data}=  Create List  After  Clear
     Should Be Equal  ${data}  ${thread_messages2}
 
-    Produce  group_id=${producer_group_id}  topic=${TEST_TOPIC}  value=LAST  partition=${P_ID}
+    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value=LAST  partition=${P_ID}
     Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${PRODUCER_ID}
     Sleep  1sec
     Append To List  ${data}  LAST
@@ -84,10 +83,11 @@ Remove And Publish New Messages From Threaded Consumer
 *** Keywords ***
 Starting Test
     Set Suite Variable  ${TEST_TOPIC}  test
+    # we set offset to latest if there was some test run before
     ${thread}=  Start Consumer Threaded  topics=${TEST_TOPIC}  auto_offset_reset=latest
     Set Suite Variable  ${MAIN_THREAD}  ${thread}
-    
     ${producer_group_id}=  Create Producer
+    Set Suite Variable  ${PRODUCER_ID}  ${producer_group_id}
 
     ${topics}=  List Topics  ${producer_group_id}
     ${partitions}=  Get Topic Partitions  ${topics['${TEST_TOPIC}']}
@@ -95,7 +95,6 @@ Starting Test
     Set Suite Variable  ${P_ID}  ${partition_id}
     ${tp}=  Create Topic Partition  ${TEST_TOPIC}  ${partition_id}  ${OFFSET_BEGINNING}
 
-    Set Suite Variable  ${PRODUCER_ID}  ${producer_group_id}
     ${data}=  Create List  Hello  World  {'test': 1}  {'test': 2}  {'test': 3}  {'test': 4}
     Set Suite Variable  ${TEST_DATA}  ${data}
     Prepare Data
