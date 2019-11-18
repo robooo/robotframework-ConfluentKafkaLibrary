@@ -15,7 +15,7 @@ Verify Topics
 Basic Consumer
     ${group_id}=  Create Consumer  auto_offset_reset=earliest
     Subscribe Topic  group_id=${group_id}  topics=${TEST_TOPIC}
-    ${messages}=  Poll  group_id=${group_id}  max_records=3  only_value=${True}  decode_format=utf8
+    ${messages}=  Poll  group_id=${group_id}  max_records=3  decode_format=utf8
     ${data}=  Create List  Hello  World  {'test': 1}
     Lists Should Be Equal  ${messages}  ${data}
     Unsubscribe  ${group_id}
@@ -30,7 +30,7 @@ Consumer With Assignment
     Assign To Topic Partition  ${group_id}  ${tp}
     Sleep  1sec  # Need wait for assignment
     Prepare Data
-    ${messages}=  Poll  group_id=${group_id}  max_records=6  only_value=${True}  decode_format=utf8
+    ${messages}=  Poll  group_id=${group_id}  max_records=6  decode_format=utf8
     Lists Should Be Equal  ${TEST_DATA}  ${messages}  
     Unsubscribe  ${group_id}
     Close Consumer  ${group_id}
@@ -39,10 +39,10 @@ Verify Test And Threaded Consumer
     [Setup]  Clear Messages From Thread  ${MAIN_THREAD}
     ${group_id}=  Create Consumer
     Subscribe Topic  group_id=${group_id}  topics=${TEST_TOPIC}
-    ${messages}=  Poll  group_id=${group_id}  only_value=${True}
+    ${messages}=  Poll  group_id=${group_id}
     Prepare Data
     ${thread_messages}=  Get Messages From Thread  ${MAIN_THREAD}  decode_format=utf-8
-    ${messages}=  Poll  group_id=${group_id}  max_records=6  only_value=${True}  decode_format=utf8
+    ${messages}=  Poll  group_id=${group_id}  max_records=6  decode_format=utf8
     Lists Should Be Equal  ${thread_messages}  ${messages}
     Unsubscribe  ${group_id}
     Close Consumer  ${group_id}
@@ -84,7 +84,7 @@ Remove And Publish New Messages From Threaded Consumer
 *** Keywords ***
 Starting Test
     Set Suite Variable  ${TEST_TOPIC}  test
-    ${thread}=  Start Consumer Threaded  topics=${TEST_TOPIC}  only_value=${True}  auto_offset_reset=latest
+    ${thread}=  Start Consumer Threaded  topics=${TEST_TOPIC}  auto_offset_reset=latest
     Set Suite Variable  ${MAIN_THREAD}  ${thread}
     
     ${producer_group_id}=  Create Producer

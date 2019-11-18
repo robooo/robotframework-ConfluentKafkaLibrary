@@ -13,7 +13,7 @@ class GetMessagesThread(Thread):
         port='9092',
         topics='',
         group_id=None,
-        only_value=False,
+        only_value=True,
         **kwargs
     ):
 
@@ -166,7 +166,7 @@ class KafkaConsumer():
         timeout=1,
         max_records=1,
         poll_attempts=10,
-        only_value=False,
+        only_value=True,
         decode_format=None
     ):
         """Fetch and return messages from assigned topics / partitions as list.
@@ -220,7 +220,7 @@ class KafkaConsumer():
         group_id=None,
         server='127.0.0.1',
         port='9092',
-        only_value=False,
+        only_value=True,
         **kwargs
     ):
         """Run consumer in daemon thread and store data from topics. To read and work with this
