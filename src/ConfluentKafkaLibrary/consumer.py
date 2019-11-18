@@ -121,11 +121,13 @@ class KafkaConsumer():
     def get_topic_partitions(self, topic):
         return topic.partitions
 
-    def _is_assigned(self, group_id, topic_partitions):
-        for topic_partition in topic_partitions:
-            if topic_partition in self.consumers[group_id].assignment():
-                return True
-        return False
+    def is_assigned(self, group_id, topic_partition):
+        if not isinstance(topic_partition, TopicPartition):
+            raise TypeError('topic_partition needs to be TopicPartition() type!')
+        if topic_partition in self.consumers[group_id].assignment():
+            return True
+        else:
+            return False
 
     def assign_to_topic_partition(self, group_id, topic_partitions):
         """Assign a list of TopicPartitions.
@@ -134,8 +136,9 @@ class KafkaConsumer():
         """
         if isinstance(topic_partitions, TopicPartition):
             topic_partitions = [topic_partitions]
-        if not self._is_assigned(group_id, topic_partitions):
-            self.consumers[group_id].assign(topic_partitions)
+        for topic_partition in topic_partitions:
+            if not self.is_assigned(group_id, topic_partition):
+                self.consumers[group_id].assign(topic_partitions)
 
     def subscribe_topic(self, group_id, topics):
         """Subscribe to a list of topics, or a topic regex pattern.
