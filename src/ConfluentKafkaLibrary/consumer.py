@@ -164,7 +164,12 @@ class KafkaConsumer():
         self.consumers[group_id].close()
 
     def seek(self, group_id, topic_partition):
-        self.consumers[group_id].seek(topic_partition)
+        return self.consumers[group_id].seek(topic_partition)
+
+    def get_position(self, group_id, topic_partitions):
+        if isinstance(topic_partitions, TopicPartition):
+            topic_partitions = [topic_partitions]
+        return self.consumers[group_id].position(topic_partitions)
 
     def poll(
         self,

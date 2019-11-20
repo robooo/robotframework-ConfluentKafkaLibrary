@@ -20,14 +20,38 @@ Basic Consumer
     Lists Should Be Equal  ${messages}  ${data}
     [Teardown]  Basic Teardown  ${group_id}
 
-Consumer With Assignment
+Verify Position
     ${group_id}=  Create Consumer
-    ${topics}=  List Topics  ${group_id}
-    ${partitions}=  Get Topic Partitions  ${topics['${TEST_TOPIC}']}
-    ${partition_id}=  Set Variable  ${partitions[0].id}
     ${tp}=  Create Topic Partition  ${TEST_TOPIC}  ${P_ID}  ${OFFSET_END}
     Assign To Topic Partition  ${group_id}  ${tp}
-    Sleep  1sec  # Need wait for assignment
+    Sleep  5sec  # Need to wait for an assignment
+    ${position}=  Get Position  group_id=${group_id}  topic_partitions=${tp}
+    ${position_before}=  Set Variable  ${position[0].offset}
+
+    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value=Dummy  partition=${P_ID}
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${PRODUCER_ID}
+    ${position}=  Get Position  group_id=${group_id}  topic_partitions=${tp}
+    ${position_after_produce}=  Set Variable  ${position[0].offset}
+    Should Be Equal As Integers  ${position_before}  ${position_after_produce}
+
+    ${messages}=  Poll  group_id=${group_id}  max_records=1  decode_format=utf8
+    ${position}=  Get Position  group_id=${group_id}  topic_partitions=${tp}
+    ${position_after_poll_1}=  Set Variable  ${position[0].offset}
+    Should Not Be Equal As Integers  ${position_after_poll_1}  ${position_after_produce}
+
+    Produce  group_id=${PRODUCER_ID}  topic=${TEST_TOPIC}  value=Dummy  partition=${P_ID}
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${PRODUCER_ID}
+    ${messages}=  Poll  group_id=${group_id}  max_records=1  decode_format=utf8
+    ${position}=  Get Position  group_id=${group_id}  topic_partitions=${tp}
+    ${position_after_poll_2}=  Set Variable  ${position[0].offset}
+    Should Be Equal As Integers  ${position_after_poll_1 + 1}  ${position_after_poll_2}
+    [Teardown]  Basic Teardown  ${group_id}
+
+Consumer With Assignment
+    ${group_id}=  Create Consumer
+    ${tp}=  Create Topic Partition  ${TEST_TOPIC}  ${P_ID}  ${OFFSET_END}
+    Assign To Topic Partition  ${group_id}  ${tp}
+    Sleep  5sec  # Need to wait for an assignment
     Prepare Data
     ${messages}=  Poll  group_id=${group_id}  max_records=6  decode_format=utf8
     Lists Should Be Equal  ${TEST_DATA}  ${messages}
