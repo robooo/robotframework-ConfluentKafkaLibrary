@@ -29,7 +29,7 @@ setup(name         = 'robotframework-confluentkafkalibrary',
       ],
       install_requires = [
           'robotframework == 3.1.2',
-          'confluent-kafka == 1.2.0',
+          'confluent-kafka == 1.3.0',
           'uuid==1.30',
       ],
       package_dir  = {'' : 'src'},
