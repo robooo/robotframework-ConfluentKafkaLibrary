@@ -115,8 +115,16 @@ class KafkaConsumer():
         self.consumers[group_id] = consumer
         return group_id
 
-    def create_topic_partition(self, topic_name, partition, offset):
-        return TopicPartition(topic_name, partition, offset)
+    def create_topic_partition(self, topic_name, partition=None, offset=None):
+        """Returns TopicPartiton object based on
+           https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
+
+            - ``topic_name`` (str): Topic name.
+            - ``partition`` (int): Partition id.
+            - ``offset`` (int): Initial partition offset.
+        """
+        if partition is not None and offset is not None:
+            return TopicPartition(topic_name, partition, offset)
 
     def get_topic_partitions(self, topic):
         return topic.partitions
