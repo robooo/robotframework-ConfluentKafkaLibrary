@@ -22,9 +22,9 @@ class GetMessagesThread(Thread):
         self._is_running = True
         self.only_value = only_value
         self.consumer = KafkaConsumer()
-        self.group_id = self.consumer.create_consumer(server=server,
+        self.group_id = self.consumer.create_consumer(group_id=group_id,
+                                                      server=server,
                                                       port=port,
-                                                      group_id=group_id,
                                                       **kwargs)
 
         if not isinstance(topics, list):
