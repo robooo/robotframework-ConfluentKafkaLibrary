@@ -21,7 +21,6 @@ setup(name         = 'robotframework-confluentkafkalibrary',
       keywords     = 'robotframework confluent kafka',
       platforms    = 'any',
       classifiers  = [
-          "Development Status :: 4 - Beta",
           "License :: OSI Approved :: Apache Software License",
           "Operating System :: OS Independent",
           "Programming Language :: Python",
