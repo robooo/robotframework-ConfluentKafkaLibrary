@@ -20,6 +20,15 @@ Basic Consumer
     Lists Should Be Equal  ${messages}  ${data}
     [Teardown]  Basic Teardown  ${group_id}
 
+Produce Without Value
+    ${topic_name}=  Set Variable  topicwithoutvaluee
+    Produce  group_id=${PRODUCER_ID}  topic=${topic_name}
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${PRODUCER_ID}
+    ${group_id}=  Create Consumer  auto_offset_reset=earliest
+    Subscribe Topic  group_id=${group_id}  topics=${topic_name}
+    ${messages}=  Poll  group_id=${group_id}  max_records=1
+    Should Be Equal As Strings  ${messages}  [None]
+
 Verify Position
     ${group_id}=  Create Consumer
     ${tp}=  Create Topic Partition  ${TEST_TOPIC}  ${P_ID}  ${OFFSET_END}
@@ -47,13 +56,26 @@ Verify Position
     Should Be Equal As Integers  ${position_after_poll_1 + 1}  ${position_after_poll_2}
     [Teardown]  Basic Teardown  ${group_id}
 
-Consumer With Assignment
+Consumer With Assignment To Last Message After Get Of Watermark Offsets
+    ${group_id}=  Create Consumer
+    ${tp}=  Create Topic Partition  ${TEST_TOPIC}  ${P_ID}
+    ${offset}=  Get Watermark Offsets  ${group_id}  ${tp}
+    ${tp}=  Create Topic Partition  ${TEST_TOPIC}  ${P_ID}  ${offset[1]}
+    Assign To Topic Partition  ${group_id}  ${tp}
+    Prepare Data
+    ${messages}=  Poll  group_id=${group_id}  max_records=6  decode_format=utf8
+    Lists Should Be Equal  ${TEST_DATA}  ${messages}
+    [Teardown]  Basic Teardown  ${group_id}
+
+Consumer With Assignment To OFFSET_END
     ${group_id}=  Create Consumer
     ${tp}=  Create Topic Partition  ${TEST_TOPIC}  ${P_ID}  ${OFFSET_END}
     Assign To Topic Partition  ${group_id}  ${tp}
-    Sleep  5sec  # Need to wait for an assignment
+    # Need to wait for an async assignment, be aware the Is Assigned could return True but
+    # that doesn't mean assignment is completed
+    Sleep  5sec
     Prepare Data
-    ${messages}=  Poll  group_id=${group_id}  max_records=6  decode_format=utf8
+    ${messages}=  Poll  group_id=${group_id}  poll_attempts=30  max_records=6  timeout=5  decode_format=utf8
     Lists Should Be Equal  ${TEST_DATA}  ${messages}
     [Teardown]  Unassign Teardown  ${group_id}
 
@@ -104,8 +126,7 @@ Remove And Publish New Messages From Threaded Consumer
 *** Keywords ***
 Starting Test
     Set Suite Variable  ${TEST_TOPIC}  test
-    # we set offset to latest if there was some test run before
-    ${thread}=  Start Consumer Threaded  topics=${TEST_TOPIC}  auto_offset_reset=latest
+    ${thread}=  Start Consumer Threaded  topics=${TEST_TOPIC}
     Set Suite Variable  ${MAIN_THREAD}  ${thread}
     ${producer_group_id}=  Create Producer
     Set Suite Variable  ${PRODUCER_ID}  ${producer_group_id}
