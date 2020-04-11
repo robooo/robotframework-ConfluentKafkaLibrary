@@ -1,11 +1,7 @@
-import sys
 import uuid
-import copy
-import json
-import threading
-from threading import Thread, Timer
+from threading import Thread
+from confluent_kafka import Consumer, KafkaException, KafkaError, TopicPartition
 from confluent_kafka.avro.serializer import SerializerError
-from confluent_kafka import Consumer, KafkaError, TopicPartition
 from confluent_kafka.avro import AvroConsumer
 
 
@@ -17,47 +13,53 @@ class GetMessagesThread(Thread):
         port='9092',
         topics='',
         group_id=None,
+        only_value=True,
         **kwargs
     ):
 
         super(GetMessagesThread, self).__init__()
         self.daemon = True
         self._is_running = True
+        self.only_value = only_value
         self.consumer = KafkaConsumer()
-        self.group_id = self.consumer.create_consumer(server=server, port=port, group_id=group_id, **kwargs)
+        self.group_id = self.consumer.create_consumer(group_id=group_id,
+                                                      server=server,
+                                                      port=port,
+                                                      **kwargs)
+
         if not isinstance(topics, list):
             topics = [topics]
         self.consumer.subscribe_topic(self.group_id, topics=topics)
         self.messages = []
-        self.messages += self.consumer.poll(group_id=self.group_id)
+        self.messages += self.consumer.poll(group_id=self.group_id, only_value=self.only_value)
         self.start()
 
     def run(self):
         while self._is_running:
             try:
-                self.messages += self.consumer.poll(group_id=self.group_id)
+                self.messages += self.consumer.poll(group_id=self.group_id, only_value=self.only_value)
             except RuntimeError:
+                self.consumer.unsubscribe(self.group_id)
+                self.consumer.close_consumer(self.group_id)
                 self._is_running = False
 
-    def stop(self):
-        self.consumer.unsubscribe(self.group_id)
-        self.consumer.close_consumer(self.group_id)
-        self._is_running = False
-
     def get_messages(self):
-        return self.messages
+        return self.messages[:]
 
-class KafkaConsumer(object):
+    def clear_messages(self):
+        self.messages.clear()
+
+
+class KafkaConsumer():
 
     def __init__(self):
-        self.__consumers = {}
+        self.consumers = {}
 
     def create_consumer(
         self,
         group_id=None,
         server="127.0.0.1",
         port="9092",
-        client_id='Robot',
         enable_auto_commit=True,
         auto_offset_reset="latest",
         schema_registry_url=None,
@@ -70,13 +72,8 @@ class KafkaConsumer(object):
             contact to bootstrap initial cluster metadata.
             Default: `127.0.0.1`.
         - ``port`` (int): Port number. Default: `9092`.
-        - ``client_id`` (str): a name for this client. This string is passed in
-            each request to servers and can be used to identify specific
-            server-side log entries that correspond to this client. Also
-            submitted to GroupCoordinator for logging with respect to
-            consumer group administration. Default: `Robot`.
-        - ``group_id`` (str or uuid.uuid4() if not set) : name of the consumer group to join for dynamic
-            partition assignment (if enabled), and to use for fetching and
+        - ``group_id`` (str or uuid.uuid4() if not set) : name of the consumer group
+            to join for dynamic partition assignment (if enabled), and to use for fetching and
             committing offsets. If None, unique string is generated  (via uuid.uuid4())
             and offset commits are disabled. Default: `None`.
         - ``auto_offset_reset`` (str): A policy for resetting offsets on
@@ -85,7 +82,8 @@ class KafkaConsumer(object):
             other value will raise the exception. Default: `latest`.
         - ``enable_auto_commit`` (bool): If true the consumer's offset will be
             periodically committed in the background. Default: `True`.
-        - ``schema_registry_url`` (str): *required* for Avro Consumer. Full URL to avro schema endpoint.
+        - ``schema_registry_url`` (str): *required* for Avro Consumer.
+            Full URL to avro schema endpoint.
 
         Note:
         Configuration parameters are described in more detail at
@@ -114,68 +112,130 @@ class KafkaConsumer(object):
                 },
                 **kwargs})
 
-        self.__consumers[group_id] = consumer
+        self.consumers[group_id] = consumer
         return group_id
 
-    def _is_assigned(self, group_id, topic_partition):
-        for tp in topic_partition:
-            if tp in self.__consumers[group_id].assignment():
-                return True
-        return False
+    def create_topic_partition(self, topic_name, partition=None, offset=None):
+        """Returns TopicPartiton object based on
+           https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 
-    def assign_to_topic_partition(self, group_id, topic_partition):
-        """Assign a list of TopicPartitions.
-
-        - ``partitions`` (list of `TopicPartition`): Assignment for this instance.
+            - ``topic_name`` (str): Topic name.
+            - ``partition`` (int): Partition id.
+            - ``offset`` (int): Initial partition offset.
         """
+        if partition is not None and offset is not None:
+            return TopicPartition(topic_name, partition, offset)
+        elif partition is None:
+            return TopicPartition(topic_name, offset)
+        elif offset is None:
+            return TopicPartition(topic_name, partition)
+        else:
+            return TopicPartition(topic_name)
 
-        if isinstance(topic_partition, TopicPartition):
-            topic_partition = [topic_partition]
-        if not self._is_assigned(group_id, topic_partition):
-            self.__consumers[group_id].assign(topic_partition)
+    def get_topic_partitions(self, topic):
+        """Returns dictionary of all TopicPartitons in topic (topic.partitions).
+        """
+        return topic.partitions
 
-    def subscribe_topic(self, group_id, topics):
+    def subscribe_topic(self, group_id, topics, **kwargs):
         """Subscribe to a list of topics, or a topic regex pattern.
+           https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Consumer.subscribe
 
         - ``topics`` (list): List of topics for subscription.
         """
-
         if not isinstance(topics, list):
             topics = [topics]
-        self.__consumers[group_id].subscribe(topics)
+        self.consumers[group_id].subscribe(topics, **kwargs)
+
+    def get_watermark_offsets(self, group_id, topic_partition, **kwargs):
+        """Retrieve low and high offsets for partition.
+        """
+        if not isinstance(topic_partition, TopicPartition):
+            raise TypeError('topic_partition needs to be TopicPartition() type!')
+        return self.consumers[group_id].get_watermark_offsets(topic_partition, **kwargs)
+
+    def get_assignment(self, group_id):
+        return self.consumers[group_id].assignment()
+
+    def assign_to_topic_partition(self, group_id, topic_partitions):
+        """Assign a list of TopicPartitions.
+
+        - ``topic_partitions`` (`TopicPartition` or list of `TopicPartition`): Assignment for this instance.
+        """
+        if isinstance(topic_partitions, TopicPartition):
+            topic_partitions = [topic_partitions]
+        for topic_partition in topic_partitions:
+            if topic_partition not in self.consumers[group_id].assignment():
+                self.consumers[group_id].assign(topic_partitions)
+
+    def unassign(self, group_id):
+        self.consumers[group_id].unassign()
 
     def unsubscribe(self, group_id):
         """Unsubscribe of topics.
         """
-        self.__consumers[group_id].unsubscribe()
+        self.consumers[group_id].unsubscribe()
 
     def close_consumer(self, group_id):
         """Close down and terminate the Kafka Consumer.
         """
-        self.__consumers[group_id].close()
+        self.consumers[group_id].close()
+
+    def seek(self, group_id, topic_partition):
+        """https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Consumer.seek
+        """
+        return self.consumers[group_id].seek(topic_partition)
+
+    def get_position(self, group_id, topic_partitions):
+        """Retrieve current positions (offsets) for the list of partitions.
+
+            - ``topic_partitions`` (`TopicPartition` or list of `TopicPartition`): Assignment for this instance.
+        """
+        if isinstance(topic_partitions, TopicPartition):
+            topic_partitions = [topic_partitions]
+        return self.consumers[group_id].position(topic_partitions)
+
+    def pause(self, group_id, topic_partitions):
+        """Pause consumption for the provided list of partitions.
+        """
+        if isinstance(topic_partitions, TopicPartition):
+            topic_partitions = [topic_partitions]
+        self.consumers[group_id].pause(topic_partitions)
+
+    def resume(self, group_id, topic_partitions):
+        """Resume consumption for the provided list of partitions.
+        """
+        if isinstance(topic_partitions, TopicPartition):
+            topic_partitions = [topic_partitions]
+        self.consumers[group_id].resume(topic_partitions)
 
     def poll(
         self,
         group_id,
         timeout=1,
         max_records=1,
-        poll_attempts=10
+        poll_attempts=10,
+        only_value=True,
+        decode_format=None
     ):
         """Fetch and return messages from assigned topics / partitions as list.
+        - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.\n
         - ``max_records`` (int): maximum number of messages to get from poll. Default: 1.
-        - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.
-        If 0, returns immediately with any records that are available currently in the buffer, else returns empty.
-        Must not be negative. Default: `1`
-        -  ``poll_attempts`` (int): Attempts to consume messages and endless looping prevention.
+        If 0, returns immediately with any records that are available currently in the buffer,
+        else returns empty. Must not be negative. Default: `1`
+        - ``poll_attempts`` (int): Attempts to consume messages and endless looping prevention.
         Sometimes the first messages are None or the topic could be empty. Default: `10`.
+        - ``only_value`` (bool): Return only message.value(). Default: `True`.
+        - ``decode_format`` (str) - If you need to decode data to specific format
+            (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
         """
 
         messages = []
         while poll_attempts > 0:
             try:
-                msg = self.__consumers[group_id].poll(timeout=timeout)
-            except SerializerError as e:
-                print('Message deserialization failed for {}: {}'.format(msg, e))
+                msg = self.consumers[group_id].poll(timeout=timeout)
+            except SerializerError as err:
+                print('Message deserialization failed for {}: {}'.format(msg, err))
                 break
 
             if msg is None:
@@ -183,30 +243,24 @@ class KafkaConsumer(object):
                 continue
 
             if msg.error():
-                if msg.error().code() == KafkaError._PARTITION_EOF:
-                    poll_attempts = 0
-                    continue
-                else:
-                    print(msg.error())
-                    break
+                raise KafkaException(msg.error())
 
-            messages.append(msg.value())
+            if only_value:
+                messages.append(msg.value())
+            else:
+                messages.append(msg)
 
             if len(messages) == max_records:
-                return messages
+                break
+
+        if decode_format:
+            messages = self._decode_data(data=messages, decode_format=decode_format)
 
         return messages
 
-    # Experimental keywords
-    def decode_data(self, data, decode_format, remove_zero_bytes=False):
-        """ TODO
-        """
-        if decode_format and remove_zero_bytes:
-            return [record.decode(str(decode_format)).replace('\x00', '') for record in data]
-        elif decode_format and not remove_zero_bytes:
+    def _decode_data(self, data, decode_format):
+        if decode_format:
             return [record.decode(str(decode_format)) for record in data]
-        elif not decode_format and remove_zero_bytes:
-            return [record.replace('\x00', '') for record in data]
         else:
             return data
 
@@ -217,30 +271,48 @@ class KafkaConsumer(object):
         group_id=None,
         server='127.0.0.1',
         port='9092',
+        only_value=True,
         **kwargs
     ):
+        """Run consumer in daemon thread and store data from topics. To read and work with this
+           collected data use keyword `Get Messages From Thread`.
+           Could be used at the Test setup or in each test.
+           This is useful when you are reading always the same topics and you don't want to create
+           consumer in each test to poll data. You can create as many consumers in the Test setup
+           as you want and then in test just read data with `Get Messages From Thread` keyword.
+        - ``topics`` (list): List of topics for subscription.
+        - ``group_id`` (str or uuid.uuid4() if not set) : name of the consumer group to join for
+            dynamic partition assignment (if enabled), and to use for fetching and
+            committing offsets. If None, unique string is generated  (via uuid.uuid4())
+            and offset commits are disabled. Default: `None`.
+        """
         if group_id is None:
             group_id = str(uuid.uuid4())
         if topics is None:
             raise ValueError("Topics can not be empty!")
 
-        t = GetMessagesThread(server, port, topics, group_id=group_id, **kwargs)
-        return t
+        consumer_thread = GetMessagesThread(server, port, topics, group_id=group_id, only_value=only_value, **kwargs)
+        return consumer_thread
 
-    def get_messages_from_thread(self, running_thread, decode_format=None, remove_zero_bytes=False):
-        """ Returns all records gathered from specific thread
-            - ``running_thread`` (Thread object) - thread which was executed by `Start Consumer Threaded`
-            - ``decode_data`` (str) - If you need to decode data to specific format
-                (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
-            - ``remove_zero_bytes`` (bool) - When you are working with byte streams
-                you can end up with a lot of '\\x00' bytes you want to remove. Default: False.
+    def get_messages_from_thread(self, running_thread, decode_format=None):
+        """Returns all records gathered from specific thread
+        - ``running_thread`` (Thread object) - thread which was executed with
+            `Start Consumer Threaded` keyword
+        - ``decode_format`` (str) - If you need to decode data to specific format
+            (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
         """
-        records = self.decode_data(
+        records = self._decode_data(
             data=running_thread.get_messages(),
-            decode_format=decode_format,
-            remove_zero_bytes=remove_zero_bytes
+            decode_format=decode_format
         )
         return records
 
-    def stop_thread(self, running_thread):
-        running_thread.stop()
+    def clear_messages_from_thread(self, running_thread):
+        """Remove all records gathered from specific thread
+        - ``running_thread`` (Thread object) - thread which was executed with
+            `Start Consumer Threaded` keyword
+        """
+        try:
+            running_thread.clear_messages()
+        except:
+            print('Messages was not removed from thread %s!', running_thread)

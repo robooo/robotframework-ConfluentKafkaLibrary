@@ -21,15 +21,14 @@ setup(name         = 'robotframework-confluentkafkalibrary',
       keywords     = 'robotframework confluent kafka',
       platforms    = 'any',
       classifiers  = [
-          "Development Status :: 4 - Beta",
           "License :: OSI Approved :: Apache Software License",
           "Operating System :: OS Independent",
           "Programming Language :: Python",
           "Topic :: Software Development :: Testing"
       ],
       install_requires = [
-          'robotframework == 3.1.1',
-          'confluent-kafka[avro] == 1.2.0',
+          'robotframework == 3.1.2',
+          'confluent-kafka == 1.3.0',
           'uuid==1.30',
       ],
       package_dir  = {'' : 'src'},

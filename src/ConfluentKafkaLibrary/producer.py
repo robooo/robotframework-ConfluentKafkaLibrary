@@ -1,17 +1,29 @@
 import sys
 import uuid
 import copy
+import os
 import json
 from confluent_kafka.avro.serializer import SerializerError
 from confluent_kafka import Producer, KafkaError, TopicPartition
 from confluent_kafka import avro
+from avro import schema
 from confluent_kafka.avro import AvroProducer
 
 
 class KafkaProducer(object):
 
     def __init__(self):
-        self.__producers = {}
+        self.producers = {}
+
+    def load_schema(self, data):
+        if type(data) == schema.RecordSchema:
+            data = data
+        elif os.path.exists(data):
+            data = avro.load(data)
+        elif type(data) is str:
+            data = str(data)
+            data = avro.loads(data)
+        return data
 
     def create_producer(
         self,
@@ -20,8 +32,8 @@ class KafkaProducer(object):
         client_id='Robot',
         group_id=None,
         schema_registry_url=None,
-        value_schema_str=None,
-        key_schema_str=None,
+        value_schema=None,
+        key_schema=None,
         **kwargs
     ):
         """Create Kafka Producer and returns its `group_id` as string.
@@ -43,16 +55,18 @@ class KafkaProducer(object):
             committing offsets. If None, unique string is generated  (via uuid.uuid4())
             and offset commits are disabled. Default: `None`.
         - ``schema_registry_url`` (str): *required* for Avro Consumer. Full URL to avro schema endpoint.
-        - ``value_schema_str`` (str): Optional default avro schema for value. Default: `None`
-        - ``key_schema_str`` (str): Optional default avro schema for key. Default: `None`
+        - ``value_schema`` (str): Optional default avro schema for value or path to file with schema. Default: `None`
+        - ``key_schema`` (str): Optional default avro schema for key. Default: `None`
 
         """
         if group_id is None:
             group_id = str(uuid.uuid4())
 
         if schema_registry_url:
-            value_schema = avro.loads(value_schema_str)
-            key_schema = avro.loads(key_schema_str)
+            if value_schema:
+                value_schema = self.load_schema(value_schema)
+            if key_schema:
+                key_schema = self.load_schema(key_schema)
 
             producer = AvroProducer({
                 'bootstrap.servers': '{}:{}'.format(server, port),
@@ -68,40 +82,36 @@ class KafkaProducer(object):
                 'group.id': group_id,
                 **kwargs})
 
-        self.__producers[group_id] = producer
+        self.producers[group_id] = producer
         return group_id
 
     def produce(
         self,
         group_id,
         topic,
-        value,
+        value=None,
         key=None,
-        value_encoding='utf-8',
-        callback_func=None
+        **kwargs
     ):
-        """Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.
+        """Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.\n
+        https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Producer.produce
 
-        - ``topic` (str) : name of the topic where to produce message.
-        - ``data` (str) : Message which produce to topic.
-        - ``data_encoding` (str) : encode to specific format. Default: `utf-8`.
-        - ``callback_func` (func) : the function that will be called from poll()
-        - ``key`` (object) : An object to serialize. Default: `None`.
-            when the message has been successfully delivered or permanently fails delivery..
+        - ``topic`` (str) : name of the topic where to produce message.
+        - ``value`` (str|bytes): Message payload.
+        - ``key`` (str|bytes): Message key. Default: `None`.
+        - ``partition`` (int): Partition to produce to, else uses the configured built-in partitioner.
         """
-        self.__producers[group_id].produce(
+        self.producers[group_id].produce(
             topic=topic,
-            value=value.encode(value_encoding),
-            callback=callback_func,
-            key=key
+            value=value,
+            key=key,
+            **kwargs
         )
 
-    def flush(self, group_id, timeout=1.0):
-        """Wait for all messages in the Producer queue to be delivered.
+    def flush(self, group_id, timeout=0.1):
+        """Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
         This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
-        - `timeout` (real) : Optional timeout. Default: `1.0`.
+        - `timeout` (real) : Optional timeout. Default: `0.1`.
         """
-        self.__producers[group_id].flush(timeout)
-
-    def list_topics(self, group_id,):
-        return self.__producers[group_id].list_topics()
+        messages_in_queue = self.producers[group_id].flush(timeout)
+        return messages_in_queue
