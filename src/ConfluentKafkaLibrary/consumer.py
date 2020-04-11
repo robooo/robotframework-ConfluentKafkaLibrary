@@ -125,41 +125,51 @@ class KafkaConsumer():
         """
         if partition is not None and offset is not None:
             return TopicPartition(topic_name, partition, offset)
+        elif partition is None:
+            return TopicPartition(topic_name, offset)
+        elif offset is None:
+            return TopicPartition(topic_name, partition)
+        else:
+            return TopicPartition(topic_name)
 
     def get_topic_partitions(self, topic):
+        """Returns dictionary of all TopicPartitons in topic (topic.partitions).
+        """
         return topic.partitions
 
-    def is_assigned(self, group_id, topic_partition):
+    def subscribe_topic(self, group_id, topics, **kwargs):
+        """Subscribe to a list of topics, or a topic regex pattern.
+           https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Consumer.subscribe
+
+        - ``topics`` (list): List of topics for subscription.
+        """
+        if not isinstance(topics, list):
+            topics = [topics]
+        self.consumers[group_id].subscribe(topics, **kwargs)
+
+    def get_watermark_offsets(self, group_id, topic_partition, **kwargs):
+        """Retrieve low and high offsets for partition.
+        """
         if not isinstance(topic_partition, TopicPartition):
             raise TypeError('topic_partition needs to be TopicPartition() type!')
-        if topic_partition in self.consumers[group_id].assignment():
-            return True
-        else:
-            return False
+        return self.consumers[group_id].get_watermark_offsets(topic_partition, **kwargs)
+
+    def get_assignment(self, group_id):
+        return self.consumers[group_id].assignment()
 
     def assign_to_topic_partition(self, group_id, topic_partitions):
         """Assign a list of TopicPartitions.
 
-        - ``partitions`` (list of `TopicPartition`): Assignment for this instance.
+        - ``topic_partitions`` (`TopicPartition` or list of `TopicPartition`): Assignment for this instance.
         """
         if isinstance(topic_partitions, TopicPartition):
             topic_partitions = [topic_partitions]
         for topic_partition in topic_partitions:
-            if not self.is_assigned(group_id, topic_partition):
+            if topic_partition not in self.consumers[group_id].assignment():
                 self.consumers[group_id].assign(topic_partitions)
 
     def unassign(self, group_id):
         self.consumers[group_id].unassign()
-
-    def subscribe_topic(self, group_id, topics):
-        """Subscribe to a list of topics, or a topic regex pattern.
-
-        - ``topics`` (list): List of topics for subscription.
-        """
-
-        if not isinstance(topics, list):
-            topics = [topics]
-        self.consumers[group_id].subscribe(topics)
 
     def unsubscribe(self, group_id):
         """Unsubscribe of topics.
@@ -172,12 +182,32 @@ class KafkaConsumer():
         self.consumers[group_id].close()
 
     def seek(self, group_id, topic_partition):
+        """https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Consumer.seek
+        """
         return self.consumers[group_id].seek(topic_partition)
 
     def get_position(self, group_id, topic_partitions):
+        """Retrieve current positions (offsets) for the list of partitions.
+
+            - ``topic_partitions`` (`TopicPartition` or list of `TopicPartition`): Assignment for this instance.
+        """
         if isinstance(topic_partitions, TopicPartition):
             topic_partitions = [topic_partitions]
         return self.consumers[group_id].position(topic_partitions)
+
+    def pause(self, group_id, topic_partitions):
+        """Pause consumption for the provided list of partitions.
+        """
+        if isinstance(topic_partitions, TopicPartition):
+            topic_partitions = [topic_partitions]
+        self.consumers[group_id].pause(topic_partitions)
+
+    def resume(self, group_id, topic_partitions):
+        """Resume consumption for the provided list of partitions.
+        """
+        if isinstance(topic_partitions, TopicPartition):
+            topic_partitions = [topic_partitions]
+        self.consumers[group_id].resume(topic_partitions)
 
     def poll(
         self,
@@ -189,12 +219,15 @@ class KafkaConsumer():
         decode_format=None
     ):
         """Fetch and return messages from assigned topics / partitions as list.
+        - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.\n
         - ``max_records`` (int): maximum number of messages to get from poll. Default: 1.
-        - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.
         If 0, returns immediately with any records that are available currently in the buffer,
         else returns empty. Must not be negative. Default: `1`
-        -  ``poll_attempts`` (int): Attempts to consume messages and endless looping prevention.
+        - ``poll_attempts`` (int): Attempts to consume messages and endless looping prevention.
         Sometimes the first messages are None or the topic could be empty. Default: `10`.
+        - ``only_value`` (bool): Return only message.value(). Default: `True`.
+        - ``decode_format`` (str) - If you need to decode data to specific format
+            (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
         """
 
         messages = []

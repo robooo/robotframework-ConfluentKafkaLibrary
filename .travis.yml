@@ -13,4 +13,4 @@ before_install:
 - pip install .
 
 script:
-- python3 -m robot examples/test.robot
+- python3 -m robot examples/
