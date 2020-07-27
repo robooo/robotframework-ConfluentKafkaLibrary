@@ -63,6 +63,7 @@ class KafkaConsumer():
         enable_auto_commit=True,
         auto_offset_reset="latest",
         schema_registry_url=None,
+        auto_create_topics=True,
         **kwargs
     ):
         """Create Kafka Consumer and returns its `group_id` as string.
@@ -84,6 +85,8 @@ class KafkaConsumer():
             periodically committed in the background. Default: `True`.
         - ``schema_registry_url`` (str): *required* for Avro Consumer.
             Full URL to avro schema endpoint.
+        - ``auto_create_topics`` (bool): Consumers no longer trigger auto creation of topics,
+            will be removed in future release. Default: `True`.
 
         Note:
         Configuration parameters are described in more detail at
@@ -97,9 +100,8 @@ class KafkaConsumer():
                 'bootstrap.servers': '{}:{}'.format(server, port),
                 'group.id': group_id,
                 'enable.auto.commit': enable_auto_commit,
-                'default.topic.config': {
-                    'auto.offset.reset': auto_offset_reset
-                },
+                'allow.auto.create.topics': auto_create_topics,
+                'auto.offset.reset': auto_offset_reset,
                 'schema.registry.url': schema_registry_url,
                 **kwargs})
         else:
@@ -107,9 +109,8 @@ class KafkaConsumer():
                 'bootstrap.servers': '{}:{}'.format(server, port),
                 'group.id': group_id,
                 'enable.auto.commit': enable_auto_commit,
-                'default.topic.config': {
-                    'auto.offset.reset': auto_offset_reset
-                },
+                'allow.auto.create.topics': auto_create_topics,
+                'auto.offset.reset': auto_offset_reset,
                 **kwargs})
 
         self.consumers[group_id] = consumer
@@ -216,6 +217,7 @@ class KafkaConsumer():
         max_records=1,
         poll_attempts=10,
         only_value=True,
+        auto_create_topics=True,
         decode_format=None
     ):
         """Fetch and return messages from assigned topics / partitions as list.
@@ -228,6 +230,9 @@ class KafkaConsumer():
         - ``only_value`` (bool): Return only message.value(). Default: `True`.
         - ``decode_format`` (str) - If you need to decode data to specific format
             (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
+        - ``auto_create_topics`` (bool): Consumers no longer trigger auto creation of topics,
+            will be removed in future release. If True then the error message _MSG_TIMED_OUT is ignored.
+            Default: `True`.
         """
 
         messages = []
@@ -243,7 +248,11 @@ class KafkaConsumer():
                 continue
 
             if msg.error():
-                raise KafkaException(msg.error())
+                # Workaround due to new message return + deprecation of the "Consumers no longer trigger auto creation of topics"
+                if int(msg.error().code()) == KafkaError._MSG_TIMED_OUT and auto_create_topics == True:
+                    continue
+                else:
+                    raise KafkaException(msg.error())
 
             if only_value:
                 messages.append(msg.value())

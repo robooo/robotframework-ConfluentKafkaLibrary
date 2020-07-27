@@ -34,6 +34,7 @@ class KafkaProducer(object):
         schema_registry_url=None,
         value_schema=None,
         key_schema=None,
+        auto_create_topics=True,
         **kwargs
     ):
         """Create Kafka Producer and returns its `group_id` as string.
@@ -57,6 +58,8 @@ class KafkaProducer(object):
         - ``schema_registry_url`` (str): *required* for Avro Consumer. Full URL to avro schema endpoint.
         - ``value_schema`` (str): Optional default avro schema for value or path to file with schema. Default: `None`
         - ``key_schema`` (str): Optional default avro schema for key. Default: `None`
+        - ``auto_create_topics`` (bool): Consumers no longer trigger auto creation of topics,
+            will be removed in future release. Default: `True`.
 
         """
         if group_id is None:
@@ -72,6 +75,7 @@ class KafkaProducer(object):
                 'bootstrap.servers': '{}:{}'.format(server, port),
                 'group.id': group_id,
                 'schema.registry.url': schema_registry_url,
+                'allow.auto.create.topics': auto_create_topics,
                 **kwargs},
                 default_key_schema=key_schema,
                 default_value_schema=value_schema
@@ -80,6 +84,7 @@ class KafkaProducer(object):
             producer = Producer({
                 'bootstrap.servers': '{}:{}'.format(server, port),
                 'group.id': group_id,
+                'allow.auto.create.topics': auto_create_topics,
                 **kwargs})
 
         self.producers[group_id] = producer
