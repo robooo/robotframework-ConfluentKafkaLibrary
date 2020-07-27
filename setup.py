@@ -27,7 +27,7 @@ setup(name         = 'robotframework-confluentkafkalibrary',
           "Topic :: Software Development :: Testing"
       ],
       install_requires = [
-          'robotframework == 3.1.2',
+          'robotframework == 3.2.1',
           'confluent-kafka == 1.5.0',
           'uuid==1.30',
       ],
