@@ -231,7 +231,7 @@ class KafkaConsumer():
         - ``decode_format`` (str) - If you need to decode data to specific format
             (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
         - ``auto_create_topics`` (bool): Consumers no longer trigger auto creation of topics,
-            will be removed in future release. If True then the error message _MSG_TIMED_OUT is ignored.
+            will be removed in future release. If True then the error message UNKNOWN_TOPIC_OR_PART is ignored.
             Default: `True`.
         """
 
@@ -249,7 +249,7 @@ class KafkaConsumer():
 
             if msg.error():
                 # Workaround due to new message return + deprecation of the "Consumers no longer trigger auto creation of topics"
-                if int(msg.error().code()) == KafkaError._MSG_TIMED_OUT and auto_create_topics == True:
+                if int(msg.error().code()) == KafkaError.UNKNOWN_TOPIC_OR_PART and auto_create_topics == True:
                     continue
                 else:
                     raise KafkaException(msg.error())
