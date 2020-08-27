@@ -237,6 +237,7 @@ class KafkaConsumer():
 
         messages = []
         while poll_attempts > 0:
+            msg = None
             try:
                 msg = self.consumers[group_id].poll(timeout=timeout)
             except SerializerError as err:
