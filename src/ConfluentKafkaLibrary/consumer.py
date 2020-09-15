@@ -1,6 +1,7 @@
 import uuid
 from threading import Thread
 from confluent_kafka import Consumer, KafkaException, KafkaError, TopicPartition
+from confluent_kafka import DeserializingConsumer
 from confluent_kafka.avro.serializer import SerializerError
 from confluent_kafka.avro import AvroConsumer
 
@@ -64,6 +65,9 @@ class KafkaConsumer():
         auto_offset_reset="latest",
         schema_registry_url=None,
         auto_create_topics=True,
+        key_serializer=None,
+        value_serializer=None,
+        legacy=True,
         **kwargs
     ):
         """Create Kafka Consumer and returns its `group_id` as string.
@@ -95,7 +99,7 @@ class KafkaConsumer():
         if group_id is None:
             group_id = str(uuid.uuid4())
 
-        if schema_registry_url:
+        if schema_registry_url and legacy == True:
             consumer = AvroConsumer({
                 'bootstrap.servers': '{}:{}'.format(server, port),
                 'group.id': group_id,
@@ -103,6 +107,15 @@ class KafkaConsumer():
                 'allow.auto.create.topics': auto_create_topics,
                 'auto.offset.reset': auto_offset_reset,
                 'schema.registry.url': schema_registry_url,
+                **kwargs})
+        elif legacy == False:
+            consumer = DeserializingConsumer({
+                'bootstrap.servers': '{}:{}'.format(server, port),
+                'group.id': group_id,
+                'enable.auto.commit': enable_auto_commit,
+                'auto.offset.reset': auto_offset_reset,
+                'key.serializer': key_serializer,
+                'value.serializer': value_serializer,
                 **kwargs})
         else:
             consumer = Consumer({

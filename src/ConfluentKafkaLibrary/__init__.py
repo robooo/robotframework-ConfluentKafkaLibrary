@@ -3,10 +3,13 @@ import confluent_kafka
 
 from .consumer import KafkaConsumer
 from .producer import KafkaProducer
+from .serialization import Serializer, Deserializer
 from .version import VERSION
+from confluent_kafka.schema_registry import SchemaRegistryClient
 
 
-class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer):
+#class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializer):
+class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializer):
     """ConfluentKafkaLibrary is a Robot Framework library which wraps up
     [https://github.com/confluentinc/confluent-kafka-python | confluent-kafka-python].
     Keywords are inspired by [https://github.com/s4int/robotframework-KafkaLibrary | robotframework-KafkaLibrary]
@@ -86,3 +89,7 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer):
             return self.producers[group_id].list_topics(topic).topics
 
         raise ValueError('Consumer or producer group_id is wrong or does not exists!')
+
+    def get_schema_registry_client(self, conf):
+        return SchemaRegistryClient(conf)
+

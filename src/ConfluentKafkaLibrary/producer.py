@@ -4,6 +4,7 @@ import copy
 import os
 import json
 from confluent_kafka.avro.serializer import SerializerError
+from confluent_kafka import SerializingProducer
 from confluent_kafka import Producer, KafkaError, TopicPartition
 from confluent_kafka import avro
 from avro import schema
@@ -35,6 +36,9 @@ class KafkaProducer(object):
         value_schema=None,
         key_schema=None,
         auto_create_topics=True,
+        key_serializer=None,
+        value_serializer=None,
+        legacy=True,
         **kwargs
     ):
         """Create Kafka Producer and returns its `group_id` as string.
@@ -65,7 +69,7 @@ class KafkaProducer(object):
         if group_id is None:
             group_id = str(uuid.uuid4())
 
-        if schema_registry_url:
+        if schema_registry_url and legacy == True:
             if value_schema:
                 value_schema = self.load_schema(value_schema)
             if key_schema:
@@ -79,6 +83,14 @@ class KafkaProducer(object):
                 **kwargs},
                 default_key_schema=key_schema,
                 default_value_schema=value_schema
+            )
+        elif legacy == False:
+            producer = SerializingProducer({
+                'bootstrap.servers': '{}:{}'.format(server, port),
+                'group.id': group_id,
+                'key.serializer': key_serializer,
+                'value.serializer': value_serializer,
+                **kwargs}
             )
         else:
             producer = Producer({
