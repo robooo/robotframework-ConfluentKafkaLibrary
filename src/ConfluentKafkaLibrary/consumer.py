@@ -65,8 +65,8 @@ class KafkaConsumer():
         auto_offset_reset="latest",
         schema_registry_url=None,
         auto_create_topics=True,
-        key_serializer=None,
-        value_serializer=None,
+        key_deserializer=None,
+        value_deserializer=None,
         legacy=True,
         **kwargs
     ):
@@ -114,8 +114,8 @@ class KafkaConsumer():
                 'group.id': group_id,
                 'enable.auto.commit': enable_auto_commit,
                 'auto.offset.reset': auto_offset_reset,
-                'key.serializer': key_serializer,
-                'value.serializer': value_serializer,
+                'key.deserializer': key_deserializer,
+                'value.deserializer': value_deserializer,
                 **kwargs})
         else:
             consumer = Consumer({
