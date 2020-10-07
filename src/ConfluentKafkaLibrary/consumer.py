@@ -91,6 +91,9 @@ class KafkaConsumer():
             Full URL to avro schema endpoint.
         - ``auto_create_topics`` (bool): Consumers no longer trigger auto creation of topics,
             will be removed in future release. Default: `True`.
+        - ``legacy`` (bool): Activate SerializingConsumer if 'False' else
+            AvroConsumer (legacy) is used. Will be removed when confluent-kafka will deprecate this.
+            Default: `True`.
 
         Note:
         Configuration parameters are described in more detail at

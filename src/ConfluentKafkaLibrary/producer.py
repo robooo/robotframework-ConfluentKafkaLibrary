@@ -64,6 +64,9 @@ class KafkaProducer(object):
         - ``key_schema`` (str): Optional default avro schema for key. Default: `None`
         - ``auto_create_topics`` (bool): Consumers no longer trigger auto creation of topics,
             will be removed in future release. Default: `True`.
+        - ``legacy`` (bool): Activate SerializingProducer if 'False' else
+            AvroProducer (legacy) is used. Will be removed when confluent-kafka will deprecate this.
+            Default: `True`.
 
         """
         if group_id is None:
