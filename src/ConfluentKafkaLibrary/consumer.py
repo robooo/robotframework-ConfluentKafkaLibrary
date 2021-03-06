@@ -234,7 +234,8 @@ class KafkaConsumer():
         poll_attempts=10,
         only_value=True,
         auto_create_topics=True,
-        decode_format=None
+        decode_format=None,
+        fail_on_deserialization=False
     ):
         """Fetch and return messages from assigned topics / partitions as list.
         - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.\n
@@ -249,6 +250,8 @@ class KafkaConsumer():
         - ``auto_create_topics`` (bool): Consumers no longer trigger auto creation of topics,
             will be removed in future release. If True then the error message UNKNOWN_TOPIC_OR_PART is ignored.
             Default: `True`.
+        - ``fail_on_deserialization`` (bool): If True and message deserialization fails, will raise a SerializerError
+            exception; on False will just stop the current poll and return the message so far. Default: `False`.            
         """
 
         messages = []
@@ -257,8 +260,12 @@ class KafkaConsumer():
             try:
                 msg = self.consumers[group_id].poll(timeout=timeout)
             except SerializerError as err:
-                print('Message deserialization failed for {}: {}'.format(msg, err))
-                break
+                error = 'Message deserialization failed for {}: {}'.format(msg, err)
+                if fail_on_deserialization:
+                    raise SerializerError(error)
+                else:
+                    print(error)
+                    break
 
             if msg is None:
                 poll_attempts -= 1
