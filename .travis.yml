@@ -14,4 +14,12 @@ before_install:
 - pip install .
 
 script:
-- python3 -m robot examples/
+- python3 -m robot -d ./docs examples/
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: docs
+  on:
+    branch: master
