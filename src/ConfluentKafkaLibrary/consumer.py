@@ -251,8 +251,7 @@ class KafkaConsumer():
             will be removed in future release. If True then the error message UNKNOWN_TOPIC_OR_PART is ignored.
             Default: `True`.
         - ``fail_on_deserialization`` (bool): If True and message deserialization fails, will raise a SerializerError
-            exception; on False will just stop the current poll and return the message so far. Default: `False`.
-            Default: `True`.            
+            exception; on False will just stop the current poll and return the message so far. Default: `False`.            
         """
 
         messages = []
