@@ -30,7 +30,7 @@ setup(name         = 'robotframework-confluentkafkalibrary',
           'robotframework >= 3.2.1',
           'confluent-kafka == 1.5.0',
           'requests >= 2.25.1',
-          'avro >= 1.10.1',
+          'avro-python3 >= 1.10.1',
           'fastavro >= 1.3.2',
           'jsonschema >= 3.2.0'
       ],
