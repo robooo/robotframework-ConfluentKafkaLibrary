@@ -4,17 +4,12 @@ services:
   - docker
 
 before_install:
-- cd examples && docker-compose up -d && cd ..
-- docker ps -a
-- pip install -r requirements.txt
-- pip install requests
-- pip install avro-python3
-- pip install fastavro
-- pip install jsonschema
-- pip install .
+  - cd examples && docker-compose up -d && cd ..
+  - docker ps -a
+  - pip install .
 
 script:
-- python3 -m robot -d ./docs examples/
+  - python3 -m robot -d ./docs examples/
 
 deploy:
   provider: pages
