@@ -1,4 +1,4 @@
-from robot.libraries.BuiltIn import BuiltIn
+from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 import confluent_kafka
 
 from .consumer import KafkaConsumer
@@ -69,10 +69,16 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializ
     def __init__(self):
         KafkaConsumer.__init__(self)
         KafkaProducer.__init__(self)
-        BuiltIn().set_global_variable('${OFFSET_BEGINNING}', confluent_kafka.OFFSET_BEGINNING)
-        BuiltIn().set_global_variable('${OFFSET_END}', confluent_kafka.OFFSET_END)
-        BuiltIn().set_global_variable('${OFFSET_STORED}', confluent_kafka.OFFSET_STORED)
-        BuiltIn().set_global_variable('${OFFSET_INVALID}', confluent_kafka.OFFSET_INVALID)
+        self._set_globals_variables_if_robot_running()
+
+    def _set_globals_variables_if_robot_running(self):
+        try:
+            BuiltIn().set_global_variable('${OFFSET_BEGINNING}', confluent_kafka.OFFSET_BEGINNING)
+            BuiltIn().set_global_variable('${OFFSET_END}', confluent_kafka.OFFSET_END)
+            BuiltIn().set_global_variable('${OFFSET_STORED}', confluent_kafka.OFFSET_STORED)
+            BuiltIn().set_global_variable('${OFFSET_INVALID}', confluent_kafka.OFFSET_INVALID)
+        except RobotNotRunningError as e:
+            pass
 
     def list_topics(self, group_id, topic=None):
         """Request Metadata from cluster. Could be executed with consumer or producer group_id too.
