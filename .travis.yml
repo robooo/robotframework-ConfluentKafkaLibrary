@@ -7,6 +7,8 @@ before_install:
   - cd examples && docker-compose up -d && cd ..
   - docker ps -a
   - pip install .
+  - sleep 30
+  - docker inspect --format "{{json .State.Health.Status }}" $(docker-compose ps -q)
 
 script:
   - python3 -m robot -d ./docs examples/
