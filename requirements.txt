@@ -1,2 +1,2 @@
 robotframework>=3.2.1
-confluent-kafka==1.5.0
+confluent-kafka==1.6.1
