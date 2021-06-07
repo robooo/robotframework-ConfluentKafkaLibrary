@@ -157,6 +157,15 @@ class KafkaConsumer():
         - ``legacy`` (bool): Activate SerializingConsumer if 'False' else
             AvroConsumer (legacy) is used. Will be removed when confluent-kafka will deprecate this.
             Default: `True`.
+        - ``oauth_callback`` (bool): If True the secure OAuth2 consumer will start.
+            Default: `False`.
+        - ``auth_uri`` (str): URL to identity server.
+        - ``redirect_url`` (str): URL to server/endpoint to receive a access token.
+        - ``user_name`` (str): User ID on identity server.
+        - ``user_password`` (str): User password on identity server.
+        - ``verify_ssl`` (optional): Either a boolean, in which case it controls whether we verify
+            the server's certificate, or a string, in which case it must be a path
+            to a CA bundle to use. Default: ``True``.    
 
         Note:
         Configuration parameters are described in more detail at
