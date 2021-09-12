@@ -131,6 +131,9 @@ Starting Test
     ${producer_group_id}=  Create Producer
     Set Suite Variable  ${PRODUCER_ID}  ${producer_group_id}
 
+    Set Suite Variable  ${P_ID}  ${0}
+    Prepare Data
+
     ${topics}=  List Topics  ${producer_group_id}
     ${partitions}=  Get Topic Partitions  ${topics['${TEST_TOPIC}']}
     ${partition_id}=  Set Variable  ${partitions[0].id}
