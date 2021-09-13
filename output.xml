@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Robot 4.0 (Python 3.6.7 on linux)" generated="20210331 16:13:01.795" rpa="false" schemaversion="2">
-<suite id="s1" name="Examples" source="/home/travis/build/robooo/robotframework-ConfluentKafkaLibrary/examples">
-<suite id="s1-s1" name="Test" source="/home/travis/build/robooo/robotframework-ConfluentKafkaLibrary/examples/test.robot">
+<robot generator="Robot 4.1.1 (Python 3.8.10 on linux)" generated="20210913 22:34:03.006" rpa="false" schemaversion="2">
+<suite id="s1" name="Examples" source="/home/runner/work/robotframework-ConfluentKafkaLibrary/robotframework-ConfluentKafkaLibrary/examples">
+<suite id="s1-s1" name="Test" source="/home/runner/work/robotframework-ConfluentKafkaLibrary/robotframework-ConfluentKafkaLibrary/examples/test.robot">
 <kw name="Starting Test" type="SETUP">
 <kw name="Set Suite Variable" library="BuiltIn">
 <arg>${TEST_TOPIC}</arg>
 <arg>test</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<msg timestamp="20210331 16:13:01.983" level="INFO">${TEST_TOPIC} = test</msg>
-<status status="PASS" starttime="20210331 16:13:01.980" endtime="20210331 16:13:01.983"/>
+<msg timestamp="20210913 22:34:03.191" level="INFO">${TEST_TOPIC} = test</msg>
+<status status="PASS" starttime="20210913 22:34:03.190" endtime="20210913 22:34:03.192"/>
 </kw>
 <kw name="Start Consumer Threaded" library="ConfluentKafkaLibrary">
 <var>${thread}</var>
@@ -24,30 +24,30 @@
     dynamic partition assignment (if enabled), and to use for fetching and
     committing offsets. If None, unique string is generated  (via uuid.uuid4())
     and offset commits are disabled. Default: `None`.</doc>
-<msg timestamp="20210331 16:13:12.014" level="INFO">${thread} = &lt;GetMessagesThread(Thread-1, started daemon 140182209550080)&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:01.983" endtime="20210331 16:13:12.014"/>
+<msg timestamp="20210913 22:34:13.226" level="INFO">${thread} = &lt;GetMessagesThread(Thread-1, started daemon 139622776559360)&gt;</msg>
+<status status="PASS" starttime="20210913 22:34:03.192" endtime="20210913 22:34:13.226"/>
 </kw>
 <kw name="Set Suite Variable" library="BuiltIn">
 <arg>${MAIN_THREAD}</arg>
 <arg>${thread}</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<msg timestamp="20210331 16:13:12.016" level="INFO">${MAIN_THREAD} = &lt;GetMessagesThread(Thread-1, started daemon 140182209550080)&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:12.014" endtime="20210331 16:13:12.016"/>
+<msg timestamp="20210913 22:34:13.228" level="INFO">${MAIN_THREAD} = &lt;GetMessagesThread(Thread-1, started daemon 139622776559360)&gt;</msg>
+<status status="PASS" starttime="20210913 22:34:13.226" endtime="20210913 22:34:13.228"/>
 </kw>
 <kw name="Create Producer" library="ConfluentKafkaLibrary">
 <var>${producer_group_id}</var>
 <doc>Create Kafka Producer and returns its `group_id` as string.
 If `schema_registry_url` is used, Kafka Producer client which does avro schema
 encoding to messages is created instead.</doc>
-<msg timestamp="20210331 16:13:12.017" level="INFO">${producer_group_id} = 46fc41fa-1de6-422b-aa12-e679263f27f9</msg>
-<status status="PASS" starttime="20210331 16:13:12.016" endtime="20210331 16:13:12.017"/>
+<msg timestamp="20210913 22:34:13.229" level="INFO">${producer_group_id} = b7c7997b-c602-455c-9b2b-fb0413667daa</msg>
+<status status="PASS" starttime="20210913 22:34:13.228" endtime="20210913 22:34:13.229"/>
 </kw>
 <kw name="Set Suite Variable" library="BuiltIn">
 <arg>${PRODUCER_ID}</arg>
 <arg>${producer_group_id}</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<msg timestamp="20210331 16:13:12.022" level="INFO">${PRODUCER_ID} = 46fc41fa-1de6-422b-aa12-e679263f27f9</msg>
-<status status="PASS" starttime="20210331 16:13:12.018" endtime="20210331 16:13:12.022"/>
+<msg timestamp="20210913 22:34:13.231" level="INFO">${PRODUCER_ID} = b7c7997b-c602-455c-9b2b-fb0413667daa</msg>
+<status status="PASS" starttime="20210913 22:34:13.229" endtime="20210913 22:34:13.231"/>
 </kw>
 <kw name="List Topics" library="ConfluentKafkaLibrary">
 <var>${topics}</var>
@@ -56,29 +56,29 @@ encoding to messages is created instead.</doc>
 - ``topic`` (str):  If specified, only request info about this topic, else returnfor all topics in cluster.
 Default: `None`.
 - ``group_id`` (str): *required* id of the created consumer or producer.</doc>
-<msg timestamp="20210331 16:13:12.038" level="INFO">${topics} = {'__confluent.support.metrics': TopicMetadata(__confluent.support.metrics, 1 partitions), '_schemas': TopicMetadata(_schemas, 1 partitions), 'test': TopicMetadata(test, 1 partitions), '__consumer_offs...</msg>
-<status status="PASS" starttime="20210331 16:13:12.022" endtime="20210331 16:13:12.038"/>
+<msg timestamp="20210913 22:34:13.239" level="INFO">${topics} = {'__confluent.support.metrics': TopicMetadata(__confluent.support.metrics, 1 partitions), '_schemas': TopicMetadata(_schemas, 1 partitions), 'test': TopicMetadata(test, 1 partitions), '__consumer_offs...</msg>
+<status status="PASS" starttime="20210913 22:34:13.232" endtime="20210913 22:34:13.239"/>
 </kw>
 <kw name="Get Topic Partitions" library="ConfluentKafkaLibrary">
 <var>${partitions}</var>
 <arg>${topics['${TEST_TOPIC}']}</arg>
 <doc>Returns dictionary of all TopicPartitons in topic (topic.partitions).</doc>
-<msg timestamp="20210331 16:13:12.039" level="INFO">${partitions} = {0: PartitionMetadata(0)}</msg>
-<status status="PASS" starttime="20210331 16:13:12.038" endtime="20210331 16:13:12.039"/>
+<msg timestamp="20210913 22:34:13.240" level="INFO">${partitions} = {0: PartitionMetadata(0)}</msg>
+<status status="PASS" starttime="20210913 22:34:13.239" endtime="20210913 22:34:13.240"/>
 </kw>
 <kw name="Set Variable" library="BuiltIn">
 <var>${partition_id}</var>
 <arg>${partitions[0].id}</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20210331 16:13:12.040" level="INFO">${partition_id} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:12.039" endtime="20210331 16:13:12.040"/>
+<msg timestamp="20210913 22:34:13.241" level="INFO">${partition_id} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:13.240" endtime="20210913 22:34:13.241"/>
 </kw>
 <kw name="Set Suite Variable" library="BuiltIn">
 <arg>${P_ID}</arg>
 <arg>${partition_id}</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<msg timestamp="20210331 16:13:12.041" level="INFO">${P_ID} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:12.040" endtime="20210331 16:13:12.041"/>
+<msg timestamp="20210913 22:34:13.242" level="INFO">${P_ID} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:13.241" endtime="20210913 22:34:13.242"/>
 </kw>
 <kw name="Create Topic Partition" library="ConfluentKafkaLibrary">
 <var>${tp}</var>
@@ -87,8 +87,8 @@ Default: `None`.
 <arg>${OFFSET_BEGINNING}</arg>
 <doc>Returns TopicPartiton object based on
 https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition</doc>
-<msg timestamp="20210331 16:13:12.042" level="INFO">${tp} = TopicPartition{topic=test,partition=0,offset=-2,error=None}</msg>
-<status status="PASS" starttime="20210331 16:13:12.041" endtime="20210331 16:13:12.042"/>
+<msg timestamp="20210913 22:34:13.243" level="INFO">${tp} = TopicPartition{topic=test,partition=0,offset=-2,error=None}</msg>
+<status status="PASS" starttime="20210913 22:34:13.242" endtime="20210913 22:34:13.243"/>
 </kw>
 <kw name="Create List" library="BuiltIn">
 <var>${data}</var>
@@ -99,15 +99,15 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>{'test': 3}</arg>
 <arg>{'test': 4}</arg>
 <doc>Returns a list containing given items.</doc>
-<msg timestamp="20210331 16:13:12.042" level="INFO">${data} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
-<status status="PASS" starttime="20210331 16:13:12.042" endtime="20210331 16:13:12.042"/>
+<msg timestamp="20210913 22:34:13.243" level="INFO">${data} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
+<status status="PASS" starttime="20210913 22:34:13.243" endtime="20210913 22:34:13.243"/>
 </kw>
 <kw name="Set Suite Variable" library="BuiltIn">
 <arg>${TEST_DATA}</arg>
 <arg>${data}</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<msg timestamp="20210331 16:13:12.044" level="INFO">${TEST_DATA} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
-<status status="PASS" starttime="20210331 16:13:12.042" endtime="20210331 16:13:12.044"/>
+<msg timestamp="20210913 22:34:13.244" level="INFO">${TEST_DATA} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
+<status status="PASS" starttime="20210913 22:34:13.243" endtime="20210913 22:34:13.244"/>
 </kw>
 <kw name="Prepare Data">
 <kw name="Produce" library="ConfluentKafkaLibrary">
@@ -116,7 +116,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value=Hello</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:12.044" endtime="20210331 16:13:12.045"/>
+<status status="PASS" starttime="20210913 22:34:13.245" endtime="20210913 22:34:13.245"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -124,7 +124,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value=World</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:12.045" endtime="20210331 16:13:12.046"/>
+<status status="PASS" starttime="20210913 22:34:13.246" endtime="20210913 22:34:13.247"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -132,7 +132,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value={'test': 1}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:12.047" endtime="20210331 16:13:12.048"/>
+<status status="PASS" starttime="20210913 22:34:13.247" endtime="20210913 22:34:13.248"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -140,7 +140,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value={'test': 2}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:12.048" endtime="20210331 16:13:12.049"/>
+<status status="PASS" starttime="20210913 22:34:13.248" endtime="20210913 22:34:13.248"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -148,7 +148,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value={'test': 3}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:12.049" endtime="20210331 16:13:12.050"/>
+<status status="PASS" starttime="20210913 22:34:13.249" endtime="20210913 22:34:13.249"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -156,7 +156,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value={'test': 4}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:12.050" endtime="20210331 16:13:12.051"/>
+<status status="PASS" starttime="20210913 22:34:13.249" endtime="20210913 22:34:13.250"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -172,45 +172,45 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:12.064" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:12.059" endtime="20210331 16:13:12.064"/>
+<msg timestamp="20210913 22:34:13.261" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:13.251" endtime="20210913 22:34:13.261"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:12.065" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:13:12.064" endtime="20210331 16:13:12.065"/>
+<msg timestamp="20210913 22:34:13.261" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:34:13.261" endtime="20210913 22:34:13.261"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:12.066" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:13.262" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:12.065" endtime="20210331 16:13:12.066"/>
+<status status="PASS" starttime="20210913 22:34:13.261" endtime="20210913 22:34:13.262"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:12.052" endtime="20210331 16:13:12.066"/>
+<status status="PASS" starttime="20210913 22:34:13.250" endtime="20210913 22:34:13.262"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:12.051" endtime="20210331 16:13:12.066"/>
+<status status="PASS" starttime="20210913 22:34:13.250" endtime="20210913 22:34:13.262"/>
 </kw>
 <kw name="Sleep" library="BuiltIn">
 <arg>1sec</arg>
 <doc>Pauses the test executed for the given time.</doc>
-<msg timestamp="20210331 16:13:13.068" level="INFO">Slept 1 second</msg>
-<status status="PASS" starttime="20210331 16:13:12.066" endtime="20210331 16:13:13.068"/>
+<msg timestamp="20210913 22:34:14.262" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20210913 22:34:13.262" endtime="20210913 22:34:14.263"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:12.044" endtime="20210331 16:13:13.068"/>
+<status status="PASS" starttime="20210913 22:34:13.245" endtime="20210913 22:34:14.263"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:01.980" endtime="20210331 16:13:13.069"/>
+<status status="PASS" starttime="20210913 22:34:03.190" endtime="20210913 22:34:14.263"/>
 </kw>
 <test id="s1-s1-t1" name="Verify Topics">
 <kw name="Create Consumer" library="ConfluentKafkaLibrary">
 <var>${group_id}</var>
 <arg>auto_offset_reset=earliest</arg>
 <doc>Create Kafka Consumer and returns its `group_id` as string.</doc>
-<msg timestamp="20210331 16:13:13.072" level="INFO">${group_id} = 1aca71e5-e90a-4285-934b-905b8bd76f39</msg>
-<status status="PASS" starttime="20210331 16:13:13.071" endtime="20210331 16:13:13.072"/>
+<msg timestamp="20210913 22:34:14.266" level="INFO">${group_id} = a062e974-277f-4878-8593-1cfff7a906c1</msg>
+<status status="PASS" starttime="20210913 22:34:14.264" endtime="20210913 22:34:14.266"/>
 </kw>
 <kw name="List Topics" library="ConfluentKafkaLibrary">
 <var>${topics}</var>
@@ -219,36 +219,36 @@ This is a convenience method that calls poll() until len() is zero or the option
 - ``topic`` (str):  If specified, only request info about this topic, else returnfor all topics in cluster.
 Default: `None`.
 - ``group_id`` (str): *required* id of the created consumer or producer.</doc>
-<msg timestamp="20210331 16:13:13.082" level="INFO">${topics} = {'__confluent.support.metrics': TopicMetadata(__confluent.support.metrics, 1 partitions), '_schemas': TopicMetadata(_schemas, 1 partitions), 'test': TopicMetadata(test, 1 partitions), '__consumer_offs...</msg>
-<status status="PASS" starttime="20210331 16:13:13.072" endtime="20210331 16:13:13.082"/>
+<msg timestamp="20210913 22:34:14.274" level="INFO">${topics} = {'__confluent.support.metrics': TopicMetadata(__confluent.support.metrics, 1 partitions), '_schemas': TopicMetadata(_schemas, 1 partitions), 'test': TopicMetadata(test, 1 partitions), '__consumer_offs...</msg>
+<status status="PASS" starttime="20210913 22:34:14.267" endtime="20210913 22:34:14.274"/>
 </kw>
 <kw name="Dictionary Should Contain Key" library="Collections">
 <arg>${topics}</arg>
 <arg>${TEST_TOPIC}</arg>
 <doc>Fails if ``key`` is not found from ``dictionary``.</doc>
-<status status="PASS" starttime="20210331 16:13:13.082" endtime="20210331 16:13:13.083"/>
+<status status="PASS" starttime="20210913 22:34:14.274" endtime="20210913 22:34:14.274"/>
 </kw>
 <kw name="Close Consumer" library="ConfluentKafkaLibrary" type="TEARDOWN">
 <arg>${group_id}</arg>
 <doc>Close down and terminate the Kafka Consumer.</doc>
-<status status="PASS" starttime="20210331 16:13:13.083" endtime="20210331 16:13:13.092"/>
+<status status="PASS" starttime="20210913 22:34:14.274" endtime="20210913 22:34:14.275"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:13.069" endtime="20210331 16:13:13.092"/>
+<status status="PASS" starttime="20210913 22:34:14.263" endtime="20210913 22:34:14.275"/>
 </test>
 <test id="s1-s1-t2" name="Basic Consumer">
 <kw name="Create Consumer" library="ConfluentKafkaLibrary">
 <var>${group_id}</var>
 <arg>auto_offset_reset=earliest</arg>
 <doc>Create Kafka Consumer and returns its `group_id` as string.</doc>
-<msg timestamp="20210331 16:13:13.096" level="INFO">${group_id} = 6b39b5b9-2565-456c-9744-ce444f1e0931</msg>
-<status status="PASS" starttime="20210331 16:13:13.094" endtime="20210331 16:13:13.096"/>
+<msg timestamp="20210913 22:34:14.279" level="INFO">${group_id} = fd647852-d13c-4ef3-bcf8-d706b0d3aa4c</msg>
+<status status="PASS" starttime="20210913 22:34:14.277" endtime="20210913 22:34:14.279"/>
 </kw>
 <kw name="Subscribe Topic" library="ConfluentKafkaLibrary">
 <arg>group_id=${group_id}</arg>
 <arg>topics=${TEST_TOPIC}</arg>
 <doc>Subscribe to a list of topics, or a topic regex pattern.
    https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Consumer.subscribe</doc>
-<status status="PASS" starttime="20210331 16:13:13.096" endtime="20210331 16:13:13.097"/>
+<status status="PASS" starttime="20210913 22:34:14.279" endtime="20210913 22:34:14.280"/>
 </kw>
 <kw name="Poll" library="ConfluentKafkaLibrary">
 <var>${messages}</var>
@@ -257,8 +257,8 @@ Default: `None`.
 <arg>decode_format=utf8</arg>
 <doc>Fetch and return messages from assigned topics / partitions as list.
 - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.</doc>
-<msg timestamp="20210331 16:13:13.248" level="INFO">${messages} = ['Hello', 'World', "{'test': 1}"]</msg>
-<status status="PASS" starttime="20210331 16:13:13.097" endtime="20210331 16:13:13.248"/>
+<msg timestamp="20210913 22:34:14.414" level="INFO">${messages} = ['Hello', 'World', "{'test': 1}"]</msg>
+<status status="PASS" starttime="20210913 22:34:14.280" endtime="20210913 22:34:14.414"/>
 </kw>
 <kw name="Create List" library="BuiltIn">
 <var>${data}</var>
@@ -266,44 +266,44 @@ Default: `None`.
 <arg>World</arg>
 <arg>{'test': 1}</arg>
 <doc>Returns a list containing given items.</doc>
-<msg timestamp="20210331 16:13:13.249" level="INFO">${data} = ['Hello', 'World', "{'test': 1}"]</msg>
-<status status="PASS" starttime="20210331 16:13:13.248" endtime="20210331 16:13:13.249"/>
+<msg timestamp="20210913 22:34:14.414" level="INFO">${data} = ['Hello', 'World', "{'test': 1}"]</msg>
+<status status="PASS" starttime="20210913 22:34:14.414" endtime="20210913 22:34:14.414"/>
 </kw>
 <kw name="Lists Should Be Equal" library="Collections">
 <arg>${messages}</arg>
 <arg>${data}</arg>
 <doc>Fails if given lists are unequal.</doc>
-<status status="PASS" starttime="20210331 16:13:13.249" endtime="20210331 16:13:13.249"/>
+<status status="PASS" starttime="20210913 22:34:14.415" endtime="20210913 22:34:14.415"/>
 </kw>
 <kw name="Basic Teardown" type="TEARDOWN">
 <arg>${group_id}</arg>
 <kw name="Unsubscribe" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Unsubscribe of topics.</doc>
-<status status="PASS" starttime="20210331 16:13:13.250" endtime="20210331 16:13:13.250"/>
+<status status="PASS" starttime="20210913 22:34:14.416" endtime="20210913 22:34:14.416"/>
 </kw>
 <kw name="Close Consumer" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Close down and terminate the Kafka Consumer.</doc>
-<status status="PASS" starttime="20210331 16:13:13.250" endtime="20210331 16:13:13.275"/>
+<status status="PASS" starttime="20210913 22:34:14.416" endtime="20210913 22:34:14.437"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:13.249" endtime="20210331 16:13:13.276"/>
+<status status="PASS" starttime="20210913 22:34:14.415" endtime="20210913 22:34:14.437"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:13.093" endtime="20210331 16:13:13.276"/>
+<status status="PASS" starttime="20210913 22:34:14.276" endtime="20210913 22:34:14.437"/>
 </test>
 <test id="s1-s1-t3" name="Produce Without Value">
 <kw name="Set Variable" library="BuiltIn">
 <var>${topic_name}</var>
 <arg>topicwithoutvaluee</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20210331 16:13:13.278" level="INFO">${topic_name} = topicwithoutvaluee</msg>
-<status status="PASS" starttime="20210331 16:13:13.277" endtime="20210331 16:13:13.278"/>
+<msg timestamp="20210913 22:34:14.439" level="INFO">${topic_name} = topicwithoutvaluee</msg>
+<status status="PASS" starttime="20210913 22:34:14.438" endtime="20210913 22:34:14.439"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
 <arg>topic=${topic_name}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:13.278" endtime="20210331 16:13:13.279"/>
+<status status="PASS" starttime="20210913 22:34:14.439" endtime="20210913 22:34:14.439"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -319,26 +319,26 @@ Default: `None`.
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:13.381" level="INFO">${count} = 1</msg>
-<status status="PASS" starttime="20210331 16:13:13.280" endtime="20210331 16:13:13.382"/>
+<msg timestamp="20210913 22:34:14.542" level="INFO">${count} = 1</msg>
+<status status="PASS" starttime="20210913 22:34:14.440" endtime="20210913 22:34:14.542"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:13.382" level="INFO">Reaming messages to be delivered: 1</msg>
-<status status="PASS" starttime="20210331 16:13:13.382" endtime="20210331 16:13:13.382"/>
+<msg timestamp="20210913 22:34:14.543" level="INFO">Reaming messages to be delivered: 1</msg>
+<status status="PASS" starttime="20210913 22:34:14.542" endtime="20210913 22:34:14.543"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:13.383" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:14.543" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<msg timestamp="20210331 16:13:13.383" level="FAIL">1 != 0</msg>
-<status status="FAIL" starttime="20210331 16:13:13.382" endtime="20210331 16:13:13.383"/>
+<msg timestamp="20210913 22:34:14.544" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20210913 22:34:14.543" endtime="20210913 22:34:14.544"/>
 </kw>
-<status status="FAIL" starttime="20210331 16:13:13.279" endtime="20210331 16:13:13.383"/>
+<status status="FAIL" starttime="20210913 22:34:14.440" endtime="20210913 22:34:14.544"/>
 </kw>
 <kw name="All Messages Are Delivered">
 <arg>${PRODUCER_ID}</arg>
@@ -348,26 +348,26 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:13.987" level="INFO">${count} = 1</msg>
-<status status="PASS" starttime="20210331 16:13:13.884" endtime="20210331 16:13:13.987"/>
+<msg timestamp="20210913 22:34:15.147" level="INFO">${count} = 1</msg>
+<status status="PASS" starttime="20210913 22:34:15.045" endtime="20210913 22:34:15.147"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:13.988" level="INFO">Reaming messages to be delivered: 1</msg>
-<status status="PASS" starttime="20210331 16:13:13.987" endtime="20210331 16:13:13.988"/>
+<msg timestamp="20210913 22:34:15.148" level="INFO">Reaming messages to be delivered: 1</msg>
+<status status="PASS" starttime="20210913 22:34:15.147" endtime="20210913 22:34:15.148"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:13.989" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:15.148" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<msg timestamp="20210331 16:13:13.989" level="FAIL">1 != 0</msg>
-<status status="FAIL" starttime="20210331 16:13:13.988" endtime="20210331 16:13:13.989"/>
+<msg timestamp="20210913 22:34:15.149" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20210913 22:34:15.148" endtime="20210913 22:34:15.149"/>
 </kw>
-<status status="FAIL" starttime="20210331 16:13:13.884" endtime="20210331 16:13:13.990"/>
+<status status="FAIL" starttime="20210913 22:34:15.045" endtime="20210913 22:34:15.149"/>
 </kw>
 <kw name="All Messages Are Delivered">
 <arg>${PRODUCER_ID}</arg>
@@ -377,26 +377,26 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:14.592" level="INFO">${count} = 1</msg>
-<status status="PASS" starttime="20210331 16:13:14.491" endtime="20210331 16:13:14.593"/>
+<msg timestamp="20210913 22:34:15.752" level="INFO">${count} = 1</msg>
+<status status="PASS" starttime="20210913 22:34:15.650" endtime="20210913 22:34:15.752"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:14.593" level="INFO">Reaming messages to be delivered: 1</msg>
-<status status="PASS" starttime="20210331 16:13:14.593" endtime="20210331 16:13:14.593"/>
+<msg timestamp="20210913 22:34:15.753" level="INFO">Reaming messages to be delivered: 1</msg>
+<status status="PASS" starttime="20210913 22:34:15.752" endtime="20210913 22:34:15.753"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:14.594" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:15.753" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<msg timestamp="20210331 16:13:14.594" level="FAIL">1 != 0</msg>
-<status status="FAIL" starttime="20210331 16:13:14.593" endtime="20210331 16:13:14.594"/>
+<msg timestamp="20210913 22:34:15.754" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20210913 22:34:15.753" endtime="20210913 22:34:15.754"/>
 </kw>
-<status status="FAIL" starttime="20210331 16:13:14.490" endtime="20210331 16:13:14.594"/>
+<status status="FAIL" starttime="20210913 22:34:15.650" endtime="20210913 22:34:15.754"/>
 </kw>
 <kw name="All Messages Are Delivered">
 <arg>${PRODUCER_ID}</arg>
@@ -406,41 +406,41 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:15.096" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:15.095" endtime="20210331 16:13:15.096"/>
+<msg timestamp="20210913 22:34:16.256" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:16.255" endtime="20210913 22:34:16.256"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:15.096" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:13:15.096" endtime="20210331 16:13:15.096"/>
+<msg timestamp="20210913 22:34:16.256" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:34:16.256" endtime="20210913 22:34:16.256"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:15.097" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:16.257" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:15.096" endtime="20210331 16:13:15.097"/>
+<status status="PASS" starttime="20210913 22:34:16.256" endtime="20210913 22:34:16.257"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:15.094" endtime="20210331 16:13:15.097"/>
+<status status="PASS" starttime="20210913 22:34:16.255" endtime="20210913 22:34:16.257"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:13.279" endtime="20210331 16:13:15.097"/>
+<status status="PASS" starttime="20210913 22:34:14.439" endtime="20210913 22:34:16.257"/>
 </kw>
 <kw name="Create Consumer" library="ConfluentKafkaLibrary">
 <var>${group_id}</var>
 <arg>auto_offset_reset=earliest</arg>
 <doc>Create Kafka Consumer and returns its `group_id` as string.</doc>
-<msg timestamp="20210331 16:13:15.098" level="INFO">${group_id} = fe5cb486-d036-4ef9-80a3-947c60035bf7</msg>
-<status status="PASS" starttime="20210331 16:13:15.097" endtime="20210331 16:13:15.098"/>
+<msg timestamp="20210913 22:34:16.258" level="INFO">${group_id} = 3e3660c3-3127-49e0-b5f4-e842fb3d10ca</msg>
+<status status="PASS" starttime="20210913 22:34:16.257" endtime="20210913 22:34:16.258"/>
 </kw>
 <kw name="Subscribe Topic" library="ConfluentKafkaLibrary">
 <arg>group_id=${group_id}</arg>
 <arg>topics=${topic_name}</arg>
 <doc>Subscribe to a list of topics, or a topic regex pattern.
    https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Consumer.subscribe</doc>
-<status status="PASS" starttime="20210331 16:13:15.098" endtime="20210331 16:13:15.098"/>
+<status status="PASS" starttime="20210913 22:34:16.258" endtime="20210913 22:34:16.258"/>
 </kw>
 <kw name="Poll" library="ConfluentKafkaLibrary">
 <var>${messages}</var>
@@ -448,26 +448,26 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>max_records=1</arg>
 <doc>Fetch and return messages from assigned topics / partitions as list.
 - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.</doc>
-<msg timestamp="20210331 16:13:15.224" level="INFO">${messages} = [None]</msg>
-<status status="PASS" starttime="20210331 16:13:15.099" endtime="20210331 16:13:15.224"/>
+<msg timestamp="20210913 22:34:16.388" level="INFO">${messages} = [None]</msg>
+<status status="PASS" starttime="20210913 22:34:16.259" endtime="20210913 22:34:16.388"/>
 </kw>
 <kw name="Should Be Equal As Strings" library="BuiltIn">
 <arg>${messages}</arg>
 <arg>[None]</arg>
 <doc>Fails if objects are unequal after converting them to strings.</doc>
-<msg timestamp="20210331 16:13:15.225" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:16.389" level="INFO">Argument types are:
 &lt;class 'list'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:15.224" endtime="20210331 16:13:15.225"/>
+<status status="PASS" starttime="20210913 22:34:16.389" endtime="20210913 22:34:16.389"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:13.276" endtime="20210331 16:13:15.225"/>
+<status status="PASS" starttime="20210913 22:34:14.438" endtime="20210913 22:34:16.389"/>
 </test>
 <test id="s1-s1-t4" name="Verify Position">
 <kw name="Create Consumer" library="ConfluentKafkaLibrary">
 <var>${group_id}</var>
 <doc>Create Kafka Consumer and returns its `group_id` as string.</doc>
-<msg timestamp="20210331 16:13:15.227" level="INFO">${group_id} = d01e66e3-648f-4201-ae41-de4ba4c6c8c2</msg>
-<status status="PASS" starttime="20210331 16:13:15.226" endtime="20210331 16:13:15.227"/>
+<msg timestamp="20210913 22:34:16.391" level="INFO">${group_id} = 2e08ee47-0919-4305-8045-a4a89466c4a9</msg>
+<status status="PASS" starttime="20210913 22:34:16.390" endtime="20210913 22:34:16.391"/>
 </kw>
 <kw name="Create Topic Partition" library="ConfluentKafkaLibrary">
 <var>${tp}</var>
@@ -476,35 +476,35 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>${OFFSET_END}</arg>
 <doc>Returns TopicPartiton object based on
 https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition</doc>
-<msg timestamp="20210331 16:13:15.229" level="INFO">${tp} = TopicPartition{topic=test,partition=0,offset=-1,error=None}</msg>
-<status status="PASS" starttime="20210331 16:13:15.228" endtime="20210331 16:13:15.229"/>
+<msg timestamp="20210913 22:34:16.392" level="INFO">${tp} = TopicPartition{topic=test,partition=0,offset=-1,error=None}</msg>
+<status status="PASS" starttime="20210913 22:34:16.391" endtime="20210913 22:34:16.392"/>
 </kw>
 <kw name="Assign To Topic Partition" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <arg>${tp}</arg>
 <doc>Assign a list of TopicPartitions.</doc>
-<status status="PASS" starttime="20210331 16:13:15.229" endtime="20210331 16:13:15.239"/>
+<status status="PASS" starttime="20210913 22:34:16.392" endtime="20210913 22:34:16.392"/>
 </kw>
 <kw name="Sleep" library="BuiltIn">
 <arg>5sec</arg>
 <doc>Pauses the test executed for the given time.</doc>
-<msg timestamp="20210331 16:13:20.240" level="INFO">Slept 5 seconds</msg>
-<status status="PASS" starttime="20210331 16:13:15.240" endtime="20210331 16:13:20.240"/>
+<msg timestamp="20210913 22:34:21.393" level="INFO">Slept 5 seconds</msg>
+<status status="PASS" starttime="20210913 22:34:16.392" endtime="20210913 22:34:21.393"/>
 </kw>
 <kw name="Get Position" library="ConfluentKafkaLibrary">
 <var>${position}</var>
 <arg>group_id=${group_id}</arg>
 <arg>topic_partitions=${tp}</arg>
 <doc>Retrieve current positions (offsets) for the list of partitions.</doc>
-<msg timestamp="20210331 16:13:20.241" level="INFO">${position} = [TopicPartition{topic=test,partition=0,offset=-1001,error=None}]</msg>
-<status status="PASS" starttime="20210331 16:13:20.241" endtime="20210331 16:13:20.241"/>
+<msg timestamp="20210913 22:34:21.394" level="INFO">${position} = [TopicPartition{topic=test,partition=0,offset=-1001,error=None}]</msg>
+<status status="PASS" starttime="20210913 22:34:21.393" endtime="20210913 22:34:21.394"/>
 </kw>
 <kw name="Set Variable" library="BuiltIn">
 <var>${position_before}</var>
 <arg>${position[0].offset}</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20210331 16:13:20.242" level="INFO">${position_before} = -1001</msg>
-<status status="PASS" starttime="20210331 16:13:20.241" endtime="20210331 16:13:20.242"/>
+<msg timestamp="20210913 22:34:21.395" level="INFO">${position_before} = -1001</msg>
+<status status="PASS" starttime="20210913 22:34:21.394" endtime="20210913 22:34:21.395"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -512,7 +512,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value=Dummy</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:20.243" endtime="20210331 16:13:20.243"/>
+<status status="PASS" starttime="20210913 22:34:21.395" endtime="20210913 22:34:21.396"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -528,48 +528,48 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:20.254" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:20.244" endtime="20210331 16:13:20.254"/>
+<msg timestamp="20210913 22:34:21.404" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:21.397" endtime="20210913 22:34:21.404"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:20.255" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:13:20.254" endtime="20210331 16:13:20.255"/>
+<msg timestamp="20210913 22:34:21.405" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:34:21.404" endtime="20210913 22:34:21.405"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:20.256" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:21.405" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:20.255" endtime="20210331 16:13:20.256"/>
+<status status="PASS" starttime="20210913 22:34:21.405" endtime="20210913 22:34:21.405"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:20.244" endtime="20210331 16:13:20.256"/>
+<status status="PASS" starttime="20210913 22:34:21.396" endtime="20210913 22:34:21.406"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:20.243" endtime="20210331 16:13:20.256"/>
+<status status="PASS" starttime="20210913 22:34:21.396" endtime="20210913 22:34:21.406"/>
 </kw>
 <kw name="Get Position" library="ConfluentKafkaLibrary">
 <var>${position}</var>
 <arg>group_id=${group_id}</arg>
 <arg>topic_partitions=${tp}</arg>
 <doc>Retrieve current positions (offsets) for the list of partitions.</doc>
-<msg timestamp="20210331 16:13:20.257" level="INFO">${position} = [TopicPartition{topic=test,partition=0,offset=-1001,error=None}]</msg>
-<status status="PASS" starttime="20210331 16:13:20.257" endtime="20210331 16:13:20.257"/>
+<msg timestamp="20210913 22:34:21.406" level="INFO">${position} = [TopicPartition{topic=test,partition=0,offset=-1001,error=None}]</msg>
+<status status="PASS" starttime="20210913 22:34:21.406" endtime="20210913 22:34:21.406"/>
 </kw>
 <kw name="Set Variable" library="BuiltIn">
 <var>${position_after_produce}</var>
 <arg>${position[0].offset}</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20210331 16:13:20.259" level="INFO">${position_after_produce} = -1001</msg>
-<status status="PASS" starttime="20210331 16:13:20.258" endtime="20210331 16:13:20.259"/>
+<msg timestamp="20210913 22:34:21.407" level="INFO">${position_after_produce} = -1001</msg>
+<status status="PASS" starttime="20210913 22:34:21.407" endtime="20210913 22:34:21.407"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${position_before}</arg>
 <arg>${position_after_produce}</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<status status="PASS" starttime="20210331 16:13:20.260" endtime="20210331 16:13:20.260"/>
+<status status="PASS" starttime="20210913 22:34:21.407" endtime="20210913 22:34:21.408"/>
 </kw>
 <kw name="Poll" library="ConfluentKafkaLibrary">
 <var>${messages}</var>
@@ -578,29 +578,29 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>decode_format=utf8</arg>
 <doc>Fetch and return messages from assigned topics / partitions as list.
 - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.</doc>
-<msg timestamp="20210331 16:13:20.261" level="INFO">${messages} = ['Dummy']</msg>
-<status status="PASS" starttime="20210331 16:13:20.261" endtime="20210331 16:13:20.262"/>
+<msg timestamp="20210913 22:34:21.408" level="INFO">${messages} = ['Dummy']</msg>
+<status status="PASS" starttime="20210913 22:34:21.408" endtime="20210913 22:34:21.408"/>
 </kw>
 <kw name="Get Position" library="ConfluentKafkaLibrary">
 <var>${position}</var>
 <arg>group_id=${group_id}</arg>
 <arg>topic_partitions=${tp}</arg>
 <doc>Retrieve current positions (offsets) for the list of partitions.</doc>
-<msg timestamp="20210331 16:13:20.263" level="INFO">${position} = [TopicPartition{topic=test,partition=0,offset=7,error=None}]</msg>
-<status status="PASS" starttime="20210331 16:13:20.262" endtime="20210331 16:13:20.263"/>
+<msg timestamp="20210913 22:34:21.409" level="INFO">${position} = [TopicPartition{topic=test,partition=0,offset=7,error=None}]</msg>
+<status status="PASS" starttime="20210913 22:34:21.409" endtime="20210913 22:34:21.410"/>
 </kw>
 <kw name="Set Variable" library="BuiltIn">
 <var>${position_after_poll_1}</var>
 <arg>${position[0].offset}</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20210331 16:13:20.265" level="INFO">${position_after_poll_1} = 7</msg>
-<status status="PASS" starttime="20210331 16:13:20.263" endtime="20210331 16:13:20.265"/>
+<msg timestamp="20210913 22:34:21.410" level="INFO">${position_after_poll_1} = 7</msg>
+<status status="PASS" starttime="20210913 22:34:21.410" endtime="20210913 22:34:21.410"/>
 </kw>
 <kw name="Should Not Be Equal As Integers" library="BuiltIn">
 <arg>${position_after_poll_1}</arg>
 <arg>${position_after_produce}</arg>
 <doc>Fails if objects are equal after converting them to integers.</doc>
-<status status="PASS" starttime="20210331 16:13:20.265" endtime="20210331 16:13:20.266"/>
+<status status="PASS" starttime="20210913 22:34:21.411" endtime="20210913 22:34:21.411"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -608,7 +608,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value=Dummy</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:20.266" endtime="20210331 16:13:20.267"/>
+<status status="PASS" starttime="20210913 22:34:21.411" endtime="20210913 22:34:21.412"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -624,27 +624,27 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:20.278" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:20.268" endtime="20210331 16:13:20.278"/>
+<msg timestamp="20210913 22:34:21.422" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:21.413" endtime="20210913 22:34:21.422"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:20.279" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:13:20.278" endtime="20210331 16:13:20.279"/>
+<msg timestamp="20210913 22:34:21.422" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:34:21.422" endtime="20210913 22:34:21.422"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:20.280" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:21.423" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:20.279" endtime="20210331 16:13:20.280"/>
+<status status="PASS" starttime="20210913 22:34:21.423" endtime="20210913 22:34:21.423"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:20.268" endtime="20210331 16:13:20.280"/>
+<status status="PASS" starttime="20210913 22:34:21.412" endtime="20210913 22:34:21.423"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:20.267" endtime="20210331 16:13:20.280"/>
+<status status="PASS" starttime="20210913 22:34:21.412" endtime="20210913 22:34:21.423"/>
 </kw>
 <kw name="Poll" library="ConfluentKafkaLibrary">
 <var>${messages}</var>
@@ -653,52 +653,52 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>decode_format=utf8</arg>
 <doc>Fetch and return messages from assigned topics / partitions as list.
 - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.</doc>
-<msg timestamp="20210331 16:13:20.281" level="INFO">${messages} = ['Dummy']</msg>
-<status status="PASS" starttime="20210331 16:13:20.280" endtime="20210331 16:13:20.281"/>
+<msg timestamp="20210913 22:34:21.424" level="INFO">${messages} = ['Dummy']</msg>
+<status status="PASS" starttime="20210913 22:34:21.423" endtime="20210913 22:34:21.424"/>
 </kw>
 <kw name="Get Position" library="ConfluentKafkaLibrary">
 <var>${position}</var>
 <arg>group_id=${group_id}</arg>
 <arg>topic_partitions=${tp}</arg>
 <doc>Retrieve current positions (offsets) for the list of partitions.</doc>
-<msg timestamp="20210331 16:13:20.281" level="INFO">${position} = [TopicPartition{topic=test,partition=0,offset=8,error=None}]</msg>
-<status status="PASS" starttime="20210331 16:13:20.281" endtime="20210331 16:13:20.281"/>
+<msg timestamp="20210913 22:34:21.424" level="INFO">${position} = [TopicPartition{topic=test,partition=0,offset=8,error=None}]</msg>
+<status status="PASS" starttime="20210913 22:34:21.424" endtime="20210913 22:34:21.424"/>
 </kw>
 <kw name="Set Variable" library="BuiltIn">
 <var>${position_after_poll_2}</var>
 <arg>${position[0].offset}</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20210331 16:13:20.282" level="INFO">${position_after_poll_2} = 8</msg>
-<status status="PASS" starttime="20210331 16:13:20.281" endtime="20210331 16:13:20.282"/>
+<msg timestamp="20210913 22:34:21.425" level="INFO">${position_after_poll_2} = 8</msg>
+<status status="PASS" starttime="20210913 22:34:21.424" endtime="20210913 22:34:21.425"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${position_after_poll_1 + 1}</arg>
 <arg>${position_after_poll_2}</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<status status="PASS" starttime="20210331 16:13:20.283" endtime="20210331 16:13:20.284"/>
+<status status="PASS" starttime="20210913 22:34:21.425" endtime="20210913 22:34:21.426"/>
 </kw>
 <kw name="Basic Teardown" type="TEARDOWN">
 <arg>${group_id}</arg>
 <kw name="Unsubscribe" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Unsubscribe of topics.</doc>
-<status status="PASS" starttime="20210331 16:13:20.284" endtime="20210331 16:13:20.285"/>
+<status status="PASS" starttime="20210913 22:34:21.427" endtime="20210913 22:34:21.427"/>
 </kw>
 <kw name="Close Consumer" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Close down and terminate the Kafka Consumer.</doc>
-<status status="PASS" starttime="20210331 16:13:20.285" endtime="20210331 16:13:20.291"/>
+<status status="PASS" starttime="20210913 22:34:21.427" endtime="20210913 22:34:21.431"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:20.284" endtime="20210331 16:13:20.291"/>
+<status status="PASS" starttime="20210913 22:34:21.426" endtime="20210913 22:34:21.431"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:15.225" endtime="20210331 16:13:20.291"/>
+<status status="PASS" starttime="20210913 22:34:16.390" endtime="20210913 22:34:21.431"/>
 </test>
 <test id="s1-s1-t5" name="Consumer With Assignment To Last Message After Get Of Watermark Offsets">
 <kw name="Create Consumer" library="ConfluentKafkaLibrary">
 <var>${group_id}</var>
 <doc>Create Kafka Consumer and returns its `group_id` as string.</doc>
-<msg timestamp="20210331 16:13:20.294" level="INFO">${group_id} = 9373ff86-f6f8-4e50-afc0-b5568366de71</msg>
-<status status="PASS" starttime="20210331 16:13:20.293" endtime="20210331 16:13:20.294"/>
+<msg timestamp="20210913 22:34:21.434" level="INFO">${group_id} = 188cb6ff-a99b-4d93-994b-b84755d05ad6</msg>
+<status status="PASS" starttime="20210913 22:34:21.432" endtime="20210913 22:34:21.434"/>
 </kw>
 <kw name="Create Topic Partition" library="ConfluentKafkaLibrary">
 <var>${tp}</var>
@@ -706,16 +706,16 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>${P_ID}</arg>
 <doc>Returns TopicPartiton object based on
 https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition</doc>
-<msg timestamp="20210331 16:13:20.294" level="INFO">${tp} = TopicPartition{topic=test,partition=0,offset=-1001,error=None}</msg>
-<status status="PASS" starttime="20210331 16:13:20.294" endtime="20210331 16:13:20.294"/>
+<msg timestamp="20210913 22:34:21.434" level="INFO">${tp} = TopicPartition{topic=test,partition=0,offset=-1001,error=None}</msg>
+<status status="PASS" starttime="20210913 22:34:21.434" endtime="20210913 22:34:21.435"/>
 </kw>
 <kw name="Get Watermark Offsets" library="ConfluentKafkaLibrary">
 <var>${offset}</var>
 <arg>${group_id}</arg>
 <arg>${tp}</arg>
 <doc>Retrieve low and high offsets for partition.</doc>
-<msg timestamp="20210331 16:13:20.802" level="INFO">${offset} = (0, 8)</msg>
-<status status="PASS" starttime="20210331 16:13:20.295" endtime="20210331 16:13:20.802"/>
+<msg timestamp="20210913 22:34:21.942" level="INFO">${offset} = (0, 8)</msg>
+<status status="PASS" starttime="20210913 22:34:21.435" endtime="20210913 22:34:21.942"/>
 </kw>
 <kw name="Create Topic Partition" library="ConfluentKafkaLibrary">
 <var>${tp}</var>
@@ -724,14 +724,14 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>${offset[1]}</arg>
 <doc>Returns TopicPartiton object based on
 https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition</doc>
-<msg timestamp="20210331 16:13:20.804" level="INFO">${tp} = TopicPartition{topic=test,partition=0,offset=8,error=None}</msg>
-<status status="PASS" starttime="20210331 16:13:20.802" endtime="20210331 16:13:20.804"/>
+<msg timestamp="20210913 22:34:21.944" level="INFO">${tp} = TopicPartition{topic=test,partition=0,offset=8,error=None}</msg>
+<status status="PASS" starttime="20210913 22:34:21.942" endtime="20210913 22:34:21.944"/>
 </kw>
 <kw name="Assign To Topic Partition" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <arg>${tp}</arg>
 <doc>Assign a list of TopicPartitions.</doc>
-<status status="PASS" starttime="20210331 16:13:20.804" endtime="20210331 16:13:20.804"/>
+<status status="PASS" starttime="20210913 22:34:21.944" endtime="20210913 22:34:21.944"/>
 </kw>
 <kw name="Prepare Data">
 <kw name="Produce" library="ConfluentKafkaLibrary">
@@ -740,7 +740,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value=Hello</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:20.805" endtime="20210331 16:13:20.806"/>
+<status status="PASS" starttime="20210913 22:34:21.945" endtime="20210913 22:34:21.946"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -748,7 +748,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value=World</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:20.806" endtime="20210331 16:13:20.806"/>
+<status status="PASS" starttime="20210913 22:34:21.946" endtime="20210913 22:34:21.947"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -756,7 +756,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value={'test': 1}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:20.807" endtime="20210331 16:13:20.807"/>
+<status status="PASS" starttime="20210913 22:34:21.947" endtime="20210913 22:34:21.948"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -764,7 +764,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value={'test': 2}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:20.807" endtime="20210331 16:13:20.808"/>
+<status status="PASS" starttime="20210913 22:34:21.948" endtime="20210913 22:34:21.949"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -772,7 +772,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value={'test': 3}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:20.808" endtime="20210331 16:13:20.809"/>
+<status status="PASS" starttime="20210913 22:34:21.949" endtime="20210913 22:34:21.949"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -780,7 +780,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value={'test': 4}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:20.809" endtime="20210331 16:13:20.810"/>
+<status status="PASS" starttime="20210913 22:34:21.950" endtime="20210913 22:34:21.950"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -796,35 +796,35 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:20.814" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:20.811" endtime="20210331 16:13:20.814"/>
+<msg timestamp="20210913 22:34:21.961" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:21.951" endtime="20210913 22:34:21.961"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:20.815" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:13:20.814" endtime="20210331 16:13:20.815"/>
+<msg timestamp="20210913 22:34:21.962" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:34:21.961" endtime="20210913 22:34:21.962"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:20.816" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:21.962" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:20.815" endtime="20210331 16:13:20.816"/>
+<status status="PASS" starttime="20210913 22:34:21.962" endtime="20210913 22:34:21.962"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:20.810" endtime="20210331 16:13:20.816"/>
+<status status="PASS" starttime="20210913 22:34:21.951" endtime="20210913 22:34:21.962"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:20.810" endtime="20210331 16:13:20.816"/>
+<status status="PASS" starttime="20210913 22:34:21.950" endtime="20210913 22:34:21.962"/>
 </kw>
 <kw name="Sleep" library="BuiltIn">
 <arg>1sec</arg>
 <doc>Pauses the test executed for the given time.</doc>
-<msg timestamp="20210331 16:13:21.817" level="INFO">Slept 1 second</msg>
-<status status="PASS" starttime="20210331 16:13:20.816" endtime="20210331 16:13:21.817"/>
+<msg timestamp="20210913 22:34:22.963" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20210913 22:34:21.963" endtime="20210913 22:34:22.963"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:20.805" endtime="20210331 16:13:21.818"/>
+<status status="PASS" starttime="20210913 22:34:21.945" endtime="20210913 22:34:22.963"/>
 </kw>
 <kw name="Poll" library="ConfluentKafkaLibrary">
 <var>${messages}</var>
@@ -833,37 +833,37 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>decode_format=utf8</arg>
 <doc>Fetch and return messages from assigned topics / partitions as list.
 - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.</doc>
-<msg timestamp="20210331 16:13:21.819" level="INFO">${messages} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
-<status status="PASS" starttime="20210331 16:13:21.818" endtime="20210331 16:13:21.819"/>
+<msg timestamp="20210913 22:34:22.964" level="INFO">${messages} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
+<status status="PASS" starttime="20210913 22:34:22.964" endtime="20210913 22:34:22.964"/>
 </kw>
 <kw name="Lists Should Be Equal" library="Collections">
 <arg>${TEST_DATA}</arg>
 <arg>${messages}</arg>
 <doc>Fails if given lists are unequal.</doc>
-<status status="PASS" starttime="20210331 16:13:21.819" endtime="20210331 16:13:21.819"/>
+<status status="PASS" starttime="20210913 22:34:22.964" endtime="20210913 22:34:22.965"/>
 </kw>
 <kw name="Basic Teardown" type="TEARDOWN">
 <arg>${group_id}</arg>
 <kw name="Unsubscribe" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Unsubscribe of topics.</doc>
-<status status="PASS" starttime="20210331 16:13:21.820" endtime="20210331 16:13:21.821"/>
+<status status="PASS" starttime="20210913 22:34:22.965" endtime="20210913 22:34:22.966"/>
 </kw>
 <kw name="Close Consumer" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Close down and terminate the Kafka Consumer.</doc>
-<status status="PASS" starttime="20210331 16:13:21.821" endtime="20210331 16:13:21.824"/>
+<status status="PASS" starttime="20210913 22:34:22.966" endtime="20210913 22:34:22.970"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:21.820" endtime="20210331 16:13:21.824"/>
+<status status="PASS" starttime="20210913 22:34:22.965" endtime="20210913 22:34:22.971"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:20.292" endtime="20210331 16:13:21.824"/>
+<status status="PASS" starttime="20210913 22:34:21.432" endtime="20210913 22:34:22.971"/>
 </test>
 <test id="s1-s1-t6" name="Consumer With Assignment To OFFSET_END">
 <kw name="Create Consumer" library="ConfluentKafkaLibrary">
 <var>${group_id}</var>
 <doc>Create Kafka Consumer and returns its `group_id` as string.</doc>
-<msg timestamp="20210331 16:13:21.826" level="INFO">${group_id} = 629441d9-66de-468f-af93-3810282b2088</msg>
-<status status="PASS" starttime="20210331 16:13:21.826" endtime="20210331 16:13:21.826"/>
+<msg timestamp="20210913 22:34:22.972" level="INFO">${group_id} = 44877789-7891-4697-8b7d-8f9ab9b6c433</msg>
+<status status="PASS" starttime="20210913 22:34:22.971" endtime="20210913 22:34:22.972"/>
 </kw>
 <kw name="Create Topic Partition" library="ConfluentKafkaLibrary">
 <var>${tp}</var>
@@ -872,20 +872,20 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>${OFFSET_END}</arg>
 <doc>Returns TopicPartiton object based on
 https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition</doc>
-<msg timestamp="20210331 16:13:21.827" level="INFO">${tp} = TopicPartition{topic=test,partition=0,offset=-1,error=None}</msg>
-<status status="PASS" starttime="20210331 16:13:21.827" endtime="20210331 16:13:21.827"/>
+<msg timestamp="20210913 22:34:22.973" level="INFO">${tp} = TopicPartition{topic=test,partition=0,offset=-1,error=None}</msg>
+<status status="PASS" starttime="20210913 22:34:22.972" endtime="20210913 22:34:22.973"/>
 </kw>
 <kw name="Assign To Topic Partition" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <arg>${tp}</arg>
 <doc>Assign a list of TopicPartitions.</doc>
-<status status="PASS" starttime="20210331 16:13:21.827" endtime="20210331 16:13:21.828"/>
+<status status="PASS" starttime="20210913 22:34:22.973" endtime="20210913 22:34:22.973"/>
 </kw>
 <kw name="Sleep" library="BuiltIn">
 <arg>5sec</arg>
 <doc>Pauses the test executed for the given time.</doc>
-<msg timestamp="20210331 16:13:26.829" level="INFO">Slept 5 seconds</msg>
-<status status="PASS" starttime="20210331 16:13:21.828" endtime="20210331 16:13:26.829"/>
+<msg timestamp="20210913 22:34:27.974" level="INFO">Slept 5 seconds</msg>
+<status status="PASS" starttime="20210913 22:34:22.973" endtime="20210913 22:34:27.974"/>
 </kw>
 <kw name="Prepare Data">
 <kw name="Produce" library="ConfluentKafkaLibrary">
@@ -894,7 +894,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value=Hello</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:26.830" endtime="20210331 16:13:26.831"/>
+<status status="PASS" starttime="20210913 22:34:27.975" endtime="20210913 22:34:27.975"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -902,7 +902,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value=World</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:26.831" endtime="20210331 16:13:26.832"/>
+<status status="PASS" starttime="20210913 22:34:27.975" endtime="20210913 22:34:27.976"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -910,7 +910,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value={'test': 1}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:26.832" endtime="20210331 16:13:26.832"/>
+<status status="PASS" starttime="20210913 22:34:27.976" endtime="20210913 22:34:27.977"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -918,7 +918,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value={'test': 2}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:26.832" endtime="20210331 16:13:26.833"/>
+<status status="PASS" starttime="20210913 22:34:27.977" endtime="20210913 22:34:27.977"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -926,7 +926,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value={'test': 3}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:26.833" endtime="20210331 16:13:26.834"/>
+<status status="PASS" starttime="20210913 22:34:27.977" endtime="20210913 22:34:27.978"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -934,7 +934,7 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <arg>value={'test': 4}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:26.834" endtime="20210331 16:13:26.835"/>
+<status status="PASS" starttime="20210913 22:34:27.978" endtime="20210913 22:34:27.979"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -950,35 +950,35 @@ https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:26.839" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:26.837" endtime="20210331 16:13:26.839"/>
+<msg timestamp="20210913 22:34:27.984" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:27.980" endtime="20210913 22:34:27.984"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:26.840" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:13:26.840" endtime="20210331 16:13:26.840"/>
+<msg timestamp="20210913 22:34:27.984" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:34:27.984" endtime="20210913 22:34:27.984"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:26.841" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:27.985" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:26.840" endtime="20210331 16:13:26.841"/>
+<status status="PASS" starttime="20210913 22:34:27.984" endtime="20210913 22:34:27.985"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:26.836" endtime="20210331 16:13:26.841"/>
+<status status="PASS" starttime="20210913 22:34:27.979" endtime="20210913 22:34:27.985"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:26.835" endtime="20210331 16:13:26.841"/>
+<status status="PASS" starttime="20210913 22:34:27.979" endtime="20210913 22:34:27.985"/>
 </kw>
 <kw name="Sleep" library="BuiltIn">
 <arg>1sec</arg>
 <doc>Pauses the test executed for the given time.</doc>
-<msg timestamp="20210331 16:13:27.842" level="INFO">Slept 1 second</msg>
-<status status="PASS" starttime="20210331 16:13:26.842" endtime="20210331 16:13:27.843"/>
+<msg timestamp="20210913 22:34:28.986" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20210913 22:34:27.985" endtime="20210913 22:34:28.986"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:26.829" endtime="20210331 16:13:27.843"/>
+<status status="PASS" starttime="20210913 22:34:27.974" endtime="20210913 22:34:28.986"/>
 </kw>
 <kw name="Poll" library="ConfluentKafkaLibrary">
 <var>${messages}</var>
@@ -989,29 +989,29 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>decode_format=utf8</arg>
 <doc>Fetch and return messages from assigned topics / partitions as list.
 - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.</doc>
-<msg timestamp="20210331 16:13:27.844" level="INFO">${messages} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
-<status status="PASS" starttime="20210331 16:13:27.843" endtime="20210331 16:13:27.845"/>
+<msg timestamp="20210913 22:34:28.987" level="INFO">${messages} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
+<status status="PASS" starttime="20210913 22:34:28.986" endtime="20210913 22:34:28.987"/>
 </kw>
 <kw name="Lists Should Be Equal" library="Collections">
 <arg>${TEST_DATA}</arg>
 <arg>${messages}</arg>
 <doc>Fails if given lists are unequal.</doc>
-<status status="PASS" starttime="20210331 16:13:27.845" endtime="20210331 16:13:27.845"/>
+<status status="PASS" starttime="20210913 22:34:28.987" endtime="20210913 22:34:28.988"/>
 </kw>
 <kw name="Unassign Teardown" type="TEARDOWN">
 <arg>${group_id}</arg>
 <kw name="Unassign" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
-<status status="PASS" starttime="20210331 16:13:27.847" endtime="20210331 16:13:27.847"/>
+<status status="PASS" starttime="20210913 22:34:28.989" endtime="20210913 22:34:28.989"/>
 </kw>
 <kw name="Close Consumer" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Close down and terminate the Kafka Consumer.</doc>
-<status status="PASS" starttime="20210331 16:13:27.847" endtime="20210331 16:13:27.853"/>
+<status status="PASS" starttime="20210913 22:34:28.990" endtime="20210913 22:34:28.993"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:27.846" endtime="20210331 16:13:27.854"/>
+<status status="PASS" starttime="20210913 22:34:28.988" endtime="20210913 22:34:28.993"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:21.825" endtime="20210331 16:13:27.854"/>
+<status status="PASS" starttime="20210913 22:34:22.971" endtime="20210913 22:34:28.993"/>
 </test>
 <test id="s1-s1-t7" name="Verify Test And Threaded Consumer">
 <kw name="Clear Messages From Thread" library="ConfluentKafkaLibrary" type="SETUP">
@@ -1019,28 +1019,28 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Remove all records gathered from specific thread
 - ``running_thread`` (Thread object) - thread which was executed with
     `Start Consumer Threaded` keyword</doc>
-<status status="PASS" starttime="20210331 16:13:27.860" endtime="20210331 16:13:27.861"/>
+<status status="PASS" starttime="20210913 22:34:28.995" endtime="20210913 22:34:28.995"/>
 </kw>
 <kw name="Create Consumer" library="ConfluentKafkaLibrary">
 <var>${group_id}</var>
 <doc>Create Kafka Consumer and returns its `group_id` as string.</doc>
-<msg timestamp="20210331 16:13:27.862" level="INFO">${group_id} = 9a1cd97e-5f0e-4f9d-9166-896ca0ed2f06</msg>
-<status status="PASS" starttime="20210331 16:13:27.861" endtime="20210331 16:13:27.862"/>
+<msg timestamp="20210913 22:34:28.996" level="INFO">${group_id} = 8403a5f0-973b-459b-add2-80a33bfbe591</msg>
+<status status="PASS" starttime="20210913 22:34:28.996" endtime="20210913 22:34:28.996"/>
 </kw>
 <kw name="Subscribe Topic" library="ConfluentKafkaLibrary">
 <arg>group_id=${group_id}</arg>
 <arg>topics=${TEST_TOPIC}</arg>
 <doc>Subscribe to a list of topics, or a topic regex pattern.
    https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Consumer.subscribe</doc>
-<status status="PASS" starttime="20210331 16:13:27.862" endtime="20210331 16:13:27.863"/>
+<status status="PASS" starttime="20210913 22:34:28.996" endtime="20210913 22:34:28.997"/>
 </kw>
 <kw name="Poll" library="ConfluentKafkaLibrary">
 <var>${messages}</var>
 <arg>group_id=${group_id}</arg>
 <doc>Fetch and return messages from assigned topics / partitions as list.
 - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.</doc>
-<msg timestamp="20210331 16:13:37.866" level="INFO">${messages} = []</msg>
-<status status="PASS" starttime="20210331 16:13:27.863" endtime="20210331 16:13:37.866"/>
+<msg timestamp="20210913 22:34:38.999" level="INFO">${messages} = []</msg>
+<status status="PASS" starttime="20210913 22:34:28.997" endtime="20210913 22:34:38.999"/>
 </kw>
 <kw name="Prepare Data">
 <kw name="Produce" library="ConfluentKafkaLibrary">
@@ -1049,7 +1049,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value=Hello</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:37.866" endtime="20210331 16:13:37.867"/>
+<status status="PASS" starttime="20210913 22:34:39.000" endtime="20210913 22:34:39.001"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1057,7 +1057,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value=World</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:37.868" endtime="20210331 16:13:37.868"/>
+<status status="PASS" starttime="20210913 22:34:39.001" endtime="20210913 22:34:39.002"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1065,7 +1065,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value={'test': 1}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:37.868" endtime="20210331 16:13:37.869"/>
+<status status="PASS" starttime="20210913 22:34:39.002" endtime="20210913 22:34:39.003"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1073,7 +1073,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value={'test': 2}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:37.869" endtime="20210331 16:13:37.870"/>
+<status status="PASS" starttime="20210913 22:34:39.003" endtime="20210913 22:34:39.004"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1081,7 +1081,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value={'test': 3}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:37.870" endtime="20210331 16:13:37.871"/>
+<status status="PASS" starttime="20210913 22:34:39.004" endtime="20210913 22:34:39.005"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1089,7 +1089,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value={'test': 4}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:37.871" endtime="20210331 16:13:37.872"/>
+<status status="PASS" starttime="20210913 22:34:39.005" endtime="20210913 22:34:39.005"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -1105,35 +1105,35 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:37.877" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:37.872" endtime="20210331 16:13:37.877"/>
+<msg timestamp="20210913 22:34:39.011" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:39.006" endtime="20210913 22:34:39.011"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:37.877" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:13:37.877" endtime="20210331 16:13:37.877"/>
+<msg timestamp="20210913 22:34:39.011" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:34:39.011" endtime="20210913 22:34:39.011"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:37.878" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:39.012" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:37.877" endtime="20210331 16:13:37.878"/>
+<status status="PASS" starttime="20210913 22:34:39.011" endtime="20210913 22:34:39.012"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:37.872" endtime="20210331 16:13:37.878"/>
+<status status="PASS" starttime="20210913 22:34:39.006" endtime="20210913 22:34:39.012"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:37.872" endtime="20210331 16:13:37.878"/>
+<status status="PASS" starttime="20210913 22:34:39.006" endtime="20210913 22:34:39.012"/>
 </kw>
 <kw name="Sleep" library="BuiltIn">
 <arg>1sec</arg>
 <doc>Pauses the test executed for the given time.</doc>
-<msg timestamp="20210331 16:13:38.878" level="INFO">Slept 1 second</msg>
-<status status="PASS" starttime="20210331 16:13:37.878" endtime="20210331 16:13:38.879"/>
+<msg timestamp="20210913 22:34:40.013" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20210913 22:34:39.012" endtime="20210913 22:34:40.013"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:37.866" endtime="20210331 16:13:38.879"/>
+<status status="PASS" starttime="20210913 22:34:38.999" endtime="20210913 22:34:40.013"/>
 </kw>
 <kw name="Get Messages From Thread" library="ConfluentKafkaLibrary">
 <var>${thread_messages}</var>
@@ -1144,8 +1144,8 @@ This is a convenience method that calls poll() until len() is zero or the option
     `Start Consumer Threaded` keyword
 - ``decode_format`` (str) - If you need to decode data to specific format
     (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.</doc>
-<msg timestamp="20210331 16:13:38.880" level="INFO">${thread_messages} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
-<status status="PASS" starttime="20210331 16:13:38.879" endtime="20210331 16:13:38.880"/>
+<msg timestamp="20210913 22:34:40.014" level="INFO">${thread_messages} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
+<status status="PASS" starttime="20210913 22:34:40.014" endtime="20210913 22:34:40.014"/>
 </kw>
 <kw name="Poll" library="ConfluentKafkaLibrary">
 <var>${messages}</var>
@@ -1154,14 +1154,14 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>decode_format=utf8</arg>
 <doc>Fetch and return messages from assigned topics / partitions as list.
 - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.</doc>
-<msg timestamp="20210331 16:13:38.882" level="INFO">${messages} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
-<status status="PASS" starttime="20210331 16:13:38.880" endtime="20210331 16:13:38.882"/>
+<msg timestamp="20210913 22:34:40.015" level="INFO">${messages} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
+<status status="PASS" starttime="20210913 22:34:40.014" endtime="20210913 22:34:40.015"/>
 </kw>
 <kw name="Lists Should Be Equal" library="Collections">
 <arg>${thread_messages}</arg>
 <arg>${messages}</arg>
 <doc>Fails if given lists are unequal.</doc>
-<status status="PASS" starttime="20210331 16:13:38.882" endtime="20210331 16:13:38.882"/>
+<status status="PASS" starttime="20210913 22:34:40.015" endtime="20210913 22:34:40.015"/>
 </kw>
 <kw name="Run Keywords" library="BuiltIn" type="TEARDOWN">
 <arg>Basic Teardown</arg>
@@ -1175,25 +1175,25 @@ This is a convenience method that calls poll() until len() is zero or the option
 <kw name="Unsubscribe" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Unsubscribe of topics.</doc>
-<status status="PASS" starttime="20210331 16:13:38.883" endtime="20210331 16:13:38.884"/>
+<status status="PASS" starttime="20210913 22:34:40.017" endtime="20210913 22:34:40.018"/>
 </kw>
 <kw name="Close Consumer" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Close down and terminate the Kafka Consumer.</doc>
-<status status="PASS" starttime="20210331 16:13:38.884" endtime="20210331 16:13:38.890"/>
+<status status="PASS" starttime="20210913 22:34:40.018" endtime="20210913 22:34:40.025"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:38.883" endtime="20210331 16:13:38.890"/>
+<status status="PASS" starttime="20210913 22:34:40.016" endtime="20210913 22:34:40.025"/>
 </kw>
 <kw name="Clear Messages From Thread" library="ConfluentKafkaLibrary">
 <arg>${MAIN_THREAD}</arg>
 <doc>Remove all records gathered from specific thread
 - ``running_thread`` (Thread object) - thread which was executed with
     `Start Consumer Threaded` keyword</doc>
-<status status="PASS" starttime="20210331 16:13:38.890" endtime="20210331 16:13:38.891"/>
+<status status="PASS" starttime="20210913 22:34:40.025" endtime="20210913 22:34:40.025"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:38.883" endtime="20210331 16:13:38.891"/>
+<status status="PASS" starttime="20210913 22:34:40.016" endtime="20210913 22:34:40.025"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:27.855" endtime="20210331 16:13:38.891"/>
+<status status="PASS" starttime="20210913 22:34:28.995" endtime="20210913 22:34:40.025"/>
 </test>
 <test id="s1-s1-t8" name="Verify Clean Of Threaded Consumer Messages">
 <kw name="Prepare Data" type="SETUP">
@@ -1203,7 +1203,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value=Hello</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:38.893" endtime="20210331 16:13:38.894"/>
+<status status="PASS" starttime="20210913 22:34:40.027" endtime="20210913 22:34:40.027"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1211,7 +1211,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value=World</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:38.894" endtime="20210331 16:13:38.895"/>
+<status status="PASS" starttime="20210913 22:34:40.027" endtime="20210913 22:34:40.028"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1219,7 +1219,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value={'test': 1}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:38.895" endtime="20210331 16:13:38.895"/>
+<status status="PASS" starttime="20210913 22:34:40.028" endtime="20210913 22:34:40.029"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1227,7 +1227,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value={'test': 2}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:38.896" endtime="20210331 16:13:38.896"/>
+<status status="PASS" starttime="20210913 22:34:40.029" endtime="20210913 22:34:40.030"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1235,7 +1235,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value={'test': 3}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:38.896" endtime="20210331 16:13:38.897"/>
+<status status="PASS" starttime="20210913 22:34:40.030" endtime="20210913 22:34:40.031"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1243,7 +1243,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value={'test': 4}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:38.897" endtime="20210331 16:13:38.898"/>
+<status status="PASS" starttime="20210913 22:34:40.031" endtime="20210913 22:34:40.032"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -1259,35 +1259,35 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:38.904" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:38.899" endtime="20210331 16:13:38.904"/>
+<msg timestamp="20210913 22:34:40.037" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:40.034" endtime="20210913 22:34:40.037"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:38.905" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:13:38.904" endtime="20210331 16:13:38.905"/>
+<msg timestamp="20210913 22:34:40.037" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:34:40.037" endtime="20210913 22:34:40.037"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:38.905" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:40.038" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:38.905" endtime="20210331 16:13:38.905"/>
+<status status="PASS" starttime="20210913 22:34:40.037" endtime="20210913 22:34:40.038"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:38.898" endtime="20210331 16:13:38.905"/>
+<status status="PASS" starttime="20210913 22:34:40.033" endtime="20210913 22:34:40.038"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:38.898" endtime="20210331 16:13:38.905"/>
+<status status="PASS" starttime="20210913 22:34:40.032" endtime="20210913 22:34:40.038"/>
 </kw>
 <kw name="Sleep" library="BuiltIn">
 <arg>1sec</arg>
 <doc>Pauses the test executed for the given time.</doc>
-<msg timestamp="20210331 16:13:39.906" level="INFO">Slept 1 second</msg>
-<status status="PASS" starttime="20210331 16:13:38.905" endtime="20210331 16:13:39.906"/>
+<msg timestamp="20210913 22:34:41.039" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20210913 22:34:40.038" endtime="20210913 22:34:41.039"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:38.892" endtime="20210331 16:13:39.906"/>
+<status status="PASS" starttime="20210913 22:34:40.026" endtime="20210913 22:34:41.039"/>
 </kw>
 <kw name="Get Messages From Thread" library="ConfluentKafkaLibrary">
 <var>${thread_messages1}</var>
@@ -1298,15 +1298,15 @@ This is a convenience method that calls poll() until len() is zero or the option
     `Start Consumer Threaded` keyword
 - ``decode_format`` (str) - If you need to decode data to specific format
     (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.</doc>
-<msg timestamp="20210331 16:13:39.908" level="INFO">${thread_messages1} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
-<status status="PASS" starttime="20210331 16:13:39.907" endtime="20210331 16:13:39.908"/>
+<msg timestamp="20210913 22:34:41.040" level="INFO">${thread_messages1} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
+<status status="PASS" starttime="20210913 22:34:41.040" endtime="20210913 22:34:41.040"/>
 </kw>
 <kw name="Clear Messages From Thread" library="ConfluentKafkaLibrary">
 <arg>${MAIN_THREAD}</arg>
 <doc>Remove all records gathered from specific thread
 - ``running_thread`` (Thread object) - thread which was executed with
     `Start Consumer Threaded` keyword</doc>
-<status status="PASS" starttime="20210331 16:13:39.908" endtime="20210331 16:13:39.909"/>
+<status status="PASS" starttime="20210913 22:34:41.041" endtime="20210913 22:34:41.041"/>
 </kw>
 <kw name="Get Messages From Thread" library="ConfluentKafkaLibrary">
 <var>${thread_messages2}</var>
@@ -1316,29 +1316,29 @@ This is a convenience method that calls poll() until len() is zero or the option
     `Start Consumer Threaded` keyword
 - ``decode_format`` (str) - If you need to decode data to specific format
     (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.</doc>
-<msg timestamp="20210331 16:13:39.910" level="INFO">${thread_messages2} = []</msg>
-<status status="PASS" starttime="20210331 16:13:39.909" endtime="20210331 16:13:39.910"/>
+<msg timestamp="20210913 22:34:41.042" level="INFO">${thread_messages2} = []</msg>
+<status status="PASS" starttime="20210913 22:34:41.041" endtime="20210913 22:34:41.042"/>
 </kw>
 <kw name="Lists Should Be Equal" library="Collections">
 <arg>${TEST_DATA}</arg>
 <arg>${thread_messages1}</arg>
 <doc>Fails if given lists are unequal.</doc>
-<status status="PASS" starttime="20210331 16:13:39.910" endtime="20210331 16:13:39.911"/>
+<status status="PASS" starttime="20210913 22:34:41.042" endtime="20210913 22:34:41.042"/>
 </kw>
 <kw name="Should Be Empty" library="BuiltIn">
 <arg>${thread_messages2}</arg>
 <doc>Verifies that the given item is empty.</doc>
-<msg timestamp="20210331 16:13:39.911" level="INFO">Length is 0</msg>
-<status status="PASS" starttime="20210331 16:13:39.911" endtime="20210331 16:13:39.912"/>
+<msg timestamp="20210913 22:34:41.043" level="INFO">Length is 0</msg>
+<status status="PASS" starttime="20210913 22:34:41.042" endtime="20210913 22:34:41.043"/>
 </kw>
 <kw name="Clear Messages From Thread" library="ConfluentKafkaLibrary" type="TEARDOWN">
 <arg>${MAIN_THREAD}</arg>
 <doc>Remove all records gathered from specific thread
 - ``running_thread`` (Thread object) - thread which was executed with
     `Start Consumer Threaded` keyword</doc>
-<status status="PASS" starttime="20210331 16:13:39.912" endtime="20210331 16:13:39.912"/>
+<status status="PASS" starttime="20210913 22:34:41.043" endtime="20210913 22:34:41.043"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:38.891" endtime="20210331 16:13:39.913"/>
+<status status="PASS" starttime="20210913 22:34:40.026" endtime="20210913 22:34:41.043"/>
 </test>
 <test id="s1-s1-t9" name="Remove And Publish New Messages From Threaded Consumer">
 <kw name="Prepare Data" type="SETUP">
@@ -1348,7 +1348,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value=Hello</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:39.916" endtime="20210331 16:13:39.917"/>
+<status status="PASS" starttime="20210913 22:34:41.045" endtime="20210913 22:34:41.046"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1356,7 +1356,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value=World</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:39.918" endtime="20210331 16:13:39.919"/>
+<status status="PASS" starttime="20210913 22:34:41.046" endtime="20210913 22:34:41.046"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1364,7 +1364,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value={'test': 1}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:39.919" endtime="20210331 16:13:39.920"/>
+<status status="PASS" starttime="20210913 22:34:41.047" endtime="20210913 22:34:41.047"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1372,7 +1372,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value={'test': 2}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:39.920" endtime="20210331 16:13:39.921"/>
+<status status="PASS" starttime="20210913 22:34:41.047" endtime="20210913 22:34:41.048"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1380,7 +1380,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value={'test': 3}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:39.922" endtime="20210331 16:13:39.923"/>
+<status status="PASS" starttime="20210913 22:34:41.048" endtime="20210913 22:34:41.049"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1388,7 +1388,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value={'test': 4}</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:39.923" endtime="20210331 16:13:39.925"/>
+<status status="PASS" starttime="20210913 22:34:41.049" endtime="20210913 22:34:41.049"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -1404,35 +1404,35 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:39.932" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:39.926" endtime="20210331 16:13:39.932"/>
+<msg timestamp="20210913 22:34:41.057" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:41.050" endtime="20210913 22:34:41.057"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:39.933" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:13:39.932" endtime="20210331 16:13:39.933"/>
+<msg timestamp="20210913 22:34:41.057" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:34:41.057" endtime="20210913 22:34:41.057"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:39.933" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:41.057" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:39.933" endtime="20210331 16:13:39.933"/>
+<status status="PASS" starttime="20210913 22:34:41.057" endtime="20210913 22:34:41.058"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:39.925" endtime="20210331 16:13:39.934"/>
+<status status="PASS" starttime="20210913 22:34:41.050" endtime="20210913 22:34:41.058"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:39.925" endtime="20210331 16:13:39.934"/>
+<status status="PASS" starttime="20210913 22:34:41.050" endtime="20210913 22:34:41.058"/>
 </kw>
 <kw name="Sleep" library="BuiltIn">
 <arg>1sec</arg>
 <doc>Pauses the test executed for the given time.</doc>
-<msg timestamp="20210331 16:13:40.935" level="INFO">Slept 1 second</msg>
-<status status="PASS" starttime="20210331 16:13:39.934" endtime="20210331 16:13:40.935"/>
+<msg timestamp="20210913 22:34:42.059" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20210913 22:34:41.058" endtime="20210913 22:34:42.059"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:39.915" endtime="20210331 16:13:40.935"/>
+<status status="PASS" starttime="20210913 22:34:41.045" endtime="20210913 22:34:42.059"/>
 </kw>
 <kw name="Get Messages From Thread" library="ConfluentKafkaLibrary">
 <var>${thread_messages1}</var>
@@ -1443,15 +1443,15 @@ This is a convenience method that calls poll() until len() is zero or the option
     `Start Consumer Threaded` keyword
 - ``decode_format`` (str) - If you need to decode data to specific format
     (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.</doc>
-<msg timestamp="20210331 16:13:40.937" level="INFO">${thread_messages1} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
-<status status="PASS" starttime="20210331 16:13:40.936" endtime="20210331 16:13:40.937"/>
+<msg timestamp="20210913 22:34:42.060" level="INFO">${thread_messages1} = ['Hello', 'World', "{'test': 1}", "{'test': 2}", "{'test': 3}", "{'test': 4}"]</msg>
+<status status="PASS" starttime="20210913 22:34:42.059" endtime="20210913 22:34:42.060"/>
 </kw>
 <kw name="Clear Messages From Thread" library="ConfluentKafkaLibrary">
 <arg>${MAIN_THREAD}</arg>
 <doc>Remove all records gathered from specific thread
 - ``running_thread`` (Thread object) - thread which was executed with
     `Start Consumer Threaded` keyword</doc>
-<status status="PASS" starttime="20210331 16:13:40.937" endtime="20210331 16:13:40.937"/>
+<status status="PASS" starttime="20210913 22:34:42.060" endtime="20210913 22:34:42.060"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1459,7 +1459,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value=After</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:40.938" endtime="20210331 16:13:40.938"/>
+<status status="PASS" starttime="20210913 22:34:42.060" endtime="20210913 22:34:42.061"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1467,7 +1467,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value=Clear</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:40.938" endtime="20210331 16:13:40.939"/>
+<status status="PASS" starttime="20210913 22:34:42.061" endtime="20210913 22:34:42.062"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -1483,33 +1483,33 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:40.947" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:40.940" endtime="20210331 16:13:40.947"/>
+<msg timestamp="20210913 22:34:42.069" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:42.063" endtime="20210913 22:34:42.069"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:40.948" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:13:40.947" endtime="20210331 16:13:40.948"/>
+<msg timestamp="20210913 22:34:42.070" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:34:42.070" endtime="20210913 22:34:42.070"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:40.948" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:42.070" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:40.948" endtime="20210331 16:13:40.948"/>
+<status status="PASS" starttime="20210913 22:34:42.070" endtime="20210913 22:34:42.070"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:40.940" endtime="20210331 16:13:40.948"/>
+<status status="PASS" starttime="20210913 22:34:42.062" endtime="20210913 22:34:42.070"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:40.939" endtime="20210331 16:13:40.949"/>
+<status status="PASS" starttime="20210913 22:34:42.062" endtime="20210913 22:34:42.070"/>
 </kw>
 <kw name="Sleep" library="BuiltIn">
 <arg>1sec</arg>
 <doc>Pauses the test executed for the given time.</doc>
-<msg timestamp="20210331 16:13:41.949" level="INFO">Slept 1 second</msg>
-<status status="PASS" starttime="20210331 16:13:40.949" endtime="20210331 16:13:41.950"/>
+<msg timestamp="20210913 22:34:43.071" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20210913 22:34:42.071" endtime="20210913 22:34:43.071"/>
 </kw>
 <kw name="Get Messages From Thread" library="ConfluentKafkaLibrary">
 <var>${thread_messages2}</var>
@@ -1520,22 +1520,22 @@ This is a convenience method that calls poll() until len() is zero or the option
     `Start Consumer Threaded` keyword
 - ``decode_format`` (str) - If you need to decode data to specific format
     (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.</doc>
-<msg timestamp="20210331 16:13:41.951" level="INFO">${thread_messages2} = ['After', 'Clear']</msg>
-<status status="PASS" starttime="20210331 16:13:41.950" endtime="20210331 16:13:41.951"/>
+<msg timestamp="20210913 22:34:43.072" level="INFO">${thread_messages2} = ['After', 'Clear']</msg>
+<status status="PASS" starttime="20210913 22:34:43.071" endtime="20210913 22:34:43.072"/>
 </kw>
 <kw name="Create List" library="BuiltIn">
 <var>${data}</var>
 <arg>After</arg>
 <arg>Clear</arg>
 <doc>Returns a list containing given items.</doc>
-<msg timestamp="20210331 16:13:41.952" level="INFO">${data} = ['After', 'Clear']</msg>
-<status status="PASS" starttime="20210331 16:13:41.951" endtime="20210331 16:13:41.952"/>
+<msg timestamp="20210913 22:34:43.073" level="INFO">${data} = ['After', 'Clear']</msg>
+<status status="PASS" starttime="20210913 22:34:43.072" endtime="20210913 22:34:43.073"/>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <arg>${data}</arg>
 <arg>${thread_messages2}</arg>
 <doc>Fails if the given objects are unequal.</doc>
-<status status="PASS" starttime="20210331 16:13:41.952" endtime="20210331 16:13:41.952"/>
+<status status="PASS" starttime="20210913 22:34:43.073" endtime="20210913 22:34:43.073"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${PRODUCER_ID}</arg>
@@ -1543,7 +1543,7 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value=LAST</arg>
 <arg>partition=${P_ID}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:41.952" endtime="20210331 16:13:41.953"/>
+<status status="PASS" starttime="20210913 22:34:43.074" endtime="20210913 22:34:43.074"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -1559,39 +1559,39 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:41.962" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:41.954" endtime="20210331 16:13:41.962"/>
+<msg timestamp="20210913 22:34:43.082" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:43.075" endtime="20210913 22:34:43.082"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:41.962" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:13:41.962" endtime="20210331 16:13:41.963"/>
+<msg timestamp="20210913 22:34:43.082" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:34:43.082" endtime="20210913 22:34:43.082"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:41.963" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:43.083" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:41.963" endtime="20210331 16:13:41.963"/>
+<status status="PASS" starttime="20210913 22:34:43.082" endtime="20210913 22:34:43.083"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:41.953" endtime="20210331 16:13:41.964"/>
+<status status="PASS" starttime="20210913 22:34:43.075" endtime="20210913 22:34:43.083"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:41.953" endtime="20210331 16:13:41.964"/>
+<status status="PASS" starttime="20210913 22:34:43.074" endtime="20210913 22:34:43.083"/>
 </kw>
 <kw name="Sleep" library="BuiltIn">
 <arg>1sec</arg>
 <doc>Pauses the test executed for the given time.</doc>
-<msg timestamp="20210331 16:13:42.964" level="INFO">Slept 1 second</msg>
-<status status="PASS" starttime="20210331 16:13:41.964" endtime="20210331 16:13:42.964"/>
+<msg timestamp="20210913 22:34:44.084" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20210913 22:34:43.083" endtime="20210913 22:34:44.084"/>
 </kw>
 <kw name="Append To List" library="Collections">
 <arg>${data}</arg>
 <arg>LAST</arg>
 <doc>Adds ``values`` to the end of ``list``.</doc>
-<status status="PASS" starttime="20210331 16:13:42.965" endtime="20210331 16:13:42.965"/>
+<status status="PASS" starttime="20210913 22:34:44.084" endtime="20210913 22:34:44.084"/>
 </kw>
 <kw name="Get Messages From Thread" library="ConfluentKafkaLibrary">
 <var>${thread_messages2}</var>
@@ -1602,33 +1602,33 @@ This is a convenience method that calls poll() until len() is zero or the option
     `Start Consumer Threaded` keyword
 - ``decode_format`` (str) - If you need to decode data to specific format
     (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.</doc>
-<msg timestamp="20210331 16:13:42.966" level="INFO">${thread_messages2} = ['After', 'Clear', 'LAST']</msg>
-<status status="PASS" starttime="20210331 16:13:42.966" endtime="20210331 16:13:42.966"/>
+<msg timestamp="20210913 22:34:44.085" level="INFO">${thread_messages2} = ['After', 'Clear', 'LAST']</msg>
+<status status="PASS" starttime="20210913 22:34:44.085" endtime="20210913 22:34:44.085"/>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <arg>${TEST_DATA}</arg>
 <arg>${thread_messages1}</arg>
 <doc>Fails if the given objects are unequal.</doc>
-<status status="PASS" starttime="20210331 16:13:42.967" endtime="20210331 16:13:42.967"/>
+<status status="PASS" starttime="20210913 22:34:44.085" endtime="20210913 22:34:44.086"/>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <arg>${data}</arg>
 <arg>${thread_messages2}</arg>
 <doc>Fails if the given objects are unequal.</doc>
-<status status="PASS" starttime="20210331 16:13:42.967" endtime="20210331 16:13:42.968"/>
+<status status="PASS" starttime="20210913 22:34:44.086" endtime="20210913 22:34:44.087"/>
 </kw>
 <kw name="Clear Messages From Thread" library="ConfluentKafkaLibrary" type="TEARDOWN">
 <arg>${MAIN_THREAD}</arg>
 <doc>Remove all records gathered from specific thread
 - ``running_thread`` (Thread object) - thread which was executed with
     `Start Consumer Threaded` keyword</doc>
-<status status="PASS" starttime="20210331 16:13:42.968" endtime="20210331 16:13:42.968"/>
+<status status="PASS" starttime="20210913 22:34:44.087" endtime="20210913 22:34:44.087"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:39.913" endtime="20210331 16:13:42.968"/>
+<status status="PASS" starttime="20210913 22:34:41.044" endtime="20210913 22:34:44.088"/>
 </test>
-<status status="PASS" starttime="20210331 16:13:01.819" endtime="20210331 16:13:42.970"/>
+<status status="PASS" starttime="20210913 22:34:03.046" endtime="20210913 22:34:44.089"/>
 </suite>
-<suite id="s1-s2" name="Test Avro" source="/home/travis/build/robooo/robotframework-ConfluentKafkaLibrary/examples/test_avro.robot">
+<suite id="s1-s2" name="Test Avro" source="/home/runner/work/robotframework-ConfluentKafkaLibrary/robotframework-ConfluentKafkaLibrary/examples/test_avro.robot">
 <kw name="Starting Test" type="SETUP">
 <kw name="Set Suite Variable" library="BuiltIn">
 <arg>@{TEST_TOPIC}</arg>
@@ -1636,44 +1636,44 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>avro_testing2</arg>
 <arg>avro_testing3</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<msg timestamp="20210331 16:13:43.001" level="INFO">@{TEST_TOPIC} = [ avro_testing1 | avro_testing2 | avro_testing3 ]</msg>
-<status status="PASS" starttime="20210331 16:13:42.998" endtime="20210331 16:13:43.001"/>
+<msg timestamp="20210913 22:34:44.103" level="INFO">@{TEST_TOPIC} = [ avro_testing1 | avro_testing2 | avro_testing3 ]</msg>
+<status status="PASS" starttime="20210913 22:34:44.102" endtime="20210913 22:34:44.103"/>
 </kw>
 <kw name="Set Suite Variable" library="BuiltIn">
 <arg>${KEY}</arg>
 <arg>568a68fd-2785-44cc-8997-1295c3755d28</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<msg timestamp="20210331 16:13:43.003" level="INFO">${KEY} = 568a68fd-2785-44cc-8997-1295c3755d28</msg>
-<status status="PASS" starttime="20210331 16:13:43.002" endtime="20210331 16:13:43.003"/>
+<msg timestamp="20210913 22:34:44.104" level="INFO">${KEY} = 568a68fd-2785-44cc-8997-1295c3755d28</msg>
+<status status="PASS" starttime="20210913 22:34:44.104" endtime="20210913 22:34:44.105"/>
 </kw>
 <kw name="Set Suite Variable" library="BuiltIn">
 <arg>&amp;{KEY_FOR_SCHEMA}</arg>
 <arg>name=testkey</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<msg timestamp="20210331 16:13:43.005" level="INFO">&amp;{KEY_FOR_SCHEMA} = { name=testkey }</msg>
-<status status="PASS" starttime="20210331 16:13:43.003" endtime="20210331 16:13:43.005"/>
+<msg timestamp="20210913 22:34:44.106" level="INFO">&amp;{KEY_FOR_SCHEMA} = { name=testkey }</msg>
+<status status="PASS" starttime="20210913 22:34:44.105" endtime="20210913 22:34:44.106"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${value}</var>
 <arg>name=Robot</arg>
 <arg>number=${10}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20210331 16:13:43.006" level="INFO">${value} = {'name': 'Robot', 'number': 10}</msg>
-<status status="PASS" starttime="20210331 16:13:43.005" endtime="20210331 16:13:43.006"/>
+<msg timestamp="20210913 22:34:44.107" level="INFO">${value} = {'name': 'Robot', 'number': 10}</msg>
+<status status="PASS" starttime="20210913 22:34:44.106" endtime="20210913 22:34:44.107"/>
 </kw>
 <kw name="Create List" library="BuiltIn">
 <var>${data}</var>
 <arg>${value}</arg>
 <doc>Returns a list containing given items.</doc>
-<msg timestamp="20210331 16:13:43.006" level="INFO">${data} = [{'name': 'Robot', 'number': 10}]</msg>
-<status status="PASS" starttime="20210331 16:13:43.006" endtime="20210331 16:13:43.006"/>
+<msg timestamp="20210913 22:34:44.108" level="INFO">${data} = [{'name': 'Robot', 'number': 10}]</msg>
+<status status="PASS" starttime="20210913 22:34:44.107" endtime="20210913 22:34:44.108"/>
 </kw>
 <kw name="Set Suite Variable" library="BuiltIn">
 <arg>${TEST_DATA}</arg>
 <arg>${data}</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<msg timestamp="20210331 16:13:43.008" level="INFO">${TEST_DATA} = [{'name': 'Robot', 'number': 10}]</msg>
-<status status="PASS" starttime="20210331 16:13:43.006" endtime="20210331 16:13:43.008"/>
+<msg timestamp="20210913 22:34:44.109" level="INFO">${TEST_DATA} = [{'name': 'Robot', 'number': 10}]</msg>
+<status status="PASS" starttime="20210913 22:34:44.108" endtime="20210913 22:34:44.109"/>
 </kw>
 <kw name="Start Consumer Threaded" library="ConfluentKafkaLibrary">
 <var>${thread}</var>
@@ -1691,17 +1691,17 @@ This is a convenience method that calls poll() until len() is zero or the option
     dynamic partition assignment (if enabled), and to use for fetching and
     committing offsets. If None, unique string is generated  (via uuid.uuid4())
     and offset commits are disabled. Default: `None`.</doc>
-<msg timestamp="20210331 16:13:53.092" level="INFO">${thread} = &lt;GetMessagesThread(Thread-2, started daemon 140181659170560)&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:43.008" endtime="20210331 16:13:53.092"/>
+<msg timestamp="20210913 22:34:54.181" level="INFO">${thread} = &lt;GetMessagesThread(Thread-2, started daemon 139621518255872)&gt;</msg>
+<status status="PASS" starttime="20210913 22:34:44.109" endtime="20210913 22:34:54.181"/>
 </kw>
 <kw name="Set Suite Variable" library="BuiltIn">
 <arg>${MAIN_THREAD}</arg>
 <arg>${thread}</arg>
 <doc>Makes a variable available everywhere within the scope of the current suite.</doc>
-<msg timestamp="20210331 16:13:53.094" level="INFO">${MAIN_THREAD} = &lt;GetMessagesThread(Thread-2, started daemon 140181659170560)&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:53.092" endtime="20210331 16:13:53.094"/>
+<msg timestamp="20210913 22:34:54.182" level="INFO">${MAIN_THREAD} = &lt;GetMessagesThread(Thread-2, started daemon 139621518255872)&gt;</msg>
+<status status="PASS" starttime="20210913 22:34:54.181" endtime="20210913 22:34:54.182"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:42.997" endtime="20210331 16:13:53.094"/>
+<status status="PASS" starttime="20210913 22:34:44.102" endtime="20210913 22:34:54.183"/>
 </kw>
 <test id="s1-s2-t1" name="Avro Producer With Schemas As String Argument">
 <kw name="Clear Messages From Thread" library="ConfluentKafkaLibrary" type="SETUP">
@@ -1709,21 +1709,21 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Remove all records gathered from specific thread
 - ``running_thread`` (Thread object) - thread which was executed with
     `Start Consumer Threaded` keyword</doc>
-<status status="PASS" starttime="20210331 16:13:53.095" endtime="20210331 16:13:53.095"/>
+<status status="PASS" starttime="20210913 22:34:54.183" endtime="20210913 22:34:54.184"/>
 </kw>
 <kw name="Set Variable" library="BuiltIn">
 <var>${value_schema}</var>
 <arg>{"namespace": "example.avro","type": "record","name": "User","fields": [{"name": "name","type": "string"},{"name": "number","type": ["int","null"]}]}</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20210331 16:13:53.096" level="INFO">${value_schema} = {"namespace": "example.avro","type": "record","name": "User","fields": [{"name": "name","type": "string"},{"name": "number","type": ["int","null"]}]}</msg>
-<status status="PASS" starttime="20210331 16:13:53.096" endtime="20210331 16:13:53.096"/>
+<msg timestamp="20210913 22:34:54.185" level="INFO">${value_schema} = {"namespace": "example.avro","type": "record","name": "User","fields": [{"name": "name","type": "string"},{"name": "number","type": ["int","null"]}]}</msg>
+<status status="PASS" starttime="20210913 22:34:54.184" endtime="20210913 22:34:54.185"/>
 </kw>
 <kw name="Set Variable" library="BuiltIn">
 <var>${key_schema}</var>
 <arg>{"namespace": "example.avro","type": "record","name": "User","fields": [{"name": "name","type": "string"}]}</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20210331 16:13:53.097" level="INFO">${key_schema} = {"namespace": "example.avro","type": "record","name": "User","fields": [{"name": "name","type": "string"}]}</msg>
-<status status="PASS" starttime="20210331 16:13:53.096" endtime="20210331 16:13:53.097"/>
+<msg timestamp="20210913 22:34:54.185" level="INFO">${key_schema} = {"namespace": "example.avro","type": "record","name": "User","fields": [{"name": "name","type": "string"}]}</msg>
+<status status="PASS" starttime="20210913 22:34:54.185" endtime="20210913 22:34:54.186"/>
 </kw>
 <kw name="Create Producer" library="ConfluentKafkaLibrary">
 <var>${producer_id}</var>
@@ -1733,16 +1733,16 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Create Kafka Producer and returns its `group_id` as string.
 If `schema_registry_url` is used, Kafka Producer client which does avro schema
 encoding to messages is created instead.</doc>
-<msg timestamp="20210331 16:13:53.099" level="INFO">${producer_id} = 575e5ad4-673a-4373-ac70-8312a32fabac</msg>
-<status status="PASS" starttime="20210331 16:13:53.097" endtime="20210331 16:13:53.099"/>
+<msg timestamp="20210913 22:34:54.187" level="INFO">${producer_id} = 00ad20cf-9d0b-4170-a9d1-579634a71b09</msg>
+<status status="PASS" starttime="20210913 22:34:54.186" endtime="20210913 22:34:54.187"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${value}</var>
 <arg>name=Robot</arg>
 <arg>number=${10}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20210331 16:13:53.102" level="INFO">${value} = {'name': 'Robot', 'number': 10}</msg>
-<status status="PASS" starttime="20210331 16:13:53.099" endtime="20210331 16:13:53.102"/>
+<msg timestamp="20210913 22:34:54.192" level="INFO">${value} = {'name': 'Robot', 'number': 10}</msg>
+<status status="PASS" starttime="20210913 22:34:54.188" endtime="20210913 22:34:54.192"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${producer_id}</arg>
@@ -1751,7 +1751,7 @@ encoding to messages is created instead.</doc>
 <arg>value=${value}</arg>
 <arg>key=${KEY_FOR_SCHEMA}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:53.102" endtime="20210331 16:13:53.634"/>
+<status status="PASS" starttime="20210913 22:34:54.192" endtime="20210913 22:34:54.615"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -1767,26 +1767,26 @@ encoding to messages is created instead.</doc>
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:53.736" level="INFO">${count} = 1</msg>
-<status status="PASS" starttime="20210331 16:13:53.635" endtime="20210331 16:13:53.736"/>
+<msg timestamp="20210913 22:34:54.718" level="INFO">${count} = 1</msg>
+<status status="PASS" starttime="20210913 22:34:54.616" endtime="20210913 22:34:54.718"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:53.737" level="INFO">Reaming messages to be delivered: 1</msg>
-<status status="PASS" starttime="20210331 16:13:53.737" endtime="20210331 16:13:53.737"/>
+<msg timestamp="20210913 22:34:54.718" level="INFO">Reaming messages to be delivered: 1</msg>
+<status status="PASS" starttime="20210913 22:34:54.718" endtime="20210913 22:34:54.719"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:53.738" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:54.719" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<msg timestamp="20210331 16:13:53.738" level="FAIL">1 != 0</msg>
-<status status="FAIL" starttime="20210331 16:13:53.737" endtime="20210331 16:13:53.738"/>
+<msg timestamp="20210913 22:34:54.719" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20210913 22:34:54.719" endtime="20210913 22:34:54.719"/>
 </kw>
-<status status="FAIL" starttime="20210331 16:13:53.634" endtime="20210331 16:13:53.738"/>
+<status status="FAIL" starttime="20210913 22:34:54.616" endtime="20210913 22:34:54.720"/>
 </kw>
 <kw name="All Messages Are Delivered">
 <arg>${producer_id}</arg>
@@ -1796,62 +1796,62 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:54.240" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:54.239" endtime="20210331 16:13:54.240"/>
+<msg timestamp="20210913 22:34:55.221" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:55.221" endtime="20210913 22:34:55.221"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:54.240" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:13:54.240" endtime="20210331 16:13:54.240"/>
+<msg timestamp="20210913 22:34:55.222" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:34:55.222" endtime="20210913 22:34:55.222"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:54.241" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:55.222" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:54.240" endtime="20210331 16:13:54.241"/>
+<status status="PASS" starttime="20210913 22:34:55.222" endtime="20210913 22:34:55.222"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:54.238" endtime="20210331 16:13:54.241"/>
+<status status="PASS" starttime="20210913 22:34:55.220" endtime="20210913 22:34:55.223"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:53.634" endtime="20210331 16:13:54.241"/>
+<status status="PASS" starttime="20210913 22:34:54.616" endtime="20210913 22:34:55.223"/>
 </kw>
 <kw name="Sleep" library="BuiltIn">
 <arg>1s</arg>
 <doc>Pauses the test executed for the given time.</doc>
-<msg timestamp="20210331 16:13:55.242" level="INFO">Slept 1 second</msg>
-<status status="PASS" starttime="20210331 16:13:54.241" endtime="20210331 16:13:55.242"/>
+<msg timestamp="20210913 22:34:56.223" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20210913 22:34:55.223" endtime="20210913 22:34:56.223"/>
 </kw>
 <kw name="Create Consumer" library="ConfluentKafkaLibrary">
 <var>${consumer_group_id}</var>
 <arg>auto_offset_reset=earliest</arg>
 <arg>schema_registry_url=http://127.0.0.1:8081</arg>
 <doc>Create Kafka Consumer and returns its `group_id` as string.</doc>
-<msg timestamp="20210331 16:13:55.243" level="INFO">${consumer_group_id} = 06f82b81-8476-4374-b991-2f0c99bfa0cf</msg>
-<status status="PASS" starttime="20210331 16:13:55.242" endtime="20210331 16:13:55.243"/>
+<msg timestamp="20210913 22:34:56.225" level="INFO">${consumer_group_id} = ed91f7ba-6642-41f6-8c80-1dda4995633b</msg>
+<status status="PASS" starttime="20210913 22:34:56.224" endtime="20210913 22:34:56.225"/>
 </kw>
 <kw name="Subscribe Topic" library="ConfluentKafkaLibrary">
 <arg>group_id=${consumer_group_id}</arg>
 <arg>topics=avro_testing1</arg>
 <doc>Subscribe to a list of topics, or a topic regex pattern.
    https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Consumer.subscribe</doc>
-<status status="PASS" starttime="20210331 16:13:55.243" endtime="20210331 16:13:55.244"/>
+<status status="PASS" starttime="20210913 22:34:56.225" endtime="20210913 22:34:56.225"/>
 </kw>
 <kw name="Poll" library="ConfluentKafkaLibrary">
 <var>${messages}</var>
 <arg>group_id=${consumer_group_id}</arg>
 <doc>Fetch and return messages from assigned topics / partitions as list.
 - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.</doc>
-<msg timestamp="20210331 16:13:55.383" level="INFO">${messages} = [{'name': 'Robot', 'number': 10}]</msg>
-<status status="PASS" starttime="20210331 16:13:55.245" endtime="20210331 16:13:55.383"/>
+<msg timestamp="20210913 22:34:56.364" level="INFO">${messages} = [{'name': 'Robot', 'number': 10}]</msg>
+<status status="PASS" starttime="20210913 22:34:56.226" endtime="20210913 22:34:56.364"/>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <arg>${TEST_DATA}</arg>
 <arg>${messages}</arg>
 <doc>Fails if the given objects are unequal.</doc>
-<status status="PASS" starttime="20210331 16:13:55.383" endtime="20210331 16:13:55.384"/>
+<status status="PASS" starttime="20210913 22:34:56.364" endtime="20210913 22:34:56.365"/>
 </kw>
 <kw name="Get Messages From Thread" library="ConfluentKafkaLibrary">
 <var>${thread_messages}</var>
@@ -1861,30 +1861,30 @@ This is a convenience method that calls poll() until len() is zero or the option
     `Start Consumer Threaded` keyword
 - ``decode_format`` (str) - If you need to decode data to specific format
     (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.</doc>
-<msg timestamp="20210331 16:13:55.384" level="INFO">${thread_messages} = [{'name': 'Robot', 'number': 10}]</msg>
-<status status="PASS" starttime="20210331 16:13:55.384" endtime="20210331 16:13:55.384"/>
+<msg timestamp="20210913 22:34:56.365" level="INFO">${thread_messages} = [{'name': 'Robot', 'number': 10}]</msg>
+<status status="PASS" starttime="20210913 22:34:56.365" endtime="20210913 22:34:56.365"/>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <arg>${TEST_DATA}</arg>
 <arg>${thread_messages}</arg>
 <doc>Fails if the given objects are unequal.</doc>
-<status status="PASS" starttime="20210331 16:13:55.384" endtime="20210331 16:13:55.385"/>
+<status status="PASS" starttime="20210913 22:34:56.365" endtime="20210913 22:34:56.366"/>
 </kw>
 <kw name="Basic Teardown" type="TEARDOWN">
 <arg>${consumer_group_id}</arg>
 <kw name="Unsubscribe" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Unsubscribe of topics.</doc>
-<status status="PASS" starttime="20210331 16:13:55.385" endtime="20210331 16:13:55.386"/>
+<status status="PASS" starttime="20210913 22:34:56.366" endtime="20210913 22:34:56.367"/>
 </kw>
 <kw name="Close Consumer" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Close down and terminate the Kafka Consumer.</doc>
-<status status="PASS" starttime="20210331 16:13:55.386" endtime="20210331 16:13:55.392"/>
+<status status="PASS" starttime="20210913 22:34:56.367" endtime="20210913 22:34:56.372"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:55.385" endtime="20210331 16:13:55.392"/>
+<status status="PASS" starttime="20210913 22:34:56.366" endtime="20210913 22:34:56.372"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:53.094" endtime="20210331 16:13:55.392"/>
+<status status="PASS" starttime="20210913 22:34:54.183" endtime="20210913 22:34:56.372"/>
 </test>
 <test id="s1-s2-t2" name="Avro Producer With Path To Schemas">
 <kw name="Clear Messages From Thread" library="ConfluentKafkaLibrary" type="SETUP">
@@ -1892,21 +1892,21 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Remove all records gathered from specific thread
 - ``running_thread`` (Thread object) - thread which was executed with
     `Start Consumer Threaded` keyword</doc>
-<status status="PASS" starttime="20210331 16:13:55.394" endtime="20210331 16:13:55.394"/>
+<status status="PASS" starttime="20210913 22:34:56.373" endtime="20210913 22:34:56.373"/>
 </kw>
 <kw name="Set Variable" library="BuiltIn">
 <var>${value_schema_file_path}</var>
 <arg>examples/schema/producer/ValueSchema.avsc</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20210331 16:13:55.395" level="INFO">${value_schema_file_path} = examples/schema/producer/ValueSchema.avsc</msg>
-<status status="PASS" starttime="20210331 16:13:55.394" endtime="20210331 16:13:55.395"/>
+<msg timestamp="20210913 22:34:56.373" level="INFO">${value_schema_file_path} = examples/schema/producer/ValueSchema.avsc</msg>
+<status status="PASS" starttime="20210913 22:34:56.373" endtime="20210913 22:34:56.374"/>
 </kw>
 <kw name="Set Variable" library="BuiltIn">
 <var>${key_schema_file_path}</var>
 <arg>examples/schema/producer/KeySchema.avsc</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20210331 16:13:55.395" level="INFO">${key_schema_file_path} = examples/schema/producer/KeySchema.avsc</msg>
-<status status="PASS" starttime="20210331 16:13:55.395" endtime="20210331 16:13:55.395"/>
+<msg timestamp="20210913 22:34:56.374" level="INFO">${key_schema_file_path} = examples/schema/producer/KeySchema.avsc</msg>
+<status status="PASS" starttime="20210913 22:34:56.374" endtime="20210913 22:34:56.374"/>
 </kw>
 <kw name="Create Producer" library="ConfluentKafkaLibrary">
 <var>${producer_id}</var>
@@ -1916,16 +1916,16 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Create Kafka Producer and returns its `group_id` as string.
 If `schema_registry_url` is used, Kafka Producer client which does avro schema
 encoding to messages is created instead.</doc>
-<msg timestamp="20210331 16:13:55.399" level="INFO">${producer_id} = 505ecd90-117b-4811-8a4b-d1fa43f8fe05</msg>
-<status status="PASS" starttime="20210331 16:13:55.396" endtime="20210331 16:13:55.400"/>
+<msg timestamp="20210913 22:34:56.375" level="INFO">${producer_id} = d7e2723d-c49a-43a3-bbaa-d8cd3a2b75ee</msg>
+<status status="PASS" starttime="20210913 22:34:56.374" endtime="20210913 22:34:56.375"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${value}</var>
 <arg>name=Robot</arg>
 <arg>number=${10}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20210331 16:13:55.402" level="INFO">${value} = {'name': 'Robot', 'number': 10}</msg>
-<status status="PASS" starttime="20210331 16:13:55.400" endtime="20210331 16:13:55.402"/>
+<msg timestamp="20210913 22:34:56.376" level="INFO">${value} = {'name': 'Robot', 'number': 10}</msg>
+<status status="PASS" starttime="20210913 22:34:56.376" endtime="20210913 22:34:56.376"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${producer_id}</arg>
@@ -1934,7 +1934,7 @@ encoding to messages is created instead.</doc>
 <arg>value=${value}</arg>
 <arg>key=${KEY_FOR_SCHEMA}</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:13:55.402" endtime="20210331 16:13:55.457"/>
+<status status="PASS" starttime="20210913 22:34:56.377" endtime="20210913 22:34:56.416"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -1950,26 +1950,26 @@ encoding to messages is created instead.</doc>
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:55.560" level="INFO">${count} = 1</msg>
-<status status="PASS" starttime="20210331 16:13:55.458" endtime="20210331 16:13:55.560"/>
+<msg timestamp="20210913 22:34:56.518" level="INFO">${count} = 1</msg>
+<status status="PASS" starttime="20210913 22:34:56.417" endtime="20210913 22:34:56.518"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:55.561" level="INFO">Reaming messages to be delivered: 1</msg>
-<status status="PASS" starttime="20210331 16:13:55.560" endtime="20210331 16:13:55.561"/>
+<msg timestamp="20210913 22:34:56.518" level="INFO">Reaming messages to be delivered: 1</msg>
+<status status="PASS" starttime="20210913 22:34:56.518" endtime="20210913 22:34:56.518"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:55.561" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:56.519" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<msg timestamp="20210331 16:13:55.561" level="FAIL">1 != 0</msg>
-<status status="FAIL" starttime="20210331 16:13:55.561" endtime="20210331 16:13:55.562"/>
+<msg timestamp="20210913 22:34:56.519" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20210913 22:34:56.518" endtime="20210913 22:34:56.519"/>
 </kw>
-<status status="FAIL" starttime="20210331 16:13:55.458" endtime="20210331 16:13:55.562"/>
+<status status="FAIL" starttime="20210913 22:34:56.416" endtime="20210913 22:34:56.520"/>
 </kw>
 <kw name="All Messages Are Delivered">
 <arg>${producer_id}</arg>
@@ -1979,26 +1979,26 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:56.164" level="INFO">${count} = 1</msg>
-<status status="PASS" starttime="20210331 16:13:56.063" endtime="20210331 16:13:56.165"/>
+<msg timestamp="20210913 22:34:57.123" level="INFO">${count} = 1</msg>
+<status status="PASS" starttime="20210913 22:34:57.021" endtime="20210913 22:34:57.123"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:56.165" level="INFO">Reaming messages to be delivered: 1</msg>
-<status status="PASS" starttime="20210331 16:13:56.165" endtime="20210331 16:13:56.165"/>
+<msg timestamp="20210913 22:34:57.123" level="INFO">Reaming messages to be delivered: 1</msg>
+<status status="PASS" starttime="20210913 22:34:57.123" endtime="20210913 22:34:57.124"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:56.166" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:57.124" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<msg timestamp="20210331 16:13:56.166" level="FAIL">1 != 0</msg>
-<status status="FAIL" starttime="20210331 16:13:56.165" endtime="20210331 16:13:56.166"/>
+<msg timestamp="20210913 22:34:57.124" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20210913 22:34:57.124" endtime="20210913 22:34:57.124"/>
 </kw>
-<status status="FAIL" starttime="20210331 16:13:56.062" endtime="20210331 16:13:56.166"/>
+<status status="FAIL" starttime="20210913 22:34:57.020" endtime="20210913 22:34:57.125"/>
 </kw>
 <kw name="All Messages Are Delivered">
 <arg>${producer_id}</arg>
@@ -2008,62 +2008,62 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:13:56.668" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:13:56.667" endtime="20210331 16:13:56.668"/>
+<msg timestamp="20210913 22:34:57.626" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:34:57.626" endtime="20210913 22:34:57.626"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:13:56.668" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:13:56.668" endtime="20210331 16:13:56.668"/>
+<msg timestamp="20210913 22:34:57.627" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:34:57.626" endtime="20210913 22:34:57.627"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:13:56.669" level="INFO">Argument types are:
+<msg timestamp="20210913 22:34:57.627" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:56.668" endtime="20210331 16:13:56.669"/>
+<status status="PASS" starttime="20210913 22:34:57.627" endtime="20210913 22:34:57.627"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:56.666" endtime="20210331 16:13:56.669"/>
+<status status="PASS" starttime="20210913 22:34:57.625" endtime="20210913 22:34:57.627"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:55.457" endtime="20210331 16:13:56.669"/>
+<status status="PASS" starttime="20210913 22:34:56.416" endtime="20210913 22:34:57.627"/>
 </kw>
 <kw name="Sleep" library="BuiltIn">
 <arg>1s</arg>
 <doc>Pauses the test executed for the given time.</doc>
-<msg timestamp="20210331 16:13:57.670" level="INFO">Slept 1 second</msg>
-<status status="PASS" starttime="20210331 16:13:56.669" endtime="20210331 16:13:57.670"/>
+<msg timestamp="20210913 22:34:58.628" level="INFO">Slept 1 second</msg>
+<status status="PASS" starttime="20210913 22:34:57.627" endtime="20210913 22:34:58.628"/>
 </kw>
 <kw name="Create Consumer" library="ConfluentKafkaLibrary">
 <var>${consumer_group_id}</var>
 <arg>auto_offset_reset=earliest</arg>
 <arg>schema_registry_url=http://127.0.0.1:8081</arg>
 <doc>Create Kafka Consumer and returns its `group_id` as string.</doc>
-<msg timestamp="20210331 16:13:57.671" level="INFO">${consumer_group_id} = 6f5e7d11-889c-4769-83ff-1d3e7bbf1b20</msg>
-<status status="PASS" starttime="20210331 16:13:57.670" endtime="20210331 16:13:57.671"/>
+<msg timestamp="20210913 22:34:58.629" level="INFO">${consumer_group_id} = f1c2be5a-c617-4d72-8e75-00816ef4f7bb</msg>
+<status status="PASS" starttime="20210913 22:34:58.628" endtime="20210913 22:34:58.629"/>
 </kw>
 <kw name="Subscribe Topic" library="ConfluentKafkaLibrary">
 <arg>group_id=${consumer_group_id}</arg>
 <arg>topics=avro_testing2</arg>
 <doc>Subscribe to a list of topics, or a topic regex pattern.
    https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Consumer.subscribe</doc>
-<status status="PASS" starttime="20210331 16:13:57.671" endtime="20210331 16:13:57.672"/>
+<status status="PASS" starttime="20210913 22:34:58.629" endtime="20210913 22:34:58.630"/>
 </kw>
 <kw name="Poll" library="ConfluentKafkaLibrary">
 <var>${messages}</var>
 <arg>group_id=${consumer_group_id}</arg>
 <doc>Fetch and return messages from assigned topics / partitions as list.
 - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.</doc>
-<msg timestamp="20210331 16:13:57.808" level="INFO">${messages} = [{'name': 'Robot', 'number': 10}]</msg>
-<status status="PASS" starttime="20210331 16:13:57.672" endtime="20210331 16:13:57.808"/>
+<msg timestamp="20210913 22:34:58.763" level="INFO">${messages} = [{'name': 'Robot', 'number': 10}]</msg>
+<status status="PASS" starttime="20210913 22:34:58.630" endtime="20210913 22:34:58.763"/>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <arg>${TEST_DATA}</arg>
 <arg>${messages}</arg>
 <doc>Fails if the given objects are unequal.</doc>
-<status status="PASS" starttime="20210331 16:13:57.808" endtime="20210331 16:13:57.809"/>
+<status status="PASS" starttime="20210913 22:34:58.763" endtime="20210913 22:34:58.763"/>
 </kw>
 <kw name="Get Messages From Thread" library="ConfluentKafkaLibrary">
 <var>${thread_messages}</var>
@@ -2073,30 +2073,30 @@ This is a convenience method that calls poll() until len() is zero or the option
     `Start Consumer Threaded` keyword
 - ``decode_format`` (str) - If you need to decode data to specific format
     (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.</doc>
-<msg timestamp="20210331 16:13:57.809" level="INFO">${thread_messages} = [{'name': 'Robot', 'number': 10}]</msg>
-<status status="PASS" starttime="20210331 16:13:57.809" endtime="20210331 16:13:57.809"/>
+<msg timestamp="20210913 22:34:58.764" level="INFO">${thread_messages} = [{'name': 'Robot', 'number': 10}]</msg>
+<status status="PASS" starttime="20210913 22:34:58.764" endtime="20210913 22:34:58.764"/>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <arg>${TEST_DATA}</arg>
 <arg>${thread_messages}</arg>
 <doc>Fails if the given objects are unequal.</doc>
-<status status="PASS" starttime="20210331 16:13:57.810" endtime="20210331 16:13:57.810"/>
+<status status="PASS" starttime="20210913 22:34:58.764" endtime="20210913 22:34:58.764"/>
 </kw>
 <kw name="Basic Teardown" type="TEARDOWN">
 <arg>${consumer_group_id}</arg>
 <kw name="Unsubscribe" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Unsubscribe of topics.</doc>
-<status status="PASS" starttime="20210331 16:13:57.811" endtime="20210331 16:13:57.815"/>
+<status status="PASS" starttime="20210913 22:34:58.765" endtime="20210913 22:34:58.765"/>
 </kw>
 <kw name="Close Consumer" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Close down and terminate the Kafka Consumer.</doc>
-<status status="PASS" starttime="20210331 16:13:57.816" endtime="20210331 16:13:57.823"/>
+<status status="PASS" starttime="20210913 22:34:58.766" endtime="20210913 22:34:58.776"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:57.810" endtime="20210331 16:13:57.824"/>
+<status status="PASS" starttime="20210913 22:34:58.765" endtime="20210913 22:34:58.776"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:55.393" endtime="20210331 16:13:57.824"/>
+<status status="PASS" starttime="20210913 22:34:56.372" endtime="20210913 22:34:58.776"/>
 </test>
 <test id="s1-s2-t3" name="Avro Producer Consumer With Serializers">
 <kw name="Clear Messages From Thread" library="ConfluentKafkaLibrary" type="SETUP">
@@ -2104,51 +2104,51 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Remove all records gathered from specific thread
 - ``running_thread`` (Thread object) - thread which was executed with
     `Start Consumer Threaded` keyword</doc>
-<status status="PASS" starttime="20210331 16:13:57.828" endtime="20210331 16:13:57.828"/>
+<status status="PASS" starttime="20210913 22:34:58.777" endtime="20210913 22:34:58.778"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${schema_registry_conf}</var>
 <arg>url=http://127.0.0.1:8081</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20210331 16:13:57.829" level="INFO">${schema_registry_conf} = {'url': 'http://127.0.0.1:8081'}</msg>
-<status status="PASS" starttime="20210331 16:13:57.828" endtime="20210331 16:13:57.829"/>
+<msg timestamp="20210913 22:34:58.778" level="INFO">${schema_registry_conf} = {'url': 'http://127.0.0.1:8081'}</msg>
+<status status="PASS" starttime="20210913 22:34:58.778" endtime="20210913 22:34:58.778"/>
 </kw>
 <kw name="Get Schema Registry Client" library="ConfluentKafkaLibrary">
 <var>${schema_registry_client}</var>
 <arg>${schema_registry_conf}</arg>
-<msg timestamp="20210331 16:13:57.829" level="INFO">${schema_registry_client} = &lt;confluent_kafka.schema_registry.schema_registry_client.SchemaRegistryClient object at 0x7f7eac7a5390&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:57.829" endtime="20210331 16:13:57.829"/>
+<msg timestamp="20210913 22:34:58.779" level="INFO">${schema_registry_client} = &lt;confluent_kafka.schema_registry.schema_registry_client.SchemaRegistryClient object at 0x7efc7c34ef70&gt;</msg>
+<status status="PASS" starttime="20210913 22:34:58.778" endtime="20210913 22:34:58.779"/>
 </kw>
 <kw name="Set Variable" library="BuiltIn">
 <var>${schema_str}</var>
 <arg>{"namespace": "example.avro","type": "record","name": "User","fields": [{"name": "name","type": "string"},{"name": "number","type": ["int","null"]}]}</arg>
 <doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20210331 16:13:57.830" level="INFO">${schema_str} = {"namespace": "example.avro","type": "record","name": "User","fields": [{"name": "name","type": "string"},{"name": "number","type": ["int","null"]}]}</msg>
-<status status="PASS" starttime="20210331 16:13:57.830" endtime="20210331 16:13:57.830"/>
+<msg timestamp="20210913 22:34:58.779" level="INFO">${schema_str} = {"namespace": "example.avro","type": "record","name": "User","fields": [{"name": "name","type": "string"},{"name": "number","type": ["int","null"]}]}</msg>
+<status status="PASS" starttime="20210913 22:34:58.779" endtime="20210913 22:34:58.779"/>
 </kw>
 <kw name="Get Avro Serializer" library="ConfluentKafkaLibrary">
 <var>${avro_serializer}</var>
 <arg>${schema_str}</arg>
 <arg>${schema_registry_client}</arg>
-<msg timestamp="20210331 16:13:57.830" level="INFO">${avro_serializer} = &lt;confluent_kafka.schema_registry.avro.AvroSerializer object at 0x7f7eb8f7c8b8&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:57.830" endtime="20210331 16:13:57.830"/>
+<msg timestamp="20210913 22:34:58.780" level="INFO">${avro_serializer} = &lt;confluent_kafka.schema_registry.avro.AvroSerializer object at 0x7efc7c3eb2e0&gt;</msg>
+<status status="PASS" starttime="20210913 22:34:58.779" endtime="20210913 22:34:58.780"/>
 </kw>
 <kw name="Get Avro Deserializer" library="ConfluentKafkaLibrary">
 <var>${avro_deserializer}</var>
 <arg>${schema_str}</arg>
 <arg>${schema_registry_client}</arg>
-<msg timestamp="20210331 16:13:57.831" level="INFO">${avro_deserializer} = &lt;confluent_kafka.schema_registry.avro.AvroDeserializer object at 0x7f7eac73c900&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:57.831" endtime="20210331 16:13:57.831"/>
+<msg timestamp="20210913 22:34:58.780" level="INFO">${avro_deserializer} = &lt;confluent_kafka.schema_registry.avro.AvroDeserializer object at 0x7efc7f4548c0&gt;</msg>
+<status status="PASS" starttime="20210913 22:34:58.780" endtime="20210913 22:34:58.780"/>
 </kw>
 <kw name="Get String Serializer" library="ConfluentKafkaLibrary">
 <var>${string_serializer}</var>
-<msg timestamp="20210331 16:13:57.831" level="INFO">${string_serializer} = &lt;confluent_kafka.serialization.StringSerializer object at 0x7f7eac73b668&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:57.831" endtime="20210331 16:13:57.831"/>
+<msg timestamp="20210913 22:34:58.781" level="INFO">${string_serializer} = &lt;confluent_kafka.serialization.StringSerializer object at 0x7efc8036bfd0&gt;</msg>
+<status status="PASS" starttime="20210913 22:34:58.781" endtime="20210913 22:34:58.781"/>
 </kw>
 <kw name="Get String Deserializer" library="ConfluentKafkaLibrary">
 <var>${string_deserializer}</var>
-<msg timestamp="20210331 16:13:57.832" level="INFO">${string_deserializer} = &lt;confluent_kafka.serialization.StringDeserializer object at 0x7f7eac73b860&gt;</msg>
-<status status="PASS" starttime="20210331 16:13:57.831" endtime="20210331 16:13:57.832"/>
+<msg timestamp="20210913 22:34:58.781" level="INFO">${string_deserializer} = &lt;confluent_kafka.serialization.StringDeserializer object at 0x7efc7f43ca90&gt;</msg>
+<status status="PASS" starttime="20210913 22:34:58.781" endtime="20210913 22:34:58.781"/>
 </kw>
 <kw name="Create Consumer" library="ConfluentKafkaLibrary">
 <var>${consumer_group_id}</var>
@@ -2157,21 +2157,21 @@ This is a convenience method that calls poll() until len() is zero or the option
 <arg>value_deserializer=${avro_deserializer}</arg>
 <arg>legacy=${False}</arg>
 <doc>Create Kafka Consumer and returns its `group_id` as string.</doc>
-<msg timestamp="20210331 16:13:57.837" level="INFO">${consumer_group_id} = e453514c-d69c-47aa-b50b-54b02ab7cacc</msg>
-<status status="PASS" starttime="20210331 16:13:57.832" endtime="20210331 16:13:57.837"/>
+<msg timestamp="20210913 22:34:58.782" level="INFO">${consumer_group_id} = 27d6c614-fbca-4753-ba73-81f582c39b08</msg>
+<status status="PASS" starttime="20210913 22:34:58.781" endtime="20210913 22:34:58.782"/>
 </kw>
 <kw name="Subscribe Topic" library="ConfluentKafkaLibrary">
 <arg>group_id=${consumer_group_id}</arg>
 <arg>topics=avro_testing3</arg>
 <doc>Subscribe to a list of topics, or a topic regex pattern.
    https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Consumer.subscribe</doc>
-<status status="PASS" starttime="20210331 16:13:57.837" endtime="20210331 16:13:57.838"/>
+<status status="PASS" starttime="20210913 22:34:58.782" endtime="20210913 22:34:58.783"/>
 </kw>
 <kw name="Poll" library="ConfluentKafkaLibrary">
 <arg>group_id=${consumer_group_id}</arg>
 <doc>Fetch and return messages from assigned topics / partitions as list.
 - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.</doc>
-<status status="PASS" starttime="20210331 16:13:57.838" endtime="20210331 16:14:07.841"/>
+<status status="PASS" starttime="20210913 22:34:58.783" endtime="20210913 22:35:08.785"/>
 </kw>
 <kw name="Create Producer" library="ConfluentKafkaLibrary">
 <var>${producer_id}</var>
@@ -2181,16 +2181,16 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Create Kafka Producer and returns its `group_id` as string.
 If `schema_registry_url` is used, Kafka Producer client which does avro schema
 encoding to messages is created instead.</doc>
-<msg timestamp="20210331 16:14:07.842" level="INFO">${producer_id} = 03489e1a-adf8-478c-a833-59f0ef5e832a</msg>
-<status status="PASS" starttime="20210331 16:14:07.841" endtime="20210331 16:14:07.842"/>
+<msg timestamp="20210913 22:35:08.787" level="INFO">${producer_id} = 6835b4e9-b4f1-4a07-b8c7-3611b0e9c5f6</msg>
+<status status="PASS" starttime="20210913 22:35:08.786" endtime="20210913 22:35:08.787"/>
 </kw>
 <kw name="Create Dictionary" library="BuiltIn">
 <var>${value}</var>
 <arg>name=Robot</arg>
 <arg>number=${10}</arg>
 <doc>Creates and returns a dictionary based on the given ``items``.</doc>
-<msg timestamp="20210331 16:14:07.844" level="INFO">${value} = {'name': 'Robot', 'number': 10}</msg>
-<status status="PASS" starttime="20210331 16:14:07.843" endtime="20210331 16:14:07.844"/>
+<msg timestamp="20210913 22:35:08.788" level="INFO">${value} = {'name': 'Robot', 'number': 10}</msg>
+<status status="PASS" starttime="20210913 22:35:08.787" endtime="20210913 22:35:08.788"/>
 </kw>
 <kw name="Produce" library="ConfluentKafkaLibrary">
 <arg>group_id=${producer_id}</arg>
@@ -2199,7 +2199,7 @@ encoding to messages is created instead.</doc>
 <arg>value=${value}</arg>
 <arg>key=568a68fd-2785-44cc-8997-1295c3755d28</arg>
 <doc>Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.</doc>
-<status status="PASS" starttime="20210331 16:14:07.845" endtime="20210331 16:14:07.874"/>
+<status status="PASS" starttime="20210913 22:35:08.788" endtime="20210913 22:35:08.807"/>
 </kw>
 <kw name="Wait Until Keyword Succeeds" library="BuiltIn">
 <arg>10x</arg>
@@ -2215,26 +2215,26 @@ encoding to messages is created instead.</doc>
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:14:07.976" level="INFO">${count} = 1</msg>
-<status status="PASS" starttime="20210331 16:14:07.875" endtime="20210331 16:14:07.976"/>
+<msg timestamp="20210913 22:35:08.913" level="INFO">${count} = 1</msg>
+<status status="PASS" starttime="20210913 22:35:08.810" endtime="20210913 22:35:08.913"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:14:07.977" level="INFO">Reaming messages to be delivered: 1</msg>
-<status status="PASS" starttime="20210331 16:14:07.977" endtime="20210331 16:14:07.977"/>
+<msg timestamp="20210913 22:35:08.913" level="INFO">Reaming messages to be delivered: 1</msg>
+<status status="PASS" starttime="20210913 22:35:08.913" endtime="20210913 22:35:08.913"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:14:07.978" level="INFO">Argument types are:
+<msg timestamp="20210913 22:35:08.914" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<msg timestamp="20210331 16:14:07.978" level="FAIL">1 != 0</msg>
-<status status="FAIL" starttime="20210331 16:14:07.977" endtime="20210331 16:14:07.978"/>
+<msg timestamp="20210913 22:35:08.914" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20210913 22:35:08.913" endtime="20210913 22:35:08.914"/>
 </kw>
-<status status="FAIL" starttime="20210331 16:14:07.874" endtime="20210331 16:14:07.978"/>
+<status status="FAIL" starttime="20210913 22:35:08.808" endtime="20210913 22:35:08.915"/>
 </kw>
 <kw name="All Messages Are Delivered">
 <arg>${producer_id}</arg>
@@ -2244,26 +2244,26 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:14:08.581" level="INFO">${count} = 1</msg>
-<status status="PASS" starttime="20210331 16:14:08.480" endtime="20210331 16:14:08.581"/>
+<msg timestamp="20210913 22:35:09.516" level="INFO">${count} = 1</msg>
+<status status="PASS" starttime="20210913 22:35:09.416" endtime="20210913 22:35:09.516"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:14:08.582" level="INFO">Reaming messages to be delivered: 1</msg>
-<status status="PASS" starttime="20210331 16:14:08.581" endtime="20210331 16:14:08.582"/>
+<msg timestamp="20210913 22:35:09.517" level="INFO">Reaming messages to be delivered: 1</msg>
+<status status="PASS" starttime="20210913 22:35:09.517" endtime="20210913 22:35:09.517"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:14:08.582" level="INFO">Argument types are:
+<msg timestamp="20210913 22:35:09.517" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<msg timestamp="20210331 16:14:08.583" level="FAIL">1 != 0</msg>
-<status status="FAIL" starttime="20210331 16:14:08.582" endtime="20210331 16:14:08.583"/>
+<msg timestamp="20210913 22:35:09.518" level="FAIL">1 != 0</msg>
+<status status="FAIL" starttime="20210913 22:35:09.517" endtime="20210913 22:35:09.518"/>
 </kw>
-<status status="FAIL" starttime="20210331 16:14:08.479" endtime="20210331 16:14:08.583"/>
+<status status="FAIL" starttime="20210913 22:35:09.415" endtime="20210913 22:35:09.518"/>
 </kw>
 <kw name="All Messages Are Delivered">
 <arg>${producer_id}</arg>
@@ -2273,61 +2273,61 @@ This is a convenience method that calls poll() until len() is zero or the option
 <doc>Wait for all messages in the Producer queue to be delivered. Returns the number of messages still in queue.
 This is a convenience method that calls poll() until len() is zero or the optional timeout elapses.
 - `timeout` (real) : Optional timeout. Default: `0.1`.</doc>
-<msg timestamp="20210331 16:14:09.085" level="INFO">${count} = 0</msg>
-<status status="PASS" starttime="20210331 16:14:09.084" endtime="20210331 16:14:09.085"/>
+<msg timestamp="20210913 22:35:10.020" level="INFO">${count} = 0</msg>
+<status status="PASS" starttime="20210913 22:35:10.019" endtime="20210913 22:35:10.020"/>
 </kw>
 <kw name="Log" library="BuiltIn">
 <arg>Reaming messages to be delivered: ${count}</arg>
 <doc>Logs the given message with the given level.</doc>
-<msg timestamp="20210331 16:14:09.085" level="INFO">Reaming messages to be delivered: 0</msg>
-<status status="PASS" starttime="20210331 16:14:09.085" endtime="20210331 16:14:09.085"/>
+<msg timestamp="20210913 22:35:10.020" level="INFO">Reaming messages to be delivered: 0</msg>
+<status status="PASS" starttime="20210913 22:35:10.020" endtime="20210913 22:35:10.020"/>
 </kw>
 <kw name="Should Be Equal As Integers" library="BuiltIn">
 <arg>${count}</arg>
 <arg>0</arg>
 <doc>Fails if objects are unequal after converting them to integers.</doc>
-<msg timestamp="20210331 16:14:09.085" level="INFO">Argument types are:
+<msg timestamp="20210913 22:35:10.021" level="INFO">Argument types are:
 &lt;class 'int'&gt;
 &lt;type 'unicode'&gt;</msg>
-<status status="PASS" starttime="20210331 16:14:09.085" endtime="20210331 16:14:09.085"/>
+<status status="PASS" starttime="20210913 22:35:10.020" endtime="20210913 22:35:10.021"/>
 </kw>
-<status status="PASS" starttime="20210331 16:14:09.083" endtime="20210331 16:14:09.086"/>
+<status status="PASS" starttime="20210913 22:35:10.019" endtime="20210913 22:35:10.021"/>
 </kw>
-<status status="PASS" starttime="20210331 16:14:07.874" endtime="20210331 16:14:09.086"/>
+<status status="PASS" starttime="20210913 22:35:08.808" endtime="20210913 22:35:10.021"/>
 </kw>
 <kw name="Poll" library="ConfluentKafkaLibrary">
 <var>${messages}</var>
 <arg>group_id=${consumer_group_id}</arg>
 <doc>Fetch and return messages from assigned topics / partitions as list.
 - ``timeout`` (int): Seconds spent waiting in poll if data is not available in the buffer.</doc>
-<msg timestamp="20210331 16:14:09.086" level="INFO">${messages} = [{'name': 'Robot', 'number': 10}]</msg>
-<status status="PASS" starttime="20210331 16:14:09.086" endtime="20210331 16:14:09.086"/>
+<msg timestamp="20210913 22:35:10.022" level="INFO">${messages} = [{'name': 'Robot', 'number': 10}]</msg>
+<status status="PASS" starttime="20210913 22:35:10.021" endtime="20210913 22:35:10.022"/>
 </kw>
 <kw name="Should Be Equal" library="BuiltIn">
 <arg>${messages}</arg>
 <arg>${TEST_DATA}</arg>
 <doc>Fails if the given objects are unequal.</doc>
-<status status="PASS" starttime="20210331 16:14:09.087" endtime="20210331 16:14:09.087"/>
+<status status="PASS" starttime="20210913 22:35:10.022" endtime="20210913 22:35:10.022"/>
 </kw>
 <kw name="Basic Teardown" type="TEARDOWN">
 <arg>${consumer_group_id}</arg>
 <kw name="Unsubscribe" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Unsubscribe of topics.</doc>
-<status status="PASS" starttime="20210331 16:14:09.088" endtime="20210331 16:14:09.088"/>
+<status status="PASS" starttime="20210913 22:35:10.023" endtime="20210913 22:35:10.023"/>
 </kw>
 <kw name="Close Consumer" library="ConfluentKafkaLibrary">
 <arg>${group_id}</arg>
 <doc>Close down and terminate the Kafka Consumer.</doc>
-<status status="PASS" starttime="20210331 16:14:09.088" endtime="20210331 16:14:09.093"/>
+<status status="PASS" starttime="20210913 22:35:10.024" endtime="20210913 22:35:10.030"/>
 </kw>
-<status status="PASS" starttime="20210331 16:14:09.087" endtime="20210331 16:14:09.094"/>
+<status status="PASS" starttime="20210913 22:35:10.022" endtime="20210913 22:35:10.030"/>
 </kw>
-<status status="PASS" starttime="20210331 16:13:57.825" endtime="20210331 16:14:09.094"/>
+<status status="PASS" starttime="20210913 22:34:58.777" endtime="20210913 22:35:10.030"/>
 </test>
-<status status="PASS" starttime="20210331 16:13:42.973" endtime="20210331 16:14:09.095"/>
+<status status="PASS" starttime="20210913 22:34:44.091" endtime="20210913 22:35:10.031"/>
 </suite>
-<status status="PASS" starttime="20210331 16:13:01.796" endtime="20210331 16:14:09.097"/>
+<status status="PASS" starttime="20210913 22:34:03.007" endtime="20210913 22:35:10.032"/>
 </suite>
 <statistics>
 <total>

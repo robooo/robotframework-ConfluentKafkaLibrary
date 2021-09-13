@@ -5,7 +5,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta content="Robot Framework 4.0 (Python 3.6.7 on linux)" name="Generator">
+<meta content="Robot Framework 4.1.1 (Python 3.8.10 on linux)" name="Generator">
 <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKcAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAAqAAAAAAAAAAAAAAAAAAAALIAAAD/AAAA4AAAANwAAADcAAAA3AAAANwAAADcAAAA3AAAANwAAADcAAAA4AAAAP8AAACxAAAAAAAAAKYAAAD/AAAAuwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC/AAAA/wAAAKkAAAD6AAAAzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN8AAAD/AAAA+gAAAMMAAAAAAAAAAgAAAGsAAABrAAAAawAAAGsAAABrAAAAawAAAGsAAABrAAAADAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAIsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAANEAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAAAAAAAAMgAAADIAAAAyAAAAMgAAADIAAAAyAAAAMgAAADIAAAAFAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAADwAAAB8AAAAAAAAAGAAAABcAAAAAAAAAH8AAABKAAAAAAAAAAAAAAAAAAAA2gAAAP8AAAD6AAAAwwAAAAAAAADCAAAA/wAAACkAAADqAAAA4QAAAAAAAAD7AAAA/wAAALAAAAAGAAAAAAAAANoAAAD/AAAA+gAAAMMAAAAAAAAAIwAAAP4AAAD/AAAA/wAAAGAAAAAAAAAAAAAAAMkAAAD/AAAAigAAAAAAAADaAAAA/wAAAPoAAADDAAAAAAAAAAAAAAAIAAAAcAAAABkAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAA2gAAAP8AAAD7AAAAywAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAN4AAAD/AAAAqwAAAP8AAACvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALIAAAD/AAAAsgAAAAAAAAC5AAAA/wAAAMoAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMkAAAD/AAAAvAAAAAAAAAAAAAAAAAAAAKwAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAArQAAAAAAAAAAwAMAAIABAAAf+AAAP/wAAD/8AAAgBAAAP/wAAD/8AAA//AAAJIwAADHEAAA//AAAP/wAAB/4AACAAQAAwAMAAA==">
 <style media="all" type="text/css">
 /* Generic and misc styles */
@@ -1186,7 +1186,10 @@ window.testdata = function () {
     function createBodyItem(parent, element, strings, index) {
         if (element[0] == MESSAGE_TYPE)
             return createMessage(element, strings);
-        return createKeyword(parent, element, strings, index);
+        var messages = util.filter(parent.children(), function (child) {
+            return child.type == 'message';
+        })
+        return createKeyword(parent, element, strings, index - messages.length);
     }
     function createKeyword(parent, element, strings, index) {
         var kw = model.Keyword({
@@ -1625,22 +1628,22 @@ storage = function () {
 window.output = {};
 </script>
 <script type="text/javascript">
-window.output["suite"] = [1,2,3,0,[],[1,0,67301],[[4,5,6,0,[],[1,23,41151],[],[[7,0,0,[],[1,11273,23],[]],[8,0,0,[],[1,11297,183],[]],[9,0,0,[],[1,11480,1949],[]],[10,0,0,[],[1,13429,5066],[]],[11,0,0,[],[1,18496,1532],[]],[12,0,0,[],[1,20029,6029],[]],[13,0,0,[],[1,26059,11036],[]],[14,0,0,[],[1,37095,1022],[]],[15,0,0,[],[1,38117,3055],[]]],[],[9,9,0,0]],[16,17,18,0,[],[1,41177,26122],[],[[19,0,0,[],[1,51298,2298],[]],[20,0,0,[],[1,53597,2431],[]],[21,0,0,[],[1,56029,11269],[]]],[],[3,3,0,0]]],[],[],[12,12,0,0]];
+window.output["suite"] = [1,2,3,0,[],[1,0,67025],[[4,5,6,0,[],[1,39,41043],[],[[7,0,0,[],[1,11256,12],[]],[8,0,0,[],[1,11269,161],[]],[9,0,0,[],[1,11431,1951],[]],[10,0,0,[],[1,13383,5041],[]],[11,0,0,[],[1,18425,1539],[]],[12,0,0,[],[1,19964,6022],[]],[13,0,0,[],[1,25988,11030],[]],[14,0,0,[],[1,37019,1017],[]],[15,0,0,[],[1,38037,3044],[]]],[],[9,9,0,0]],[16,17,18,0,[],[1,41084,25940],[],[[19,0,0,[],[1,51176,2189],[]],[20,0,0,[],[1,53365,2404],[]],[21,0,0,[],[1,55770,11253],[]]],[],[3,3,0,0]]],[],[],[12,12,0,0]];
 </script>
 <script type="text/javascript">
 window.output["strings"] = [];
 </script>
 <script type="text/javascript">
-window.output["strings"] = window.output["strings"].concat(["*","*Examples","*/home/travis/build/robooo/robotframework-ConfluentKafkaLibrary/examples","*../examples","*Test","*/home/travis/build/robooo/robotframework-ConfluentKafkaLibrary/examples/test.robot","*../examples/test.robot","*Verify Topics","*Basic Consumer","*Produce Without Value","*Verify Position","*Consumer With Assignment To Last Message After Get Of Watermark Offsets","*Consumer With Assignment To OFFSET_END","*Verify Test And Threaded Consumer","*Verify Clean Of Threaded Consumer Messages","*Remove And Publish New Messages From Threaded Consumer","*Test Avro","*/home/travis/build/robooo/robotframework-ConfluentKafkaLibrary/examples/test_avro.robot","*../examples/test_avro.robot","*Avro Producer With Schemas As String Argument","*Avro Producer With Path To Schemas","*Avro Producer Consumer With Serializers"]);
+window.output["strings"] = window.output["strings"].concat(["*","*Examples","*/home/runner/work/robotframework-ConfluentKafkaLibrary/robotframework-ConfluentKafkaLibrary/examples","*../examples","*Test","*/home/runner/work/robotframework-ConfluentKafkaLibrary/robotframework-ConfluentKafkaLibrary/examples/test.robot","*../examples/test.robot","*Verify Topics","*Basic Consumer","*Produce Without Value","*Verify Position","*Consumer With Assignment To Last Message After Get Of Watermark Offsets","*Consumer With Assignment To OFFSET_END","*Verify Test And Threaded Consumer","*Verify Clean Of Threaded Consumer Messages","*Remove And Publish New Messages From Threaded Consumer","*Test Avro","*/home/runner/work/robotframework-ConfluentKafkaLibrary/robotframework-ConfluentKafkaLibrary/examples/test_avro.robot","*../examples/test_avro.robot","*Avro Producer With Schemas As String Argument","*Avro Producer With Path To Schemas","*Avro Producer Consumer With Serializers"]);
 </script>
 <script type="text/javascript">
 window.output["stats"] = [[{"elapsed":"00:00:46","fail":0,"label":"All Tests","pass":12,"skip":0}],[],[{"elapsed":"00:01:07","fail":0,"id":"s1","label":"Examples","name":"Examples","pass":12,"skip":0},{"elapsed":"00:00:41","fail":0,"id":"s1-s1","label":"Examples.Test","name":"Test","pass":9,"skip":0},{"elapsed":"00:00:26","fail":0,"id":"s1-s2","label":"Examples.Test Avro","name":"Test Avro","pass":3,"skip":0}]];
 </script>
 <script type="text/javascript">
-window.output["baseMillis"] = 1617207181796;
+window.output["baseMillis"] = 1631572443007;
 </script>
 <script type="text/javascript">
-window.output["generated"] = 67369;
+window.output["generated"] = 67101;
 </script>
 <script type="text/javascript">
 window.output["expand_keywords"] = null;
