@@ -41,3 +41,10 @@ jobs:
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: docs # The folder the action should deploy.
+      
+      - name: Generate keyword documentation
+        run: python3 -m robot.libdoc -f html src/ConfluentKafkaLibrary docs/index.html
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          file_pattern: docs/index.html
+          commit_message: Add keyword documentation
