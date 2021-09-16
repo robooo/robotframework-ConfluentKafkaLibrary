@@ -35,16 +35,17 @@ jobs:
         run:  docker inspect --format "{{json .State.Health.Status }}" $(docker-compose -f examples/docker-compose.yml ps -q)
       - name: Execute tests
         run: python3 -m robot -d ./docs examples/
-
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.5
-        with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: docs # The folder the action should deploy.
-      
       - name: Generate keyword documentation
         run: python3 -m robot.libdoc -f html src/ConfluentKafkaLibrary docs/index.html
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           file_pattern: docs/index.html
           commit_message: Add keyword documentation
+          ref: ${{ github.head_ref }}
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: docs # The folder the action should deploy.
+
