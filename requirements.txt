@@ -1,2 +1,0 @@
-robotframework>=3.2.1
-confluent-kafka==1.6.0
