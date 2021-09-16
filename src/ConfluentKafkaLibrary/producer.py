@@ -35,7 +35,6 @@ class KafkaProducer(object):
         schema_registry_url=None,
         value_schema=None,
         key_schema=None,
-        auto_create_topics=True,
         key_serializer=None,
         value_serializer=None,
         legacy=True,
@@ -58,8 +57,6 @@ class KafkaProducer(object):
         - ``schema_registry_url`` (str): *required* for Avro Consumer. Full URL to avro schema endpoint.
         - ``value_schema`` (str): Optional default avro schema for value or path to file with schema. Default: `None`
         - ``key_schema`` (str): Optional default avro schema for key. Default: `None`
-        - ``auto_create_topics`` (bool): Consumers no longer trigger auto creation of topics,
-            will be removed in future release. Default: `True`.
         - ``legacy`` (bool): Activate SerializingProducer if 'False' else
             AvroProducer (legacy) is used. Will be removed when confluent-kafka will deprecate this.
             Default: `True`.
