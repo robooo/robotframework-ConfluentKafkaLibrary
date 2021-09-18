@@ -123,3 +123,6 @@ class KafkaProducer(object):
         """
         messages_in_queue = self.producers[group_id].flush(timeout)
         return messages_in_queue
+
+    def purge(self, group_id, **kwargs):
+        self.producers[group_id].purge(**kwargs)
