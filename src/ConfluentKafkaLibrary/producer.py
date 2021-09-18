@@ -35,7 +35,6 @@ class KafkaProducer(object):
         schema_registry_url=None,
         value_schema=None,
         key_schema=None,
-        auto_create_topics=True,
         key_serializer=None,
         value_serializer=None,
         legacy=True,
@@ -55,15 +54,9 @@ class KafkaProducer(object):
             server-side log entries that correspond to this client. Also
             submitted to GroupCoordinator for logging with respect to
             consumer group administration. Default: `Robot`.
-        - ``group_id`` (str or uuid.uuid4() if not set) : name of the consumer group to join for dynamic
-            partition assignment (if enabled), and to use for fetching and
-            committing offsets. If None, unique string is generated  (via uuid.uuid4())
-            and offset commits are disabled. Default: `None`.
         - ``schema_registry_url`` (str): *required* for Avro Consumer. Full URL to avro schema endpoint.
         - ``value_schema`` (str): Optional default avro schema for value or path to file with schema. Default: `None`
         - ``key_schema`` (str): Optional default avro schema for key. Default: `None`
-        - ``auto_create_topics`` (bool): Consumers no longer trigger auto creation of topics,
-            will be removed in future release. Default: `True`.
         - ``legacy`` (bool): Activate SerializingProducer if 'False' else
             AvroProducer (legacy) is used. Will be removed when confluent-kafka will deprecate this.
             Default: `True`.
@@ -80,9 +73,7 @@ class KafkaProducer(object):
 
             producer = AvroProducer({
                 'bootstrap.servers': '{}:{}'.format(server, port),
-                'group.id': group_id,
                 'schema.registry.url': schema_registry_url,
-                'allow.auto.create.topics': auto_create_topics,
                 **kwargs},
                 default_key_schema=key_schema,
                 default_value_schema=value_schema
@@ -90,7 +81,6 @@ class KafkaProducer(object):
         elif legacy == False:
             producer = SerializingProducer({
                 'bootstrap.servers': '{}:{}'.format(server, port),
-                'group.id': group_id,
                 'key.serializer': key_serializer,
                 'value.serializer': value_serializer,
                 **kwargs}
@@ -98,8 +88,6 @@ class KafkaProducer(object):
         else:
             producer = Producer({
                 'bootstrap.servers': '{}:{}'.format(server, port),
-                'group.id': group_id,
-                'allow.auto.create.topics': auto_create_topics,
                 **kwargs})
 
         self.producers[group_id] = producer
@@ -135,3 +123,6 @@ class KafkaProducer(object):
         """
         messages_in_queue = self.producers[group_id].flush(timeout)
         return messages_in_queue
+
+    def purge(self, group_id, **kwargs):
+        self.producers[group_id].purge(**kwargs)

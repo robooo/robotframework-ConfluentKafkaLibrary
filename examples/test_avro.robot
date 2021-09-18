@@ -55,15 +55,17 @@ Avro Producer Consumer With Serializers
     ${string_serializer}=  Get String Serializer
     ${string_deserializer}=  Get String Deserializer
 
-    ${consumer_group_id}=  Create Consumer  auto_offset_reset=latest  key_deserializer=${string_deserializer}  value_deserializer=${avro_deserializer}  legacy=${False}
-    Subscribe Topic  group_id=${consumer_group_id}  topics=avro_testing3
-    Poll  group_id=${consumer_group_id}
-
     ${producer_id}=  Create Producer  key_serializer=${string_serializer}  value_serializer=${avro_serializer}  legacy=${False}
     ${value}=  Create Dictionary  name=Robot  number=${10}
     Produce  group_id=${producer_id}  topic=avro_testing3  partition=${0}  value=${value}  key=568a68fd-2785-44cc-8997-1295c3755d28
     Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${producer_id}
 
+    ${consumer_group_id}=  Create Consumer  auto_offset_reset=latest  key_deserializer=${string_deserializer}  value_deserializer=${avro_deserializer}  legacy=${False}
+    Subscribe Topic  group_id=${consumer_group_id}  topics=avro_testing3
+    Poll  group_id=${consumer_group_id}  # Dummy poll when using offset reset 'latest'
+
+    Produce  group_id=${producer_id}  topic=avro_testing3  value=${value}  partition=${0}  key=568a68fd-2785-44cc-8997-1295c3755d28
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${producer_id}
     ${messages}=  Poll  group_id=${consumer_group_id}
     Should Be Equal  ${messages}  ${TEST_DATA}
     [Teardown]  Basic Teardown  ${consumer_group_id}
@@ -78,6 +80,17 @@ Starting Test
     ${value}=  Create Dictionary  name=Robot  number=${10}
     ${data}=  Create List  ${value}
     Set Suite Variable  ${TEST_DATA}  ${data}
+
+    # Rewrite to support topic creation via AdminClient
+    ${value_schema}=  Set Variable  {"namespace": "example.avro","type": "record","name": "User","fields": [{"name": "name","type": "string"},{"name": "number","type": ["int","null"]}]}
+    ${key_schema}=  Set Variable  {"namespace": "example.avro","type": "record","name": "User","fields": [{"name": "name","type": "string"}]}
+    ${producer_id}=  Create Producer  schema_registry_url=http://127.0.0.1:8081
+    ...  value_schema=${value_schema}  key_schema=${key_schema}
+
+    Produce  group_id=${producer_id}  topic=avro_testing1  partition=${0}  value=${value}  key=${KEY_FOR_SCHEMA}
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${producer_id}
+    Produce  group_id=${producer_id}  topic=avro_testing2  partition=${0}  value=${value}  key=${KEY_FOR_SCHEMA}
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${producer_id}
 
     ${thread}=  Start Consumer Threaded  topics=${TEST_TOPIC}   schema_registry_url=http://127.0.0.1:8081  auto_offset_reset=latest
     Set Suite Variable  ${MAIN_THREAD}  ${thread}
