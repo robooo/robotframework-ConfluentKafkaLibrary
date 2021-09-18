@@ -122,6 +122,18 @@ Remove And Publish New Messages From Threaded Consumer
     Should Be Equal  ${data}  ${thread_messages2}
     [Teardown]  Clear Messages From Thread  ${MAIN_THREAD}
 
+Purge Test
+    ${producer_id}=  Create Producer
+    Produce  group_id=${producer_id}  topic=${TEST_TOPIC}  value=After  partition=${P_ID}
+    Produce  group_id=${producer_id}  topic=${TEST_TOPIC}  value=Clear  partition=${P_ID}
+
+    Purge  group_id=${producer_id}  in_queue=${False}
+    ${count}=  Flush  ${producer_id}  timeout=${0.002}
+    Should Be Equal As Integers  2  ${count}
+    Purge  group_id=${producer_id}
+    ${count}=  Flush  ${producer_id}  timeout=${0.002}
+    Should Be Equal As Integers  0  ${count}
+
 
 *** Keywords ***
 Starting Test
