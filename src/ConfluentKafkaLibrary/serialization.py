@@ -5,7 +5,7 @@ from confluent_kafka.serialization import *
 class Serializer(object):
 
     def get_avro_serializer(self, schema_str, schema_registry_client, to_dict=None, conf=None):
-        return AvroSerializer(schema_str, schema_registry_client, to_dict, conf)
+        return AvroSerializer(schema_registry_client, schema_str, to_dict, conf)
 
     def get_double_serializer(self):
         return DoubleSerializer()
@@ -26,7 +26,7 @@ class Serializer(object):
 class Deserializer(object):
 
     def get_avro_deserializer(self, schema_str, schema_registry_client, from_dict=None):
-        return AvroDeserializer(schema_str, schema_registry_client, from_dict)
+        return AvroDeserializer(schema_registry_client, schema_str, from_dict)
 
     def get_double_deserializer(self):
         return DoubleDeserializer()
