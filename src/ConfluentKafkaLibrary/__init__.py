@@ -12,10 +12,8 @@ from confluent_kafka.schema_registry import SchemaRegistryClient
 class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializer):
     """ConfluentKafkaLibrary is a Robot Framework library which wraps up
     [https://github.com/confluentinc/confluent-kafka-python | confluent-kafka-python].
-    Keywords are inspired by [https://github.com/s4int/robotframework-KafkaLibrary | robotframework-KafkaLibrary]
-    which is based on [https://github.com/Parsely/pykafka | pykafka project]
-    and support more functionality like running more clients based on `group_id` or running them in threaded mode
-    during the tests, decoding of gathered data etc. (`See` `Examples`).
+    Library supports more functionality like running more clients based on `group_id`
+    or running them in threaded mode during the tests, decoding of gathered data etc. (`See` `Examples`).
 
     This document explains how to use keywords provided by ConfluentKafkaLibrary.
     For information about installation, support, and more, please visit the
@@ -23,6 +21,7 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializ
     For more information about Robot Framework, see http://robotframework.org.
 
     == Examples ==
+    See [https://github.com/robooo/robotframework-ConfluentKafkaLibrary/tree/master/examples | repo examples].
 
     *Basic Consumer with predefined group_id*
 
@@ -59,7 +58,6 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializ
     | | ...  ssl.key.location=/home/user/cert/kafka-client-key.pem |
     | `Log` | `Execute commands which should push some data to topic` |
     | ${messages}= | `Get Messages From Thread` | ${thread} |
-    | Stop Thread | ${thread} |
 
     """
 
