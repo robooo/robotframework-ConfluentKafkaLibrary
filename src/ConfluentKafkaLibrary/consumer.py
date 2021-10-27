@@ -197,6 +197,7 @@ class KafkaConsumer():
         """Close down and terminate the Kafka Consumer.
         """
         self.consumers[group_id].close()
+        del self.consumers[group_id]
 
     def seek(self, group_id, topic_partition):
         """https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Consumer.seek
