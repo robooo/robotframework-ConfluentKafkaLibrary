@@ -132,6 +132,11 @@ class KafkaConsumer():
         self.consumers[group_id] = consumer
         return group_id
 
+    def get_all_consumers(self):
+        """Returns all non-threaded consumers
+        """
+        return self.consumers
+
     def create_topic_partition(self, topic_name, partition=None, offset=None):
         """Returns TopicPartiton object based on
            https://docs.confluent.io/current/clients/confluent-kafka-python/#topicpartition
@@ -197,6 +202,7 @@ class KafkaConsumer():
         """Close down and terminate the Kafka Consumer.
         """
         self.consumers[group_id].close()
+        del self.consumers[group_id]
 
     def seek(self, group_id, topic_partition):
         """https://docs.confluent.io/current/clients/confluent-kafka-python/#confluent_kafka.Consumer.seek

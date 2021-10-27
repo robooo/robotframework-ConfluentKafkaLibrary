@@ -32,7 +32,7 @@ jobs:
       - name: Install python requirements
         run: pip install .
       - name: Wait for services
-        run: sleep 30
+        run: while [ -n "$(docker container ls -a | grep starting)" ]; do sleep 2; done;
       - name: Docker inspect
         run:  docker inspect --format "{{json .State.Health.Status }}" $(docker-compose -f examples/docker-compose.yml ps -q)
       - name: Execute tests
