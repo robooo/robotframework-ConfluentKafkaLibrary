@@ -1,13 +1,13 @@
-from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 import confluent_kafka
-from confluent_kafka.admin import AdminClient, NewTopic, NewPartitions
+from confluent_kafka.schema_registry import SchemaRegistryClient
+from confluent_kafka.admin import AdminClient, NewTopic, NewPartitions, ConfigResource
+from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 
 from .consumer import KafkaConsumer
 from .producer import KafkaProducer
 from .admin_client import KafkaAdminClient
 from .serialization import Serializer, Deserializer
 from .version import VERSION
-from confluent_kafka.schema_registry import SchemaRegistryClient
 
 
 #class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializer):
