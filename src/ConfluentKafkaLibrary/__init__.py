@@ -83,7 +83,7 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, KafkaAdminClient, Seri
 
     def list_topics(self, group_id, topic=None):
         """Request Metadata from cluster. Could be executed with consumer or producer group_id too.
-        - ``topic`` (str):  If specified, only request info about this topic, else returnfor all topics in cluster.
+        - ``topic`` (str):  If specified, only request info about this topic, else return for all topics in cluster.
         Default: `None`.
         - ``group_id`` (str): *required* id of the created consumer or producer.
         """
