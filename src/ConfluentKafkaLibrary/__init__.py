@@ -78,6 +78,9 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, KafkaAdminClient, Seri
             BuiltIn().set_global_variable('${OFFSET_END}', confluent_kafka.OFFSET_END)
             BuiltIn().set_global_variable('${OFFSET_STORED}', confluent_kafka.OFFSET_STORED)
             BuiltIn().set_global_variable('${OFFSET_INVALID}', confluent_kafka.OFFSET_INVALID)
+            BuiltIn().set_global_variable('${ADMIN_RESOURCE_BROKER}', confluent_kafka.admin.RESOURCE_BROKER)
+            BuiltIn().set_global_variable('${ADMIN_RESOURCE_GROUP}', confluent_kafka.admin.RESOURCE_GROUP)
+            BuiltIn().set_global_variable('${ADMIN_RESOURCE_TOPIC}', confluent_kafka.admin.RESOURCE_TOPIC)
         except RobotNotRunningError as e:
             pass
 
@@ -111,6 +114,14 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, KafkaAdminClient, Seri
         """
         return NewPartitions(topic=topic, **kwargs)
 
+    def config_resource(self, restype, name, **kwargs):
+        """Represents a resource that has configuration, and (optionally) a collection of configuration properties
+        for that resource. Used by describe_configs() and alter_configs().
+        - ``restype`` (ConfigResource.Type): The resource type.
+        -  ``name`` (str): The resource name, which depends on the resource type. For RESOURCE_BROKER,
+            the resource name is the broker id.
+        """
+        return ConfigResource(restype=restype, name=name, **kwargs)
+
     def get_schema_registry_client(self, conf):
         return SchemaRegistryClient(conf)
-
