@@ -97,6 +97,14 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, KafkaAdminClient, Seri
 
         raise ValueError('Consumer or producer group_id is wrong or does not exists!')
 
+    def new_topic(self, topic, **kwargs):
+        """Instantiate a NewTopic object. Specifies per-topic settings for passing to AdminClient.create_topics().
+        - ``topic`` (str): Topic name
+        Note: In a multi-cluster production scenario, it is more typical to use a
+        replication_factor of 3 for durability.
+        """
+        return NewTopic(topic=topic, **kwargs)
+
     def get_schema_registry_client(self, conf):
         return SchemaRegistryClient(conf)
 

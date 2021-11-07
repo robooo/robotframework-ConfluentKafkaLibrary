@@ -23,3 +23,34 @@ class KafkaAdminClient():
 
         self.admin_clients[group_id] = admin_client
         return group_id
+
+    def create_topics(self, group_id, new_topics, **kwargs):
+        """Create one or more new topics and wait for each one to finish.
+        - ``new_topics`` (list(NewTopic) or NewTopic): A list of specifications (NewTopic)
+            or a single instance for the topics that should be created.
+        """
+        fs = None
+        if isinstance(new_topics, list):
+            fs = self.admin_clients[group_id].create_topics(new_topics, **kwargs)
+        else:
+            fs = self.admin_clients[group_id].create_topics([new_topics], **kwargs)
+
+        for topic, f in fs.items():
+            try:
+                f.result()  # The result itself is None
+                print("Topic {} created".format(topic))
+            except Exception as e:
+                raise Exception("Failed to create topic {}: {}".format(topic, e))
+
+    def delete_topics(self, group_id, topics, **kwargs):
+        if isinstance(topics, str):
+            topics = [topics]
+
+        fs = self.admin_clients[group_id].delete_topics(topics, **kwargs)
+
+        for topic, f in fs.items():
+            try:
+                f.result()  # The result itself is None
+                print("Topic {} deleted".format(topic))
+            except Exception as e:
+                raise Exception("Failed to delete topic {}: {}".format(topic, e))
