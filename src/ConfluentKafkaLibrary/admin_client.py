@@ -54,3 +54,20 @@ class KafkaAdminClient():
                 print("Topic {} deleted".format(topic))
             except Exception as e:
                 raise Exception("Failed to delete topic {}: {}".format(topic, e))
+
+    def create_partitions(self, group_id, new_partitions, **kwargs):
+        """Create additional partitions for the given topics.
+        - ``new_partitions``  (list(NewPartitions) or NewPartitions): New partitions to be created.
+        """
+        fs = None
+        if isinstance(new_partitions, list):
+            fs = self.admin_clients[group_id].create_partitions(new_partitions, **kwargs)
+        else:
+            fs = self.admin_clients[group_id].create_partitions([new_partitions], **kwargs)
+
+        for topic, f in fs.items():
+            try:
+                f.result()  # The result itself is None
+                print("Additional partitions created for topic {}".format(topic))
+            except Exception as e:
+                raise Exception("Failed to add partitions to topic {}: {}".format(topic, e))

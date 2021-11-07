@@ -1,6 +1,6 @@
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 import confluent_kafka
-from confluent_kafka.admin import AdminClient, NewTopic
+from confluent_kafka.admin import AdminClient, NewTopic, NewPartitions
 
 from .consumer import KafkaConsumer
 from .producer import KafkaProducer
@@ -104,6 +104,12 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, KafkaAdminClient, Seri
         replication_factor of 3 for durability.
         """
         return NewTopic(topic=topic, **kwargs)
+
+    def new_partitions(self, topic, **kwargs):
+        """Instantiate a NewPartitions object.
+        - ``topic`` (str): Topic name
+        """
+        return NewPartitions(topic=topic, **kwargs)
 
     def get_schema_registry_client(self, conf):
         return SchemaRegistryClient(conf)
