@@ -71,3 +71,40 @@ class KafkaAdminClient():
                 print("Additional partitions created for topic {}".format(topic))
             except Exception as e:
                 raise Exception("Failed to add partitions to topic {}: {}".format(topic, e))
+
+    def describe_configs(self, group_id, resources, **kwargs):
+        """Get the configuration of the specified resources.
+        - ``resources``  (list(ConfigResource) or ConfigResource): Resources to get the configuration for.
+        """
+        fs = None
+        if isinstance(resources, list):
+            fs = self.admin_clients[group_id].describe_configs(resources, **kwargs)
+        else:
+            fs = self.admin_clients[group_id].describe_configs([resources], **kwargs)
+
+        for res, f in fs.items():
+            try:
+                configs = f.result()
+                return configs
+
+            except KafkaException as e:
+                raise KafkaException("Failed to describe {}: {}".format(res, e))
+            except Exception:
+                raise
+
+    def alter_configs(self, group_id, resources, **kwargs):
+        """Update configuration properties for the specified resources.
+        - ``resources``  (list(ConfigResource) or ConfigResource): Resources to update configuration of.
+        """
+        fs = None
+        if isinstance(resources, list):
+            fs = self.admin_clients[group_id].alter_configs(resources, **kwargs)
+        else:
+            fs = self.admin_clients[group_id].alter_configs([resources], **kwargs)
+
+        for res, f in fs.items():
+            try:
+                f.result()  # The result itself is None
+                print("{} configuration successfully altered".format(res))
+            except Exception as e:
+                raise
