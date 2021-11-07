@@ -1,15 +1,17 @@
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 import confluent_kafka
+from confluent_kafka.admin import AdminClient, NewTopic
 
 from .consumer import KafkaConsumer
 from .producer import KafkaProducer
+from .admin_client import KafkaAdminClient
 from .serialization import Serializer, Deserializer
 from .version import VERSION
 from confluent_kafka.schema_registry import SchemaRegistryClient
 
 
 #class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializer):
-class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializer):
+class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, KafkaAdminClient, Serializer, Deserializer):
     """ConfluentKafkaLibrary is a Robot Framework library which wraps up
     [https://github.com/confluentinc/confluent-kafka-python | confluent-kafka-python].
     Library supports more functionality like running more clients based on `group_id`
@@ -67,6 +69,7 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializ
     def __init__(self):
         KafkaConsumer.__init__(self)
         KafkaProducer.__init__(self)
+        KafkaAdminClient.__init__(self)
         self._set_globals_variables_if_robot_running()
 
     def _set_globals_variables_if_robot_running(self):
