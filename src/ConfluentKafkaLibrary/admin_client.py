@@ -106,5 +106,5 @@ class KafkaAdminClient():
             try:
                 f.result()  # The result itself is None
                 print("{} configuration successfully altered".format(res))
-            except Exception as e:
+            except Exception:
                 raise

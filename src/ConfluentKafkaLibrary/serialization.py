@@ -1,8 +1,10 @@
 from confluent_kafka.schema_registry.avro import *
+from confluent_kafka.schema_registry.protobuf import (ProtobufSerializer, ProtobufDeserializer)
 from confluent_kafka.schema_registry.json_schema import JSONSerializer, JSONDeserializer
 from confluent_kafka.serialization import *
 
-class Serializer(object):
+
+class Serializer():
 
     def get_avro_serializer(self, schema_str, schema_registry_client, to_dict=None, conf=None):
         return AvroSerializer(schema_registry_client, schema_str, to_dict, conf)
@@ -23,7 +25,7 @@ class Serializer(object):
         return StringSerializer(codec)
 
 
-class Deserializer(object):
+class Deserializer():
 
     def get_avro_deserializer(self, schema_str, schema_registry_client, from_dict=None):
         return AvroDeserializer(schema_registry_client, schema_str, from_dict)
