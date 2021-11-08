@@ -1,15 +1,17 @@
-from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 import confluent_kafka
+from confluent_kafka.schema_registry import SchemaRegistryClient
+from confluent_kafka.admin import AdminClient, NewTopic, NewPartitions, ConfigResource
+from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 
 from .consumer import KafkaConsumer
 from .producer import KafkaProducer
+from .admin_client import KafkaAdminClient
 from .serialization import Serializer, Deserializer
 from .version import VERSION
-from confluent_kafka.schema_registry import SchemaRegistryClient
 
 
 #class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializer):
-class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializer):
+class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, KafkaAdminClient, Serializer, Deserializer):
     """ConfluentKafkaLibrary is a Robot Framework library which wraps up
     [https://github.com/confluentinc/confluent-kafka-python | confluent-kafka-python].
     Library supports more functionality like running more clients based on `group_id`
@@ -67,6 +69,7 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializ
     def __init__(self):
         KafkaConsumer.__init__(self)
         KafkaProducer.__init__(self)
+        KafkaAdminClient.__init__(self)
         self._set_globals_variables_if_robot_running()
 
     def _set_globals_variables_if_robot_running(self):
@@ -75,12 +78,15 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializ
             BuiltIn().set_global_variable('${OFFSET_END}', confluent_kafka.OFFSET_END)
             BuiltIn().set_global_variable('${OFFSET_STORED}', confluent_kafka.OFFSET_STORED)
             BuiltIn().set_global_variable('${OFFSET_INVALID}', confluent_kafka.OFFSET_INVALID)
+            BuiltIn().set_global_variable('${ADMIN_RESOURCE_BROKER}', confluent_kafka.admin.RESOURCE_BROKER)
+            BuiltIn().set_global_variable('${ADMIN_RESOURCE_GROUP}', confluent_kafka.admin.RESOURCE_GROUP)
+            BuiltIn().set_global_variable('${ADMIN_RESOURCE_TOPIC}', confluent_kafka.admin.RESOURCE_TOPIC)
         except RobotNotRunningError as e:
             pass
 
     def list_topics(self, group_id, topic=None):
         """Request Metadata from cluster. Could be executed with consumer or producer group_id too.
-        - ``topic`` (str):  If specified, only request info about this topic, else returnfor all topics in cluster.
+        - ``topic`` (str):  If specified, only request info about this topic, else return for all topics in cluster.
         Default: `None`.
         - ``group_id`` (str): *required* id of the created consumer or producer.
         """
@@ -94,6 +100,28 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializ
 
         raise ValueError('Consumer or producer group_id is wrong or does not exists!')
 
+    def new_topic(self, topic, **kwargs):
+        """Instantiate a NewTopic object. Specifies per-topic settings for passing to AdminClient.create_topics().
+        - ``topic`` (str): Topic name
+        Note: In a multi-cluster production scenario, it is more typical to use a
+        replication_factor of 3 for durability.
+        """
+        return NewTopic(topic=topic, **kwargs)
+
+    def new_partitions(self, topic, **kwargs):
+        """Instantiate a NewPartitions object.
+        - ``topic`` (str): Topic name
+        """
+        return NewPartitions(topic=topic, **kwargs)
+
+    def config_resource(self, restype, name, **kwargs):
+        """Represents a resource that has configuration, and (optionally) a collection of configuration properties
+        for that resource. Used by describe_configs() and alter_configs().
+        - ``restype`` (ConfigResource.Type): The resource type.
+        -  ``name`` (str): The resource name, which depends on the resource type. For RESOURCE_BROKER,
+            the resource name is the broker id.
+        """
+        return ConfigResource(restype=restype, name=name, **kwargs)
+
     def get_schema_registry_client(self, conf):
         return SchemaRegistryClient(conf)
-

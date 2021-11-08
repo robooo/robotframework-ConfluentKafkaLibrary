@@ -1,27 +1,23 @@
-import sys
 import uuid
-import copy
 import os
-import json
-from confluent_kafka.avro.serializer import SerializerError
-from confluent_kafka import SerializingProducer
-from confluent_kafka import Producer, KafkaError, TopicPartition
-from confluent_kafka import avro
 from avro import schema
+from confluent_kafka import SerializingProducer
+from confluent_kafka import Producer
+from confluent_kafka import avro
 from confluent_kafka.avro import AvroProducer
 
 
-class KafkaProducer(object):
+class KafkaProducer():
 
     def __init__(self):
         self.producers = {}
 
     def load_schema(self, data):
-        if type(data) == schema.RecordSchema:
+        if isinstance(data, schema.RecordSchema):
             data = data
         elif os.path.exists(data):
             data = avro.load(data)
-        elif type(data) is str:
+        elif isinstance(data,str):
             data = str(data)
             data = avro.loads(data)
         return data
@@ -30,7 +26,6 @@ class KafkaProducer(object):
         self,
         server='127.0.0.1',
         port='9092',
-        client_id='Robot',
         group_id=None,
         schema_registry_url=None,
         value_schema=None,
@@ -49,11 +44,6 @@ class KafkaProducer(object):
             contact to bootstrap initial cluster metadata.
             Default: `127.0.0.1`.
         - ``port`` (int): Port number. Default: `9092`.
-        - ``client_id`` (str): a name for this client. This string is passed in
-            each request to servers and can be used to identify specific
-            server-side log entries that correspond to this client. Also
-            submitted to GroupCoordinator for logging with respect to
-            consumer group administration. Default: `Robot`.
         - ``schema_registry_url`` (str): *required* for Avro Consumer. Full URL to avro schema endpoint.
         - ``value_schema`` (str): Optional default avro schema for value or path to file with schema. Default: `None`
         - ``key_schema`` (str): Optional default avro schema for key. Default: `None`
@@ -65,7 +55,7 @@ class KafkaProducer(object):
         if group_id is None:
             group_id = str(uuid.uuid4())
 
-        if schema_registry_url and legacy == True:
+        if schema_registry_url and legacy:
             if value_schema:
                 value_schema = self.load_schema(value_schema)
             if key_schema:
@@ -78,7 +68,7 @@ class KafkaProducer(object):
                 default_key_schema=key_schema,
                 default_value_schema=value_schema
             )
-        elif legacy == False:
+        elif not legacy:
             producer = SerializingProducer({
                 'bootstrap.servers': '{}:{}'.format(server, port),
                 'key.serializer': key_serializer,

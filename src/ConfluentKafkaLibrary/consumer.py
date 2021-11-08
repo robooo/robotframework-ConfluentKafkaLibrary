@@ -18,7 +18,7 @@ class GetMessagesThread(Thread):
         **kwargs
     ):
 
-        super(GetMessagesThread, self).__init__()
+        super().__init__()
         self.daemon = True
         self._is_running = True
         self.only_value = only_value
@@ -102,7 +102,7 @@ class KafkaConsumer():
         if group_id is None:
             group_id = str(uuid.uuid4())
 
-        if schema_registry_url and legacy == True:
+        if schema_registry_url and legacy:
             consumer = AvroConsumer({
                 'bootstrap.servers': '{}:{}'.format(server, port),
                 'group.id': group_id,
@@ -111,7 +111,7 @@ class KafkaConsumer():
                 'auto.offset.reset': auto_offset_reset,
                 'schema.registry.url': schema_registry_url,
                 **kwargs})
-        elif legacy == False:
+        elif not legacy:
             consumer = DeserializingConsumer({
                 'bootstrap.servers': '{}:{}'.format(server, port),
                 'group.id': group_id,
@@ -151,8 +151,7 @@ class KafkaConsumer():
             return TopicPartition(topic_name, offset)
         elif offset is None:
             return TopicPartition(topic_name, partition)
-        else:
-            return TopicPartition(topic_name)
+        return TopicPartition(topic_name)
 
     def get_topic_partitions(self, topic):
         """Returns dictionary of all TopicPartitons in topic (topic.partitions).
@@ -257,7 +256,7 @@ class KafkaConsumer():
             will be removed in future release. If True then the error message UNKNOWN_TOPIC_OR_PART is ignored.
             Default: `True`.
         - ``fail_on_deserialization`` (bool): If True and message deserialization fails, will raise a SerializerError
-            exception; on False will just stop the current poll and return the message so far. Default: `False`.            
+            exception; on False will just stop the current poll and return the message so far. Default: `False`.
         """
 
         messages = []
@@ -269,9 +268,9 @@ class KafkaConsumer():
                 error = 'Message deserialization failed for {}: {}'.format(msg, err)
                 if fail_on_deserialization:
                     raise SerializerError(error)
-                else:
-                    print(error)
-                    break
+
+                print(error)
+                break
 
             if msg is None:
                 poll_attempts -= 1
@@ -279,10 +278,9 @@ class KafkaConsumer():
 
             if msg.error():
                 # Workaround due to new message return + deprecation of the "Consumers no longer trigger auto creation of topics"
-                if int(msg.error().code()) == KafkaError.UNKNOWN_TOPIC_OR_PART and auto_create_topics == True:
+                if int(msg.error().code()) == KafkaError.UNKNOWN_TOPIC_OR_PART and auto_create_topics:
                     continue
-                else:
-                    raise KafkaException(msg.error())
+                raise KafkaException(msg.error())
 
             if only_value:
                 messages.append(msg.value())
@@ -300,8 +298,7 @@ class KafkaConsumer():
     def _decode_data(self, data, decode_format):
         if decode_format:
             return [record.decode(str(decode_format)) for record in data]
-        else:
-            return data
+        return data
 
     # Experimental - getting messages from kafka topic every second
     def start_consumer_threaded(
