@@ -134,6 +134,16 @@ Purge Test
     ${count}=  Flush  ${producer_id}  timeout=${0}
     Should Be Equal As Integers  0  ${count}
 
+Offsets Test
+    ${group_id}=  Create Consumer  enable.auto.offset.store=${False}
+    Subscribe Topic  group_id=${group_id}  topics=${TEST_TOPIC}
+    ${tp}=  Create Topic Partition  ${TEST_TOPIC}  ${P_ID}  ${OFFSET_BEGINNING}
+    ${offsets}=  Create List  ${tp}
+    Run Keyword And Expect Error  KafkaException: *  Store Offsets  group_id=${group_id}  offsets=${offsets}
+    Assign To Topic Partition  ${group_id}  ${tp}
+    Sleep  5sec
+    Store Offsets  group_id=${group_id}  offsets=${offsets}
+
 
 *** Keywords ***
 Starting Test

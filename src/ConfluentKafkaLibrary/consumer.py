@@ -231,6 +231,11 @@ class KafkaConsumer():
             topic_partitions = [topic_partitions]
         self.consumers[group_id].resume(topic_partitions)
 
+    def store_offsets(self, group_id, **kwargs):
+        """Store offsets for a message or a list of offsets.
+        """
+        self.consumers[group_id].store_offsets(**kwargs)
+
     def poll(
         self,
         group_id,
