@@ -14,14 +14,17 @@ AdminClient Topic Creation
 
     ${admin_client_id}=  Create Admin Client
     Create Topics  group_id=${admin_client_id}  new_topics=${topics}
-
-    ${group_id}=  Create Consumer  auto_offset_reset=earliest
-    ${topics}=  List Topics  ${group_id}
+    ${topics}=  List Topics  ${admin_client_id}
     FOR  ${topic}  IN  @{topic_names}
       List Should Contain Value  ${topics}  ${topic}
     END
-    Close Consumer  ${group_id}
     [Teardown]  Delete Topics  ${admin_client_id}  ${topic_names}
+
+AdminClient List Groups
+    [Documentation]  If you run this test as first switch to Should Be Empty keyword.
+    ${admin_client_id}=  Create Admin Client
+    ${groups}=  List Groups  ${admin_client_id}
+    Should Not Be Empty  ${groups}
 
 AdminClient New Partitions
     ${topic_name}=  Set Variable  admin_testing_partition

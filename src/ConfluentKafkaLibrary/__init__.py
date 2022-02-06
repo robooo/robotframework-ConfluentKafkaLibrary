@@ -47,6 +47,12 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, KafkaAdminClient, Seri
     | `Close Consumer` | ${group_id_1} |
     | `Close Consumer` | ${group_id_2} |
 
+    *Handle Byte Data From Topic*
+
+    | ${messages}= | Poll | group_id=${group_id} | max_records=3 | decode_format=utf_8 |
+    | ${json} | Convert String to JSON | ${messages}[0] |
+    | ${jsonValue} | Get value from JSON | ${json} | $.key |
+
     *Run Avro Consumer over HTTPS and threaded:*
 
     | ${thread}= | `Start Consumer Threaded` |
@@ -93,6 +99,8 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, KafkaAdminClient, Seri
         if group_id is None:
             raise TypeError
 
+        if group_id in self.admin_clients:
+            return self.admin_clients[group_id].list_topics().topics
         if group_id in self.consumers:
             return self.consumers[group_id].list_topics(topic).topics
         if group_id in self.producers:

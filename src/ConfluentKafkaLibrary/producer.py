@@ -13,13 +13,13 @@ class KafkaProducer():
         self.producers = {}
 
     def load_schema(self, data):
-        if isinstance(data, schema.RecordSchema):
-            data = data
-        elif os.path.exists(data):
+        if os.path.exists(data):
             data = avro.load(data)
         elif isinstance(data,str):
             data = str(data)
             data = avro.loads(data)
+        if not isinstance(data, schema.RecordSchema):
+            raise Exception("Data is stil not in schema.RecordSchema format, data: " + data)
         return data
 
     def create_producer(
@@ -115,4 +115,6 @@ class KafkaProducer():
         return messages_in_queue
 
     def purge(self, group_id, **kwargs):
+        """Purge messages currently handled by the producer instance.
+        """
         self.producers[group_id].purge(**kwargs)
