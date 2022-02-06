@@ -21,9 +21,10 @@ AdminClient Topic Creation
     [Teardown]  Delete Topics  ${admin_client_id}  ${topic_names}
 
 AdminClient List Groups
+    [Documentation]  If you run this test as first switch to Should Be Empty keyword.
     ${admin_client_id}=  Create Admin Client
     ${groups}=  List Groups  ${admin_client_id}
-    Should Be Empty  ${groups}
+    Should Not Be Empty  ${groups}
 
 AdminClient New Partitions
     ${topic_name}=  Set Variable  admin_testing_partition
