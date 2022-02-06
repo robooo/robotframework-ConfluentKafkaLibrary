@@ -115,4 +115,6 @@ class KafkaProducer():
         return messages_in_queue
 
     def purge(self, group_id, **kwargs):
+        """Purge messages currently handled by the producer instance.
+        """
         self.producers[group_id].purge(**kwargs)
