@@ -32,7 +32,8 @@ setup(name         = 'robotframework-confluentkafkalibrary',
           'requests >= 2.25.1',
           'avro-python3 >= 1.10.1',
           'fastavro >= 1.3.2',
-          'jsonschema >= 3.2.0'
+          'jsonschema >= 3.2.0',
+          'protobuf >= 4.22.0'
       ],
       package_dir  = {'' : 'src'},
       packages    = ['ConfluentKafkaLibrary'],
