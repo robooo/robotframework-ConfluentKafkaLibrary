@@ -28,7 +28,7 @@ setup(name         = 'robotframework-confluentkafkalibrary',
       ],
       install_requires = [
           'robotframework >= 3.2.1',
-          'confluent-kafka == 1.9.0',
+          'confluent-kafka == 2.0.2',
           'requests >= 2.25.1',
           'avro-python3 >= 1.10.1',
           'fastavro >= 1.3.2',
