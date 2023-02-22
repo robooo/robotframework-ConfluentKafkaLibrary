@@ -25,7 +25,7 @@ class KafkaAdminClient():
         return group_id
 
     def list_groups(self, group_id):
-        return self.admin_clients[group_id].list_groups()
+        return self.admin_clients[group_id].list_consumer_groups()
 
     def create_topics(self, group_id, new_topics, **kwargs):
         """Create one or more new topics and wait for each one to finish.
