@@ -1,4 +1,5 @@
 import uuid
+from confluent_kafka import ConsumerGroupState
 from confluent_kafka.admin import AdminClient
 
 
@@ -25,7 +26,8 @@ class KafkaAdminClient():
         return group_id
 
     def list_groups(self, group_id):
-        return self.admin_clients[group_id].list_consumer_groups()
+        future = self.admin_clients[group_id].list_consumer_groups(request_timeout=10, states={ConsumerGroupState.STABLE})
+        return vars(future.result())
 
     def create_topics(self, group_id, new_topics, **kwargs):
         """Create one or more new topics and wait for each one to finish.

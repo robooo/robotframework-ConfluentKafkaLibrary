@@ -23,8 +23,10 @@ AdminClient Topic Creation
 AdminClient List Groups
     [Documentation]  If you run this test as first switch to Should Be Empty keyword.
     ${admin_client_id}=  Create Admin Client
+    ${group_id}=  Create Consumer  auto_offset_reset=earliest
     ${groups}=  List Groups  ${admin_client_id}
-    Should Not Be Empty  ${groups}
+    Log  ${groups}
+    Fail
 
 AdminClient New Partitions
     ${topic_name}=  Set Variable  admin_testing_partition
