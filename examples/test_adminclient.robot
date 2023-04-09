@@ -20,13 +20,28 @@ AdminClient Topic Creation
     END
     [Teardown]  Delete Topics  ${admin_client_id}  ${topic_names}
 
-AdminClient List Groups
+AdminClient List Consumer Groups
     [Documentation]  If you run this test as first switch to Should Be Empty keyword.
-    ${admin_client_id}=  Create Admin Client
+    ${producer_group_id}=  Create Producer
+    Produce  ${producer_group_id}  topic=adminlisttest  value=Hello  partition=${0}
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${producer_group_id}
+
     ${group_id}=  Create Consumer  auto_offset_reset=earliest
+    Subscribe Topic    ${group_id}    topics=adminlisttest
+    Sleep  1s  # Wait for subscription
+
+    ${admin_client_id}=  Create Admin Client
     ${groups}=  List Groups  ${admin_client_id}
-    Log  ${groups}
+    Log  ${groups.valid}
+    FOR  ${group}  IN  @{groups.valid}
+      IF  "${group_id}" == "${group.group_id}"
+        Log  ${group.group_id}
+        Log  ${group.state}
+        Pass Execution  "Consumer found in list"
+      END
+    END
     Fail
+    [Teardown]  Basic Teardown  ${group_id}
 
 AdminClient New Partitions
     ${topic_name}=  Set Variable  admin_testing_partition
@@ -59,3 +74,16 @@ AdminClient Alter Configs
     Sleep  1s
     ${config}=  Describe Configs  ${admin_client_id}  ${resource}
     Should Be Equal As Integers  ${54321}  ${config['log.retention.ms'].value}
+
+
+*** Keywords ***
+All Messages Are Delivered
+    [Arguments]  ${producer_id}
+    ${count}=  Flush  ${producer_id}
+    Log  Reaming messages to be delivered: ${count}
+    Should Be Equal As Integers  ${count}  0
+
+Basic Teardown
+    [Arguments]  ${group_id}
+    Unsubscribe  ${group_id}
+    Close Consumer  ${group_id}

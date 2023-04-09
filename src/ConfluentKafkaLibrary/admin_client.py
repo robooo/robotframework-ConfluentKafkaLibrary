@@ -25,9 +25,9 @@ class KafkaAdminClient():
         self.admin_clients[group_id] = admin_client
         return group_id
 
-    def list_groups(self, group_id):
-        future = self.admin_clients[group_id].list_consumer_groups(request_timeout=10, states={ConsumerGroupState.STABLE})
-        return vars(future.result())
+    def list_groups(self, group_id, request_timeout=10):
+        future = self.admin_clients[group_id].list_consumer_groups(request_timeout=request_timeout, states={ConsumerGroupState.UNKOWN, ConsumerGroupState.DEAD, ConsumerGroupState.COMPLETING_REBALANCING, ConsumerGroupState.EMPTY, ConsumerGroupState.PREPARING_REBALANCING, ConsumerGroupState.STABLE})
+        return future.result()
 
     def create_topics(self, group_id, new_topics, **kwargs):
         """Create one or more new topics and wait for each one to finish.
