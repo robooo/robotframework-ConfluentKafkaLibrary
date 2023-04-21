@@ -28,6 +28,7 @@ Produce Without Value
     Subscribe Topic  group_id=${group_id}  topics=${topic_name}
     ${messages}=  Poll  group_id=${group_id}  max_records=1
     Should Be Equal As Strings  ${messages}  [None]
+    [Teardown]  Basic Teardown  ${group_id}
 
 Verify Position
     ${group_id}=  Create Consumer
@@ -143,7 +144,7 @@ Offsets Test
     Assign To Topic Partition  ${group_id}  ${tp}
     Sleep  5sec
     Store Offsets  group_id=${group_id}  offsets=${offsets}
-
+    [Teardown]  Unassign Teardown  ${group_id}
 
 *** Keywords ***
 Starting Test
@@ -186,8 +187,16 @@ Basic Teardown
     [Arguments]  ${group_id}
     Unsubscribe  ${group_id}
     Close Consumer  ${group_id}
+    ${groups}=  Create List  ${group_id}
+    ${admin_client_id}=  Create Admin Client
+    ${resp}=  Delete Groups  ${admin_client_id}  group_ids=${groups}
+    Log  ${resp}
 
 Unassign Teardown
     [Arguments]  ${group_id}
     Unassign  ${group_id}
     Close Consumer  ${group_id}
+    ${groups}=  Create List  ${group_id}
+    ${admin_client_id}=  Create Admin Client
+    ${resp}=  Delete Groups  ${admin_client_id}  group_ids=${groups}
+    Log  ${resp}
