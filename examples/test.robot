@@ -124,7 +124,7 @@ Remove And Publish New Messages From Threaded Consumer
     [Teardown]  Clear Messages From Thread  ${MAIN_THREAD}
 
 Purge Test
-    ${producer_id}=  Create Producer
+    ${producer_id}=  Create Producer  message.timeout.ms=${30000}
     Produce  group_id=${producer_id}  topic=${TEST_TOPIC}  value=After  partition=${P_ID}
     Produce  group_id=${producer_id}  topic=${TEST_TOPIC}  value=Clear  partition=${P_ID}
 
