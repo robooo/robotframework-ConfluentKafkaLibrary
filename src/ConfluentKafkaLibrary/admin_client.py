@@ -118,11 +118,8 @@ class KafkaAdminClient():
             try:
                 configs = f.result()
                 return configs
-
-            except KafkaException as e:
-                raise KafkaException("Failed to describe {}: {}".format(res, e))
-            except Exception:
-                raise
+            except (KafkaException, Exception) as e:
+                return f"Failed to describe {res}: {e}"
 
     def alter_configs(self, group_id, resources, **kwargs):
         """Update configuration properties for the specified resources.
