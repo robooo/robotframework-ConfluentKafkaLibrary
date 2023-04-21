@@ -40,12 +40,18 @@ class KafkaAdminClient():
         else:
             fs = self.admin_clients[group_id].create_topics([new_topics], **kwargs)
 
+        topics_results={}
         for topic, f in fs.items():
             try:
-                f.result()  # The result itself is None
-                print("Topic {} created".format(topic))
-            except Exception as e:
-                raise Exception("Failed to create topic {}: {}".format(topic, e))
+                if f.exception() is None:
+                    topics_results[topic] = f.result()
+                else:
+                    topics_results[topic] = f.exception()
+            except KafkaException as e:
+                return f"Failed to create topic {topic}: {e}"
+            except (TypeError, ValueError ) as e:
+                return f"Invalid input: {e}"
+        return topics_results
 
     def delete_topics(self, group_id, topics, **kwargs):
         if isinstance(topics, str):

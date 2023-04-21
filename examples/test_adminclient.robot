@@ -13,7 +13,8 @@ AdminClient Topic Creation
     END
 
     ${admin_client_id}=  Create Admin Client
-    Create Topics  group_id=${admin_client_id}  new_topics=${topics}
+    ${results}=  Create Topics  group_id=${admin_client_id}  new_topics=${topics}
+    Log  ${results}
     ${topics}=  List Topics  ${admin_client_id}
     FOR  ${topic}  IN  @{topic_names}
       List Should Contain Value  ${topics}  ${topic}
