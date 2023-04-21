@@ -1,6 +1,7 @@
 import uuid
 from confluent_kafka import ConsumerGroupState
 from confluent_kafka.admin import AdminClient
+from confluent_kafka import KafkaException
 
 
 class KafkaAdminClient():
@@ -25,8 +26,10 @@ class KafkaAdminClient():
         self.admin_clients[group_id] = admin_client
         return group_id
 
-    def list_groups(self, group_id, request_timeout=10):
-        future = self.admin_clients[group_id].list_consumer_groups(request_timeout=request_timeout, states={ConsumerGroupState.UNKOWN, ConsumerGroupState.DEAD, ConsumerGroupState.COMPLETING_REBALANCING, ConsumerGroupState.EMPTY, ConsumerGroupState.PREPARING_REBALANCING, ConsumerGroupState.STABLE})
+    def list_groups(self, group_id, states=None, request_timeout=10):
+        if states is None:
+            states = []
+        future = self.admin_clients[group_id].list_consumer_groups(request_timeout=request_timeout, states=set(states))
         return future.result()
 
     def create_topics(self, group_id, new_topics, **kwargs):

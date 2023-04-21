@@ -29,12 +29,15 @@ AdminClient List Consumer Groups
 
     ${group_id}=  Create Consumer  auto_offset_reset=earliest
     Subscribe Topic    ${group_id}    topics=adminlisttest
-    Sleep  1s  # Wait for subscription
+    Sleep  2s  # Wait for subscription
 
     ${admin_client_id}=  Create Admin Client
-    ${groups}=  List Groups  ${admin_client_id}
+    ${states}=  Create List  ${CONSUMER_GROUP_STATE_UNKNOWN}  #https://github.com/confluentinc/confluent-kafka-python/issues/1556
+    ${groups}=  List Groups  ${admin_client_id}  states=${states}
+    Log  ${groups}
     Log  ${groups.valid}
     FOR  ${group}  IN  @{groups.valid}
+      Log  ${group.group_id}
       IF  "${group_id}" == "${group.group_id}"
         Log  ${group.group_id}
         Log  ${group.state}
