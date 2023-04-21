@@ -72,6 +72,45 @@ AdminClient Describe Consumer Groups
 
     [Teardown]  Run Keywords  Basic Teardown  ${group_id}  AND
                 ...  Basic Teardown  ${group2_id}
+
+AdminClient Delete Consumer Groups
+    ${producer_group_id}=  Create Producer
+    Produce  ${producer_group_id}  topic=admindeltest  value=Hello  partition=${0}
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${producer_group_id}
+
+    ${group_id}=  Create Consumer  auto_offset_reset=earliest
+    Subscribe Topic    ${group_id}    topics=admindeltest
+    Sleep  2s  # Wait for subscription
+    ${group2_id}=  Create Consumer  auto_offset_reset=earliest
+    Subscribe Topic    ${group2_id}    topics=admindeltest
+    Sleep  2s  # Wait for subscription
+    ${groups}=  Create List  ${group2_id}
+    ${messages}=  Poll  group_id=${group2_id}  max_records=5
+    Sleep  1s
+    Unsubscribe  ${group2_id}
+    Close Consumer  ${group2_id}
+
+    ${admin_client_id}=  Create Admin Client
+    ${deletion}=  Delete Groups  ${admin_client_id}  group_ids=${groups}
+    Should Be Equal  ${deletion[0]}  ${None}
+
+    ${current_groups}=  List Groups  ${admin_client_id}
+    Log  ${current_groups.valid}
+    FOR  ${group}  IN  @{current_groups.valid}
+      Log  ${group.group_id}
+      IF  "${group_id}" == "${group.group_id}"
+        Log  ${group.group_id}
+        Log  ${group.state}
+        Log  "Consumer found in list"
+      END
+      IF  "${group2_id}" == "${group.group_id}"
+          Log  ${group.group_id}
+          Log  ${group.state}
+          Fail  "Group 1 consumer was not removed!"
+      END
+    END
+    [Teardown]  Basic Teardown  ${group_id}
+
 AdminClient New Partitions
     ${topic_name}=  Set Variable  admin_testing_partition
     ${topic}=  New Topic  ${topic_name}  num_partitions=${1}  replication_factor=${1}
@@ -116,3 +155,6 @@ Basic Teardown
     [Arguments]  ${group_id}
     Unsubscribe  ${group_id}
     Close Consumer  ${group_id}
+    ${groups}=  Create List  ${group_id}
+    ${admin_client_id}=  Create Admin Client
+    Delete Groups  ${admin_client_id}  group_ids=${groups}

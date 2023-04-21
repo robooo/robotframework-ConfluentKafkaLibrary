@@ -38,6 +38,18 @@ class KafkaAdminClient():
         for con_id in group_ids:
             groups_results.append(response[con_id].result())
         return groups_results
+
+    def delete_groups(self, group_id, group_ids, request_timeout=10):
+        response = self.admin_clients[group_id].delete_consumer_groups(group_ids, request_timeout=request_timeout)
+        groups_results=[]
+
+        for con_id in group_ids:
+            if response[con_id].exception() is not None:
+                groups_results.append(response[con_id].exception())
+            else:
+                groups_results.append(response[con_id].result())
+        return groups_results
+
     def create_topics(self, group_id, new_topics, **kwargs):
         """Create one or more new topics and wait for each one to finish.
         - ``new_topics`` (list(NewTopic) or NewTopic): A list of specifications (NewTopic)
