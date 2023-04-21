@@ -1,5 +1,4 @@
 import uuid
-from confluent_kafka import ConsumerGroupState
 from confluent_kafka.admin import AdminClient
 from confluent_kafka import KafkaException
 
@@ -32,6 +31,13 @@ class KafkaAdminClient():
         future = self.admin_clients[group_id].list_consumer_groups(request_timeout=request_timeout, states=set(states))
         return future.result()
 
+    def describe_groups(self, group_id, group_ids, request_timeout=10):
+        response = self.admin_clients[group_id].describe_consumer_groups(group_ids, request_timeout=request_timeout)
+
+        groups_results=[]
+        for con_id in group_ids:
+            groups_results.append(response[con_id].result())
+        return groups_results
     def create_topics(self, group_id, new_topics, **kwargs):
         """Create one or more new topics and wait for each one to finish.
         - ``new_topics`` (list(NewTopic) or NewTopic): A list of specifications (NewTopic)

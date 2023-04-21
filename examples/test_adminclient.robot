@@ -22,7 +22,6 @@ AdminClient Topic Creation
     [Teardown]  Delete Topics  ${admin_client_id}  ${topic_names}
 
 AdminClient List Consumer Groups
-    [Documentation]  If you run this test as first switch to Should Be Empty keyword.
     ${producer_group_id}=  Create Producer
     Produce  ${producer_group_id}  topic=adminlisttest  value=Hello  partition=${0}
     Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${producer_group_id}
@@ -47,6 +46,32 @@ AdminClient List Consumer Groups
     Fail
     [Teardown]  Basic Teardown  ${group_id}
 
+AdminClient Describe Consumer Groups
+    [Documentation]  Finish the test with memebers + verification
+    ${producer_group_id}=  Create Producer
+    Produce  ${producer_group_id}  topic=admindescribetest value=Hello  partition=${0}
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${producer_group_id}
+
+    ${group_id}=  Create Consumer  auto_offset_reset=earliest
+    Subscribe Topic    ${group_id}    topics=admindescribetest
+    Sleep  2s  # Wait for subscription
+    ${group2_id}=  Create Consumer  auto_offset_reset=earliest
+    Subscribe Topic    ${group2_id}    topics=admindescribetest
+    Sleep  2s  # Wait for subscription
+    ${groups}=  Create List  ${group_id}  ${group2_id}
+
+    ${admin_client_id}=  Create Admin Client
+    ${described_groups}=  Describe Groups  ${admin_client_id}  group_ids=${groups}
+    Log  ${described_groups}
+
+    FOR  ${member}  IN  @{described_groups[0].members}
+        Log    ${member}
+    END
+    Log  ${described_groups[0].state}
+    Log  ${described_groups[1].state}
+
+    [Teardown]  Run Keywords  Basic Teardown  ${group_id}  AND
+                ...  Basic Teardown  ${group2_id}
 AdminClient New Partitions
     ${topic_name}=  Set Variable  admin_testing_partition
     ${topic}=  New Topic  ${topic_name}  num_partitions=${1}  replication_factor=${1}
