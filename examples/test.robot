@@ -3,7 +3,7 @@ Library  ConfluentKafkaLibrary
 Library  Collections
 
 Suite Setup  Starting Test
-
+Suite Teardown  Stop Thread
 
 *** Test Cases ***
 Verify Topics
@@ -150,6 +150,8 @@ Offsets Test
 Starting Test
     Set Suite Variable  ${TEST_TOPIC}  test
     ${thread}=  Start Consumer Threaded  topics=${TEST_TOPIC}
+    ${gid}=  Get Thread Group Id  ${thread}
+    Log  ${gid}
     Set Suite Variable  ${MAIN_THREAD}  ${thread}
     ${producer_group_id}=  Create Producer
     Set Suite Variable  ${PRODUCER_ID}  ${producer_group_id}
@@ -199,4 +201,8 @@ Unassign Teardown
     ${groups}=  Create List  ${group_id}
     ${admin_client_id}=  Create Admin Client
     ${resp}=  Delete Groups  ${admin_client_id}  group_ids=${groups}
+    Log  ${resp}
+
+Stop Thread
+    ${resp}=  Stop Consumer Threaded  ${MAIN_THREAD}
     Log  ${resp}
