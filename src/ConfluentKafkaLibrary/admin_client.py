@@ -34,20 +34,38 @@ class KafkaAdminClient():
     def describe_groups(self, group_id, group_ids, request_timeout=10):
         response = self.admin_clients[group_id].describe_consumer_groups(group_ids, request_timeout=request_timeout)
 
-        groups_results=[]
+        groups_results={}
         for con_id in group_ids:
-            groups_results.append(response[con_id].result())
+            try:
+                if response[con_id].exception() is None:
+                    groups_results[con_id] = response[con_id].result()
+                else:
+                    groups_results[con_id] = response[con_id].exception()
+            except KafkaException as e:
+                return f"Failed to describe group {con_id}: {e}"
+            except (TypeError, ValueError ) as e:
+                return f"Invalid input: {e}"
         return groups_results
 
     def delete_groups(self, group_id, group_ids, request_timeout=10):
+        """Delete the given consumer groups.
+        - ``group_ids`` (list(str)): List of group_ids which need to be deleted.
+        - ``request_timeout`` (int): Maximum response time before timing out.
+            Default: `10`.
+        """
         response = self.admin_clients[group_id].delete_consumer_groups(group_ids, request_timeout=request_timeout)
-        groups_results=[]
 
+        groups_results={}
         for con_id in group_ids:
-            if response[con_id].exception() is not None:
-                groups_results.append(response[con_id].exception())
-            else:
-                groups_results.append(response[con_id].result())
+            try:
+                if response[con_id].exception() is None:
+                    groups_results[con_id] = response[con_id].result()
+                else:
+                    groups_results[con_id] = response[con_id].exception()
+            except KafkaException as e:
+                return f"Failed to delete group {con_id}: {e}"
+            except (TypeError, ValueError ) as e:
+                return f"Invalid input: {e}"
         return groups_results
 
     def create_topics(self, group_id, new_topics, **kwargs):
@@ -80,12 +98,18 @@ class KafkaAdminClient():
 
         fs = self.admin_clients[group_id].delete_topics(topics, **kwargs)
 
+        topics_results={}
         for topic, f in fs.items():
             try:
-                f.result()  # The result itself is None
-                print("Topic {} deleted".format(topic))
-            except Exception as e:
-                raise Exception("Failed to delete topic {}: {}".format(topic, e))
+                if f.exception() is None:
+                    topics_results[topic] = f.result()
+                else:
+                    topics_results[topic] = f.exception()
+            except KafkaException as e:
+                return f"Failed to delete topic {topic}: {e}"
+            except (TypeError, ValueError ) as e:
+                return f"Invalid input: {e}"
+        return topics_results
 
     def create_partitions(self, group_id, new_partitions, **kwargs):
         """Create additional partitions for the given topics.
@@ -97,12 +121,18 @@ class KafkaAdminClient():
         else:
             fs = self.admin_clients[group_id].create_partitions([new_partitions], **kwargs)
 
-        for topic, f in fs.items():
+        partitions_results={}
+        for partition, f in fs.items():
             try:
-                f.result()  # The result itself is None
-                print("Additional partitions created for topic {}".format(topic))
-            except Exception as e:
-                raise Exception("Failed to add partitions to topic {}: {}".format(topic, e))
+                if f.exception() is None:
+                    partitions_results[partition] = f.result()
+                else:
+                    partitions_results[partition] = f.exception()
+            except KafkaException as e:
+                return f"Failed to add partitions to topic {partition}: {e}"
+            except (TypeError, ValueError ) as e:
+                return f"Invalid input: {e}"
+        return partitions_results
 
     def describe_configs(self, group_id, resources, **kwargs):
         """Get the configuration of the specified resources.
@@ -114,12 +144,18 @@ class KafkaAdminClient():
         else:
             fs = self.admin_clients[group_id].describe_configs([resources], **kwargs)
 
-        for res, f in fs.items():
+        config_results={}
+        for config, f in fs.items():
             try:
-                configs = f.result()
-                return configs
-            except (KafkaException, Exception) as e:
-                return f"Failed to describe {res}: {e}"
+                if f.exception() is None:
+                    config_results[config.name] = f.result()
+                else:
+                    config_results[config.name] = f.exception()
+            except KafkaException as e:
+                return f"Failed to describe config {config.name}: {e}"
+            except (TypeError, ValueError ) as e:
+                return f"Invalid input: {e}"
+        return config_results
 
     def alter_configs(self, group_id, resources, **kwargs):
         """Update configuration properties for the specified resources.
@@ -131,9 +167,15 @@ class KafkaAdminClient():
         else:
             fs = self.admin_clients[group_id].alter_configs([resources], **kwargs)
 
-        for res, f in fs.items():
+        config_results={}
+        for config, f in fs.items():
             try:
-                f.result()  # The result itself is None
-                print("{} configuration successfully altered".format(res))
-            except Exception:
-                raise
+                if f.exception() is None:
+                    config_results[config.name] = f.result()
+                else:
+                    config_results[config.name] = f.exception()
+            except KafkaException as e:
+                return f"Failed to alter config {config.name}: {e}"
+            except (TypeError, ValueError ) as e:
+                return f"Invalid input: {e}"
+        return config_results

@@ -64,11 +64,11 @@ AdminClient Describe Consumer Groups
     ${described_groups}=  Describe Groups  ${admin_client_id}  group_ids=${groups}
     Log  ${described_groups}
 
-    FOR  ${member}  IN  @{described_groups[0].members}
+    FOR  ${member}  IN  @{described_groups["${group_id}"].members}
         Log    ${member}
     END
-    Log  ${described_groups[0].state}
-    Log  ${described_groups[1].state}
+    Log  ${described_groups["${group_id}"].state}
+    Log  ${described_groups["${group2_id}"].state}
 
     [Teardown]  Run Keywords  Basic Teardown  ${group_id}  AND
                 ...  Basic Teardown  ${group2_id}
@@ -92,7 +92,7 @@ AdminClient Delete Consumer Groups
 
     ${admin_client_id}=  Create Admin Client
     ${deletion}=  Delete Groups  ${admin_client_id}  group_ids=${groups}
-    Should Be Equal  ${deletion[0]}  ${None}
+    Should Be Equal  ${deletion["${group2_id}"]}  ${None}
 
     ${current_groups}=  List Groups  ${admin_client_id}
     Log  ${current_groups.valid}
@@ -118,17 +118,20 @@ AdminClient New Partitions
     Create Topics  group_id=${admin_client_id}  new_topics=${topic}
 
     ${new_parts}=  New Partitions  ${topic_name}  new_total_count=${2}
-    Create Partitions  group_id=${admin_client_id}  new_partitions=${new_parts}
+    ${resp}=  Create Partitions  group_id=${admin_client_id}  new_partitions=${new_parts}
+    Log  ${resp}
     [Teardown]  Delete Topics  ${admin_client_id}  ${topic_name}
 
 AdminClient Describe Configs
     ${resource}=  Config Resource  ${ADMIN_RESOURCE_BROKER}  1
+    Log  ${resource.name}
     ${admin_client_id}=  Create Admin Client
     ${config}=  Describe Configs  ${admin_client_id}  ${resource}
+    Log  ${config}
 
     Should Not Be Empty  ${config}
-    ${name}=  Set Variable  ${config['offsets.commit.timeout.ms'].name}
-    ${value}=  Set Variable  ${config['offsets.commit.timeout.ms'].value}
+    ${name}=  Set Variable  ${config["${resource.name}"]['offsets.commit.timeout.ms'].name}
+    ${value}=  Set Variable  ${config["${resource.name}"]['offsets.commit.timeout.ms'].value}
     Should Be Equal As Strings  ${name}  offsets.commit.timeout.ms
     Should Be Equal As Integers  ${value}  ${5000}
 
@@ -138,10 +141,11 @@ AdminClient Alter Configs
     ${resource}=  Config Resource  ${ADMIN_RESOURCE_BROKER}  1  set_config=${data}
     ${admin_client_id}=  Create Admin Client
 
-    Alter Configs  ${admin_client_id}  ${resource}
+    ${resp}=  Alter Configs  ${admin_client_id}  ${resource}
+    Log  ${resp}
     Sleep  1s
     ${config}=  Describe Configs  ${admin_client_id}  ${resource}
-    Should Be Equal As Integers  ${54321}  ${config['log.retention.ms'].value}
+    Should Be Equal As Integers  ${54321}  ${config["${resource.name}"]['log.retention.ms'].value}
 
 
 *** Keywords ***
