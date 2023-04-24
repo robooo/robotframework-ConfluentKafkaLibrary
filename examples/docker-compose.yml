@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:5.3.1
+    image: confluentinc/cp-zookeeper:7.3.3
     hostname: zookeeper
     container_name: zookeeper
     ports:
@@ -12,13 +12,14 @@ services:
       test: ['CMD-SHELL', 'nc -zv localhost 2181 && exit 0 || exit 1']
 
   broker:
-    image: confluentinc/cp-enterprise-kafka:5.3.1
+    image: confluentinc/cp-enterprise-kafka:7.3.3
     hostname: broker
     container_name: broker
     depends_on:
       - zookeeper
     ports:
       - '9092:9092'
+      - '29092:29092'
     healthcheck:
       test: ['CMD-SHELL', 'nc -zv localhost 9092 && exit 0 || exit 1']
     environment:
@@ -30,7 +31,7 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:5.3.1
+    image: confluentinc/cp-schema-registry:7.3.3
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -42,10 +43,12 @@ services:
       test: ['CMD-SHELL', 'nc -zv localhost 8081 && exit 0 || exit 1']
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
+      SCHEMA_REGISTRY_LISTENERS: 'http://0.0.0.0:8081'
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
 
   rest-proxy:
-    image: confluentinc/cp-kafka-rest:5.3.1
+    image: confluentinc/cp-kafka-rest:7.3.3
     depends_on:
       - zookeeper
       - broker
