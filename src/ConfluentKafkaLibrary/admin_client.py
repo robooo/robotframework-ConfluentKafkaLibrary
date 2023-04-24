@@ -26,12 +26,25 @@ class KafkaAdminClient():
         return group_id
 
     def list_groups(self, group_id, states=None, request_timeout=10):
+        """List consumer groups.
+        - ``states`` (list(ConsumerGroupState)): filter consumer groups which are currently in these states.
+            For example usage see 'AdminClient List Consumer Groups' at
+            examples/test_adminclient.py
+            Default: `None`.
+        - ``request_timeout`` (int): Maximum response time before timing out.
+            Default: `10`.
+        """
         if states is None:
             states = []
         future = self.admin_clients[group_id].list_consumer_groups(request_timeout=request_timeout, states=set(states))
         return future.result()
 
     def describe_groups(self, group_id, group_ids, request_timeout=10):
+        """Describe consumer groups.
+        - ``group_ids`` (list(str)): List of group_ids which need to be described.
+        - ``request_timeout`` (int): Maximum response time before timing out.
+            Default: `10`.
+        """
         response = self.admin_clients[group_id].describe_consumer_groups(group_ids, request_timeout=request_timeout)
 
         groups_results={}
