@@ -12,7 +12,7 @@ ${SEEN_RF_OAUTH_CB}  ${False}
 *** Test Cases ***
 Example Oauth
     [Documentation]  Example of how to use OAUTH with library and call functools
-    ...              via get_token function. For better handling there could be 
+    ...              via get_token function. For better handling there could be
     ...              some global variable which can be set inside of python lib.
     ...              Not executable right now, needs update env (issue #21).
 

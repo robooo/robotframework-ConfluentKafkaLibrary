@@ -4,6 +4,7 @@ from confluent_kafka import Consumer, KafkaException, KafkaError, TopicPartition
 from confluent_kafka import DeserializingConsumer
 from confluent_kafka.avro.serializer import SerializerError
 from confluent_kafka.avro import AvroConsumer
+from confluent_kafka.admin import AdminClient
 
 
 class GetMessagesThread(Thread):
@@ -20,6 +21,8 @@ class GetMessagesThread(Thread):
 
         super().__init__()
         self.daemon = True
+        self.server = server
+        self.port = port
         self._is_running = True
         self.only_value = only_value
         self.consumer = KafkaConsumer()
@@ -44,11 +47,27 @@ class GetMessagesThread(Thread):
                 self.consumer.close_consumer(self.group_id)
                 self._is_running = False
 
+    def get_group_id(self):
+        return self.group_id
+
     def get_messages(self):
         return self.messages[:]
 
     def clear_messages(self):
         self.messages.clear()
+
+    def stop_consumer(self):
+        self._is_running = False
+        self.join()
+        self.consumer.unsubscribe(self.group_id)
+        self.consumer.close_consumer(self.group_id)
+        admin_client = AdminClient({'bootstrap.servers': f'{self.server}:{self.port}'})
+        response = admin_client.delete_consumer_groups([self.group_id], request_timeout=10)
+        try:
+            response[self.group_id].result()
+        except Exception as e:
+            return e
+        return response[self.group_id].exception()
 
 
 class KafkaConsumer():
@@ -348,6 +367,9 @@ class KafkaConsumer():
         )
         return records
 
+    def get_thread_group_id(self, running_thread):
+        return running_thread.get_group_id()
+
     def clear_messages_from_thread(self, running_thread):
         """Remove all records gathered from specific thread
         - ``running_thread`` (Thread object) - thread which was executed with
@@ -355,5 +377,9 @@ class KafkaConsumer():
         """
         try:
             running_thread.clear_messages()
-        except:
-            print('Messages was not removed from thread %s!', running_thread)
+        except Exception as e:
+            return f"Messages were not removed from thread {running_thread}!\n{e}"
+
+    def stop_consumer_threaded(self, running_thread):
+        resp = running_thread.stop_consumer()
+        return resp

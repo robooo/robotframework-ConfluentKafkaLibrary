@@ -4,6 +4,7 @@ Library  Collections
 Library  String
 
 Suite Setup  Starting Test
+Suite Teardown  Stop Thread
 
 
 *** Test Cases ***
@@ -105,8 +106,11 @@ Basic Teardown
     [Arguments]  ${group_id}
     Unsubscribe  ${group_id}
     Close Consumer  ${group_id}
+    ${groups}=  Create List  ${group_id}
+    ${admin_client_id}=  Create Admin Client
+    ${resp}=  Delete Groups  ${admin_client_id}  group_ids=${groups}
+    Log  ${resp}
 
-Unassign Teardown
-    [Arguments]  ${group_id}
-    Unassign  ${group_id}
-    Close Consumer  ${group_id}
+Stop Thread
+    ${resp}=  Stop Consumer Threaded  ${MAIN_THREAD}
+    Log  ${resp}

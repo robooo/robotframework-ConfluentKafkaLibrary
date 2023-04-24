@@ -3,7 +3,7 @@ Library  ConfluentKafkaLibrary
 Library  Collections
 
 Suite Setup  Starting Test
-
+Suite Teardown  Stop Thread
 
 *** Test Cases ***
 Verify Topics
@@ -28,6 +28,7 @@ Produce Without Value
     Subscribe Topic  group_id=${group_id}  topics=${topic_name}
     ${messages}=  Poll  group_id=${group_id}  max_records=1
     Should Be Equal As Strings  ${messages}  [None]
+    [Teardown]  Basic Teardown  ${group_id}
 
 Verify Position
     ${group_id}=  Create Consumer
@@ -123,7 +124,7 @@ Remove And Publish New Messages From Threaded Consumer
     [Teardown]  Clear Messages From Thread  ${MAIN_THREAD}
 
 Purge Test
-    ${producer_id}=  Create Producer
+    ${producer_id}=  Create Producer  message.timeout.ms=${30000}
     Produce  group_id=${producer_id}  topic=${TEST_TOPIC}  value=After  partition=${P_ID}
     Produce  group_id=${producer_id}  topic=${TEST_TOPIC}  value=Clear  partition=${P_ID}
 
@@ -143,12 +144,14 @@ Offsets Test
     Assign To Topic Partition  ${group_id}  ${tp}
     Sleep  5sec
     Store Offsets  group_id=${group_id}  offsets=${offsets}
-
+    [Teardown]  Unassign Teardown  ${group_id}
 
 *** Keywords ***
 Starting Test
     Set Suite Variable  ${TEST_TOPIC}  test
     ${thread}=  Start Consumer Threaded  topics=${TEST_TOPIC}
+    ${gid}=  Get Thread Group Id  ${thread}
+    Log  ${gid}
     Set Suite Variable  ${MAIN_THREAD}  ${thread}
     ${producer_group_id}=  Create Producer
     Set Suite Variable  ${PRODUCER_ID}  ${producer_group_id}
@@ -186,8 +189,20 @@ Basic Teardown
     [Arguments]  ${group_id}
     Unsubscribe  ${group_id}
     Close Consumer  ${group_id}
+    ${groups}=  Create List  ${group_id}
+    ${admin_client_id}=  Create Admin Client
+    ${resp}=  Delete Groups  ${admin_client_id}  group_ids=${groups}
+    Log  ${resp}
 
 Unassign Teardown
     [Arguments]  ${group_id}
     Unassign  ${group_id}
     Close Consumer  ${group_id}
+    ${groups}=  Create List  ${group_id}
+    ${admin_client_id}=  Create Admin Client
+    ${resp}=  Delete Groups  ${admin_client_id}  group_ids=${groups}
+    Log  ${resp}
+
+Stop Thread
+    ${resp}=  Stop Consumer Threaded  ${MAIN_THREAD}
+    Log  ${resp}
