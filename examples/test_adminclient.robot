@@ -31,7 +31,7 @@ AdminClient List Consumer Groups
     Sleep  2s  # Wait for subscription
 
     ${admin_client_id}=  Create Admin Client
-    ${states}=  Create List  ${CONSUMER_GROUP_STATE_UNKNOWN}  #https://github.com/confluentinc/confluent-kafka-python/issues/1556
+    ${states}=  Create List  ${CONSUMER_GROUP_STATE_STABLE}
     ${groups}=  List Groups  ${admin_client_id}  states=${states}
     Log  ${groups}
     Log  ${groups.valid}
