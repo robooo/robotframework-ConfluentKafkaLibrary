@@ -32,22 +32,8 @@ jobs:
         --wheel
         --outdir dist/
         .
-    - name: Install python requirements
-      run: pip install .
     - name: Publish distribution 📦 to PyPI
       if: startsWith(github.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         password: ${{ secrets.PYPI_API_TOKEN }}
-    - name: Generate keyword documentation
-      run: python3 -m robot.libdoc -f html src/ConfluentKafkaLibrary docs/index.html
-    - uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        file_pattern: docs/index.html
-        commit_message: Add keyword documentation
-        push_options: '--force'
-    - name: Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@4.1.5
-      with:
-        branch: gh-pages # The branch the action should deploy to.
-        folder: docs # The folder the action should deploy.
