@@ -89,6 +89,7 @@ class KafkaProducer():
         topic,
         value=None,
         key=None,
+        headers=None,
         **kwargs
     ):
         """Produce message to topic asynchronously to Kafka by encoding with specified or default avro schema.\n
@@ -97,12 +98,14 @@ class KafkaProducer():
         - ``topic`` (str) : name of the topic where to produce message.
         - ``value`` (str|bytes): Message payload.
         - ``key`` (str|bytes): Message key. Default: `None`.
+        - ``headers`` (dict[str, bytes]): Message headers. Default: `None`.
         - ``partition`` (int): Partition to produce to, else uses the configured built-in partitioner.
         """
         self.producers[group_id].produce(
             topic=topic,
             value=value,
             key=key,
+            headers=headers,
             **kwargs
         )
 
