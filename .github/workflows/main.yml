@@ -24,8 +24,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
 
       - name: Spin up kafka
         run: cd examples && docker-compose up -d && cd ..
