@@ -19,6 +19,12 @@ class Serializer():
         return JSONSerializer(schema_str, schema_registry_client, to_dict, conf)
 
     def get_protobuf_serializer(self, msg_type, schema_registry_client, conf=None):
+        base_conf = {'use.deprecated.format': False}
+        if conf is None:
+            conf = base_conf.copy()
+        else:
+            conf.update(base_conf)
+
         return ProtobufSerializer(msg_type, schema_registry_client, conf)
 
     def get_string_serializer(self, codec='utf_8'):
@@ -40,7 +46,7 @@ class Deserializer():
         return JSONDeserializer(schema_str, from_dict)
 
     def get_protobuf_deserializer(self, message_type):
-        return ProtobufDeserializer(message_type)
+        return ProtobufDeserializer(message_type, {'use.deprecated.format': False})
 
     def get_string_deserializer(self, codec='utf_8'):
         return StringDeserializer(codec)
