@@ -45,4 +45,4 @@ In most cases, you can refer to the [confluent-kafka-python documentation](https
 
 ## Known Limitations:
 * Unable to install robotframework-confluentkafkalibrary on Amazon EC2 graviton instance type
-  * see https://github.com/robooo/robotframework-ConfluentKafkaLibrary/issues/33
+  * see the [steps to resolve](https://github.com/robooo/robotframework-ConfluentKafkaLibrary/issues/33#issuecomment-1464644752)
