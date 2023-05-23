@@ -29,8 +29,8 @@ Avro Producer With Schemas As String Argument
 
 Avro Producer With Path To Schemas
     [Setup]  Clear Messages From Thread  ${MAIN_THREAD}
-    ${value_schema_file_path}=  Set Variable  examples/schema/producer/ValueSchema.avsc
-    ${key_schema_file_path}=  Set Variable  examples/schema/producer/KeySchema.avsc
+    ${value_schema_file_path}=  Set Variable  examples/schema/avro/ValueSchema.avsc
+    ${key_schema_file_path}=  Set Variable  examples/schema/avro/KeySchema.avsc
     ${producer_id}=  Create Producer  schema_registry_url=http://127.0.0.1:8081
     ...  value_schema=${value_schema_file_path}  key_schema=${key_schema_file_path}
     ${value}=  Create Dictionary  name=Robot  number=${10}
