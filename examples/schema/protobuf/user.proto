@@ -1,0 +1,7 @@
+syntax = "proto3";
+package example.protobuf;
+
+message User {
+    string name = 1;
+    int32 number = 2;
+}
