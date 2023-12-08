@@ -30,7 +30,7 @@ class GetMessagesThread(Thread):
                                                       server=server,
                                                       port=port,
                                                       **kwargs)
-
+        self.kwargs = kwargs
         if not isinstance(topics, list):
             topics = [topics]
         self.consumer.subscribe_topic(self.group_id, topics=topics)
@@ -61,7 +61,7 @@ class GetMessagesThread(Thread):
         self.join()
         self.consumer.unsubscribe(self.group_id)
         self.consumer.close_consumer(self.group_id)
-        admin_client = AdminClient({'bootstrap.servers': f'{self.server}:{self.port}'})
+        admin_client = AdminClient({'bootstrap.servers': f'{self.server}:{self.port}', **self.kwargs})
         response = admin_client.delete_consumer_groups([self.group_id], request_timeout=10)
         try:
             response[self.group_id].result()
