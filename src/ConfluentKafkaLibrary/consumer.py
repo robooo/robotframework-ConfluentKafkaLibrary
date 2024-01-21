@@ -361,10 +361,9 @@ class KafkaConsumer():
         - ``decode_format`` (str) - If you need to decode data to specific format
             (See https://docs.python.org/3/library/codecs.html#standard-encodings). Default: None.
         """
-        records = self._decode_data(
-            data=running_thread.get_messages(),
-            decode_format=decode_format
-        )
+        records = running_thread.get_messages()
+        if records:
+            records = self._decode_data(records, decode_format)
         return records
 
     def get_thread_group_id(self, running_thread):
