@@ -5,6 +5,7 @@ from confluent_kafka import DeserializingConsumer
 from confluent_kafka.avro.serializer import SerializerError
 from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.admin import AdminClient
+from .admin_client import KafkaAdminClient
 
 
 class GetMessagesThread(Thread):
@@ -149,6 +150,9 @@ class KafkaConsumer():
                 **kwargs})
 
         self.consumers[group_id] = consumer
+        print('CONSUMER:')
+        print(consumer)
+        print(type(consumer))
         return group_id
 
     def get_all_consumers(self):
@@ -351,8 +355,43 @@ class KafkaConsumer():
         if topics is None:
             raise ValueError("Topics can not be empty!")
 
+#        verify = super().__init__()
+#        print(verify)
+#        self.daemon = True
+#        self.server = server
+#        self.port = port
+#        self._is_running = True
+#        self.only_value = only_value
+#
+#        group_id = self.create_consumer(group_id=group_id,
+#                        server=server,
+#                        port=port,
+#                        **kwargs)
+#        if not isinstance(topics, list):
+#            topics = [topics]
+#        self.subscribe_topic(group_id, topics=topics)
+#        self.messages = []
+#        self.messages += self.poll(group_id=group_id, only_value=self.only_value)
+#        #threadx = Thread(target=self.run)
+#        self.start()
+#        print(vars(self))
+#
+#        def run(self):
+#            while self._is_running:
+#                try:
+#                    self.messages += self.poll(group_id=group_id, only_value=self.only_value)
+#                except RuntimeError:
+#                    self.unsubscribe(group_id)
+#                    self.close_consumer(group_id)
+#                    self._is_running = False
+#        return None, group_id
         consumer_thread = GetMessagesThread(server, port, topics, group_id=group_id, only_value=only_value, **kwargs)
-        return consumer_thread
+        self.consumers[consumer_thread.group_id] = consumer_thread.consumer.consumers[consumer_thread.group_id]
+        #print(vars(consumer_thread))
+        print("Consumer threaded:")
+        print(type(consumer_thread.consumer.consumers))
+        print(consumer_thread.consumer.consumers[consumer_thread.group_id])
+        return consumer_thread, consumer_thread.group_id
 
     def get_messages_from_thread(self, running_thread, decode_format=None):
         """Returns all records gathered from specific thread
@@ -366,8 +405,8 @@ class KafkaConsumer():
             records = self._decode_data(records, decode_format)
         return records
 
-    def get_thread_group_id(self, running_thread):
-        return running_thread.get_group_id()
+#    def get_thread_group_id(self, running_thread):
+#        return running_thread.get_group_id()
 
     def clear_messages_from_thread(self, running_thread):
         """Remove all records gathered from specific thread
@@ -382,3 +421,6 @@ class KafkaConsumer():
     def stop_consumer_threaded(self, running_thread):
         resp = running_thread.stop_consumer()
         return resp
+
+
+

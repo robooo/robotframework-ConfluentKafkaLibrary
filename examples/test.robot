@@ -9,7 +9,16 @@ Suite Teardown  Stop Thread
 Verify Topics
     ${group_id}=  Create Consumer  auto_offset_reset=earliest
     ${topics}=  List Topics  ${group_id}
+    Log  ${topics}
+    ${cons}=  Get All Consumers
+    Log Many  ${cons}
     Dictionary Should Contain Key  ${topics}  ${TEST_TOPIC}
+
+    Log To Console  ${TEST_GID}
+    Log  ${TEST_GID}
+    ${topics_thread}=  List Topics  ${TEST_GID}
+    Log  ${topics_thread}
+    Log To Console  ${topics_thread}
     [Teardown]  Close Consumer  ${group_id}
 
 Basic Consumer
@@ -81,13 +90,15 @@ Consumer With Assignment To OFFSET_END
     [Teardown]  Unassign Teardown  ${group_id}
 
 Verify Test And Threaded Consumer
-    [Setup]  Clear Messages From Thread  ${MAIN_THREAD}
+#    [Setup]  Clear Messages From Thread  ${MAIN_THREAD}
     ${group_id}=  Create Consumer
     Subscribe Topic  group_id=${group_id}  topics=${TEST_TOPIC}
     ${messages}=  Poll  group_id=${group_id}
+    ${thead_messages}=  Poll  group_id=${TEST_GID}
     Prepare Data
-    ${thread_messages}=  Get Messages From Thread  ${MAIN_THREAD}  decode_format=utf-8
+#    ${thread_messages}=  Get Messages From Thread  ${MAIN_THREAD}  decode_format=utf-8
     ${messages}=  Poll  group_id=${group_id}  max_records=6  decode_format=utf8
+    ${thread_messages}=  Poll  group_id=${TEST_GID}  max_records=6  decode_format=utf8
     Lists Should Be Equal  ${thread_messages}  ${messages}
     [Teardown]  Run Keywords  Basic Teardown  ${group_id}  AND
                 ...  Clear Messages From Thread  ${MAIN_THREAD}
@@ -149,10 +160,11 @@ Offsets Test
 *** Keywords ***
 Starting Test
     Set Suite Variable  ${TEST_TOPIC}  test
-    ${thread}=  Start Consumer Threaded  topics=${TEST_TOPIC}
-    ${gid}=  Get Thread Group Id  ${thread}
-    Log  ${gid}
+    ${thread}  ${gid}=  Start Consumer Threaded  topics=${TEST_TOPIC}
+#    ${gid}=  Get Thread Group Id  ${thread}
+#    Log  ${gid}
     Set Suite Variable  ${MAIN_THREAD}  ${thread}
+    Set Suite Variable  ${TEST_GID}  ${gid}
     ${producer_group_id}=  Create Producer
     Set Suite Variable  ${PRODUCER_ID}  ${producer_group_id}
 
@@ -160,6 +172,8 @@ Starting Test
     Prepare Data
 
     ${topics}=  List Topics  ${producer_group_id}
+    Log  ${topics}
+    Log To Console  ${topics}
     ${partitions}=  Get Topic Partitions  ${topics['${TEST_TOPIC}']}
     ${partition_id}=  Set Variable  ${partitions[0].id}
     Set Suite Variable  ${P_ID}  ${partition_id}
