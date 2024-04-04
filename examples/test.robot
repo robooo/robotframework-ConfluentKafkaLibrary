@@ -10,6 +10,9 @@ Verify Topics
     ${group_id}=  Create Consumer  auto_offset_reset=earliest
     ${topics}=  List Topics  ${group_id}
     Dictionary Should Contain Key  ${topics}  ${TEST_TOPIC}
+
+    ${topics_thread}=  List Topics  ${THREADED_GROUPID}
+    Dictionary Should Contain Key  ${topics}  ${TEST_TOPIC}
     [Teardown]  Close Consumer  ${group_id}
 
 Basic Consumer
@@ -152,6 +155,7 @@ Starting Test
     ${thread}=  Start Consumer Threaded  topics=${TEST_TOPIC}
     ${gid}=  Get Thread Group Id  ${thread}
     Log  ${gid}
+    Set Suite Variable  ${THREADED_GROUPID}  ${gid}
     Set Suite Variable  ${MAIN_THREAD}  ${thread}
     ${producer_group_id}=  Create Producer
     Set Suite Variable  ${PRODUCER_ID}  ${producer_group_id}
