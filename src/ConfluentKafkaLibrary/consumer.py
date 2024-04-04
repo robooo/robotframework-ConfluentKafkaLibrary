@@ -352,6 +352,8 @@ class KafkaConsumer():
             raise ValueError("Topics can not be empty!")
 
         consumer_thread = GetMessagesThread(server, port, topics, group_id=group_id, only_value=only_value, **kwargs)
+        group_id = consumer_thread.group_id
+        self.consumers[group_id] = consumer_thread.consumer.consumers[group_id]
         return consumer_thread
 
     def get_messages_from_thread(self, running_thread, decode_format=None):
