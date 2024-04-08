@@ -17,8 +17,8 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
-    - name: Install python requirements
-      run: pip install .
+    - name: Install requirements
+      run: apt install librdkafka-dev && pip install .
     - name: Generate keyword documentation
       run: python3 -m robot.libdoc -f html src/ConfluentKafkaLibrary docs/index.html
     - uses: stefanzweifel/git-auto-commit-action@v4
