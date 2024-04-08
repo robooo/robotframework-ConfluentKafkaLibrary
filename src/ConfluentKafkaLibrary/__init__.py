@@ -93,7 +93,7 @@ class ConfluentKafkaLibrary(*IMPORTS):
             BuiltIn().set_global_variable('${ADMIN_RESOURCE_GROUP}', confluent_kafka.admin.RESOURCE_GROUP)
             BuiltIn().set_global_variable('${ADMIN_RESOURCE_TOPIC}', confluent_kafka.admin.RESOURCE_TOPIC)
 
-            BuiltIn().set_global_variable('${CONSUMER_GROUP_STATE_UNKNOWN}', confluent_kafka.ConsumerGroupState.UNKOWN)
+            BuiltIn().set_global_variable('${CONSUMER_GROUP_STATE_UNKNOWN}', confluent_kafka.ConsumerGroupState.UNKNOWN)
             BuiltIn().set_global_variable('${CONSUMER_GROUP_STATE_PREPARING_REBALANCING}', confluent_kafka.ConsumerGroupState.PREPARING_REBALANCING)
             BuiltIn().set_global_variable('${CONSUMER_GROUP_STATE_COMPLETING_REBALANCING}', confluent_kafka.ConsumerGroupState.COMPLETING_REBALANCING)
             BuiltIn().set_global_variable('${CONSUMER_GROUP_STATE_STABLE}', confluent_kafka.ConsumerGroupState.STABLE)
