@@ -1,11 +1,14 @@
 import uuid
 import os
-from avro import schema
 from confluent_kafka import SerializingProducer
 from confluent_kafka import Producer
-from confluent_kafka import avro
-from confluent_kafka.avro import AvroProducer
 
+try:
+    from avro import schema
+    from confluent_kafka import avro
+    from confluent_kafka.avro import AvroProducer
+except ImportError:
+    pass
 
 class KafkaProducer():
 

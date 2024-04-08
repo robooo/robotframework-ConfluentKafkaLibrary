@@ -3,16 +3,20 @@ from confluent_kafka import ConsumerGroupState
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.admin import AdminClient, NewTopic, NewPartitions, ConfigResource
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
-
 from .consumer import KafkaConsumer
 from .producer import KafkaProducer
 from .admin_client import KafkaAdminClient
-from .serialization import Serializer, Deserializer
 from .version import VERSION
 
+IMPORTS = KafkaConsumer, KafkaProducer, KafkaAdminClient
+try:
+    from .serialization import Serializer, Deserializer
+    IMPORTS += Serializer, Deserializer
+except ImportError:
+    pass
 
 #class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializer):
-class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, KafkaAdminClient, Serializer, Deserializer):
+class ConfluentKafkaLibrary(*IMPORTS):
     """ConfluentKafkaLibrary is a Robot Framework library which wraps up
     [https://github.com/confluentinc/confluent-kafka-python | confluent-kafka-python].
     Library supports more functionality like running more clients based on `group_id`
