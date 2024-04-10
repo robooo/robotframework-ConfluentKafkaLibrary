@@ -28,11 +28,13 @@ jobs:
       - name: Spin up kafka
         run: cd examples && docker-compose up -d && cd ..
       - name: Install python requirements
-        run: pip install .
+        run: pip install .[all]
       - name: Wait for services
         run: while [ -n "$(docker container ls -a | grep starting)" ]; do sleep 2; done;
       - name: Docker inspect
         run:  docker inspect --format "{{json .State.Health.Status }}" $(docker-compose -f examples/docker-compose.yml ps -q)
+      - name: Show python version
+        run: python3 --version
       - name: Execute tests
         run: python3 -m robot -d ./docs examples/
         continue-on-error: true

@@ -2,9 +2,13 @@ import uuid
 from threading import Thread
 from confluent_kafka import Consumer, KafkaException, KafkaError, TopicPartition
 from confluent_kafka import DeserializingConsumer
-from confluent_kafka.avro.serializer import SerializerError
-from confluent_kafka.avro import AvroConsumer
 from confluent_kafka.admin import AdminClient
+
+try:
+    from confluent_kafka.avro.serializer import SerializerError
+    from confluent_kafka.avro import AvroConsumer
+except ImportError:
+    pass
 
 
 class GetMessagesThread(Thread):

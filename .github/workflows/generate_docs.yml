@@ -13,11 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-    - name: Install python requirements
+    # This latest python way can't find the librdkafka.h files
+    # - name: Set up Python
+    #   uses: actions/setup-python@v4
+    #   with:
+    #     python-version: '3.x'
+    - name: Install requirements
       run: pip install .
     - name: Generate keyword documentation
       run: python3 -m robot.libdoc -f html src/ConfluentKafkaLibrary docs/index.html

@@ -3,16 +3,20 @@ from confluent_kafka import ConsumerGroupState
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.admin import AdminClient, NewTopic, NewPartitions, ConfigResource
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
-
 from .consumer import KafkaConsumer
 from .producer import KafkaProducer
 from .admin_client import KafkaAdminClient
-from .serialization import Serializer, Deserializer
 from .version import VERSION
 
+IMPORTS = KafkaConsumer, KafkaProducer, KafkaAdminClient
+try:
+    from .serialization import Serializer, Deserializer
+    IMPORTS += Serializer, Deserializer
+except ImportError:
+    pass
 
 #class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializer):
-class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, KafkaAdminClient, Serializer, Deserializer):
+class ConfluentKafkaLibrary(*IMPORTS):
     """ConfluentKafkaLibrary is a Robot Framework library which wraps up
     [https://github.com/confluentinc/confluent-kafka-python | confluent-kafka-python].
     Library supports more functionality like running more clients based on `group_id`
@@ -89,7 +93,7 @@ class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, KafkaAdminClient, Seri
             BuiltIn().set_global_variable('${ADMIN_RESOURCE_GROUP}', confluent_kafka.admin.RESOURCE_GROUP)
             BuiltIn().set_global_variable('${ADMIN_RESOURCE_TOPIC}', confluent_kafka.admin.RESOURCE_TOPIC)
 
-            BuiltIn().set_global_variable('${CONSUMER_GROUP_STATE_UNKNOWN}', confluent_kafka.ConsumerGroupState.UNKOWN)
+            BuiltIn().set_global_variable('${CONSUMER_GROUP_STATE_UNKNOWN}', confluent_kafka.ConsumerGroupState.UNKNOWN)
             BuiltIn().set_global_variable('${CONSUMER_GROUP_STATE_PREPARING_REBALANCING}', confluent_kafka.ConsumerGroupState.PREPARING_REBALANCING)
             BuiltIn().set_global_variable('${CONSUMER_GROUP_STATE_COMPLETING_REBALANCING}', confluent_kafka.ConsumerGroupState.COMPLETING_REBALANCING)
             BuiltIn().set_global_variable('${CONSUMER_GROUP_STATE_STABLE}', confluent_kafka.ConsumerGroupState.STABLE)

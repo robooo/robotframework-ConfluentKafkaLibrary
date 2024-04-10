@@ -10,6 +10,10 @@ DESCRIPTION = """
 Confluent Kafka wrapped in Robot Framework.
 """[1:-1]
 
+AVRO_REQUIRES = ['fastavro >= 1.3.2', 'avro-python3 >= 1.10.1']
+JSON_REQUIRES = ['jsonschema >= 3.2.0']
+PROTO_REQUIRES = ['protobuf >= 4.22.0']
+ALL = AVRO_REQUIRES + JSON_REQUIRES + PROTO_REQUIRES
 setup(name         = 'robotframework-confluentkafkalibrary',
       version      = VERSION,
       description  = 'Confluent Kafka library for Robot Framework',
@@ -28,13 +32,15 @@ setup(name         = 'robotframework-confluentkafkalibrary',
       ],
       install_requires = [
           'robotframework >= 3.2.1',
-          'confluent-kafka == 2.0.2',
+          'confluent-kafka == 2.1.1',
           'requests >= 2.25.1',
-          'avro-python3 >= 1.10.1',
-          'fastavro >= 1.3.2',
-          'jsonschema >= 3.2.0',
-          'protobuf >= 4.22.0'
       ],
+      extras_require={
+          'all': ALL,
+          'avro': AVRO_REQUIRES,
+          'json': JSON_REQUIRES,
+          'protobuf': PROTO_REQUIRES,
+      },
       package_dir  = {'' : 'src'},
-      packages    = ['ConfluentKafkaLibrary'],
+      packages     = ['ConfluentKafkaLibrary'],
       )

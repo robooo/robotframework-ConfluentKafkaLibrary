@@ -22,6 +22,17 @@ To install the library, run the following command:
 pip install robotframework-confluentkafkalibrary
 ```
 
+Extra packages:
+* [avro] = ['fastavro >= 1.3.2', 'avro-python3 >= 1.10.1']
+* [json] = ['jsonschema >= 3.2.0']
+* [protobuf] = ['protobuf >= 4.22.0']
+
+To install all dependencies use `[all]` extension like:
+
+```
+pip install robotframework-confluentkafkalibrary[all]
+```
+
 ## Usage
 
 In most cases, you can refer to the [confluent-kafka-python documentation](https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html) for guidance. Every keyword in ConfluentKafkaLibrary is designed to match the corresponding Python functions. If you are unsure about the pre-configured keywords, please visit the  [robotframework-ConfluentKafkaLibrary documentation](https://robooo.github.io/robotframework-ConfluentKafkaLibrary/). The Kafka team maintains the up-to-date documentation for configuration properties and their values [here](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
