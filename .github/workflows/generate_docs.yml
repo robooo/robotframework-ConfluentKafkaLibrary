@@ -12,7 +12,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     # This latest python way can't find the librdkafka.h files
     # - name: Set up Python
     #   uses: actions/setup-python@v4
@@ -22,13 +22,13 @@ jobs:
       run: pip install .
     - name: Generate keyword documentation
       run: python3 -m robot.libdoc -f html src/ConfluentKafkaLibrary docs/index.html
-    - uses: stefanzweifel/git-auto-commit-action@v4
+    - uses: stefanzweifel/git-auto-commit-action@v5
       with:
         file_pattern: docs/index.html
         commit_message: Add keyword documentation
         push_options: '--force'
     - name: Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@4.1.5
+      uses: JamesIves/github-pages-deploy-action@v4.5.0
       with:
         branch: gh-pages # The branch the action should deploy to.
         folder: docs # The folder the action should deploy.
