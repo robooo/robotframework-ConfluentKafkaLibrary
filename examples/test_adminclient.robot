@@ -147,6 +147,30 @@ AdminClient Alter Configs
     ${config}=  Describe Configs  ${admin_client_id}  ${resource}
     Should Be Equal As Integers  ${54321}  ${config["${resource.name}"]['log.retention.ms'].value}
 
+AdminClient Describe Topics
+    ${topic_names}=  Create List  admintesting1  admintesting2  admintesting3
+    ${topics}=  Create List
+    FOR  ${topic}  IN  @{topic_names}
+      ${topic}=  New Topic  ${topic}  num_partitions=${1}  replication_factor=${1}
+      Append To List  ${topics}  ${topic}
+    END
+
+    ${admin_client_id}=  Create Admin Client
+    ${results}=  Create Topics  group_id=${admin_client_id}  new_topics=${topics}
+    Log  ${results}
+
+    ${results}=  Describe Topics  ${admin_client_id}  ${topic_names}
+    Log  ${results}
+    FOR  ${topic}  IN  @{topic_names}
+      ${status}=  Evaluate  len("${results["${topic}"].topic_id}") > 0
+      Should Be True  ${status}
+    END
+    [Teardown]  Delete Topics  ${admin_client_id}  ${topic_names}
+
+AdminClient Describe Cluster
+    ${admin_client_id}=  Create Admin Client
+    ${cluster}=  Describe Cluster  ${admin_client_id}
+    Should Not Be Empty  ${cluster.cluster_id}
 
 *** Keywords ***
 All Messages Are Delivered
