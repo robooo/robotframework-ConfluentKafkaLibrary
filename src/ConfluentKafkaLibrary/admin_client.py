@@ -1,6 +1,6 @@
 import uuid
 from confluent_kafka.admin import AdminClient
-from confluent_kafka import KafkaException
+from confluent_kafka import KafkaException, TopicCollection
 
 
 class KafkaAdminClient():
@@ -169,6 +169,44 @@ class KafkaAdminClient():
             except (TypeError, ValueError ) as e:
                 return f"Invalid input: {e}"
         return config_results
+
+    def describe_topics(self, group_id, topics, **kwargs):
+        """Describe topics.
+        - ``topics``  (list(str) or str): List of topic names or only topic name to describe.
+        """
+        if isinstance(topics, list):
+            topics = TopicCollection(topics)
+        else:
+            topics = TopicCollection([topics])
+
+        topics = self.admin_clients[group_id].describe_topics(topics, **kwargs)
+        topics_results={}
+        for topic, f in topics.items():
+            try:
+                if f.exception() is None:
+                    topics_results[topic] = f.result()
+                else:
+                    topics_results[topic] = f.exception()
+            except KafkaException as e:
+                return f"Failed to describe topic {topic.name}: {e}"
+            except (TypeError, ValueError ) as e:
+                return f"Invalid input: {e}"
+        return topics_results
+
+    def describe_cluster(self, group_id, **kwargs):
+        """Describe cluster.
+        """
+        cluster = self.admin_clients[group_id].describe_cluster(**kwargs)
+        try:
+            if cluster.exception() is None:
+                cluster = cluster.result()
+            else:
+                cluster = cluster.exception()
+        except KafkaException as e:
+            return f"Failed to describe cluster: {e}"
+        except (TypeError, ValueError ) as e:
+            return f"Invalid input: {e}"
+        return cluster
 
     def alter_configs(self, group_id, resources, **kwargs):
         """Update configuration properties for the specified resources.
