@@ -26,13 +26,13 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Spin up kafka
-        run: cd examples && docker-compose up -d && cd ..
+        run: cd examples && docker compose up -d && cd ..
       - name: Install python requirements
         run: pip install .[all]
       - name: Wait for services
         run: while [ -n "$(docker container ls -a | grep starting)" ]; do sleep 2; done;
       - name: Docker inspect
-        run:  docker inspect --format "{{json .State.Health.Status }}" $(docker-compose -f examples/docker-compose.yml ps -q)
+        run:  docker inspect --format "{{json .State.Health.Status }}" $(docker compose -f examples/docker-compose.yml ps -q)
       - name: Show python version
         run: python3 --version
       - name: Execute tests
