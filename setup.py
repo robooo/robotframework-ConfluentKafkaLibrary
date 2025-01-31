@@ -14,6 +14,7 @@ AVRO_REQUIRES = ['fastavro >= 1.3.2', 'avro >= 1.11.1']
 LEGACYAVRO_REQUIRES = ['fastavro >= 1.3.2', 'avro-python3 >= 1.10.1']
 JSON_REQUIRES = ['jsonschema >= 3.2.0']
 PROTO_REQUIRES = ['protobuf >= 4.22.0']
+SCHEMA_REGISTRY_REQUIRES = ['httpx>=0.26']
 ALL = AVRO_REQUIRES + LEGACYAVRO_REQUIRES + JSON_REQUIRES + PROTO_REQUIRES
 setup(name         = 'robotframework-confluentkafkalibrary',
       version      = VERSION,
@@ -42,6 +43,7 @@ setup(name         = 'robotframework-confluentkafkalibrary',
           'legacyavro': LEGACYAVRO_REQUIRES,
           'json': JSON_REQUIRES,
           'protobuf': PROTO_REQUIRES,
+          'schemaregistry': SCHEMA_REGISTRY_REQUIRES,
       },
       package_dir  = {'' : 'src'},
       packages     = ['ConfluentKafkaLibrary'],
