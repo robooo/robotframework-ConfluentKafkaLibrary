@@ -1,7 +1,8 @@
-from confluent_kafka.schema_registry.avro import *
-from confluent_kafka.schema_registry.protobuf import (ProtobufSerializer, ProtobufDeserializer)
+from confluent_kafka.schema_registry.avro import AvroSerializer, AvroDeserializer
+from confluent_kafka.schema_registry.protobuf import ProtobufSerializer, ProtobufDeserializer
 from confluent_kafka.schema_registry.json_schema import JSONSerializer, JSONDeserializer
-from confluent_kafka.serialization import *
+from confluent_kafka.serialization import (DoubleSerializer, IntegerSerializer, StringSerializer,
+                                           DoubleDeserializer, IntegerDeserializer, StringDeserializer)
 
 
 class Serializer():
