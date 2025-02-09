@@ -6,7 +6,6 @@ from confluent_kafka.admin import AdminClient
 
 try:
     from confluent_kafka.avro.serializer import SerializerError
-    from confluent_kafka.avro import AvroConsumer
 except ImportError:
     pass
 
@@ -86,11 +85,10 @@ class KafkaConsumer():
         port="9092",
         enable_auto_commit=True,
         auto_offset_reset="latest",
-        schema_registry_url=None,
         auto_create_topics=True,
         key_deserializer=None,
         value_deserializer=None,
-        legacy=True,
+        deserializing=False,
         **kwargs
     ):
         """Create Kafka Consumer and returns its `group_id` as string.
@@ -110,13 +108,10 @@ class KafkaConsumer():
             other value will raise the exception. Default: `latest`.
         - ``enable_auto_commit`` (bool): If true the consumer's offset will be
             periodically committed in the background. Default: `True`.
-        - ``schema_registry_url`` (str): *required* for Avro Consumer.
-            Full URL to avro schema endpoint.
         - ``auto_create_topics`` (bool): Consumers no longer trigger auto creation of topics,
             will be removed in future release. Default: `True`.
-        - ``legacy`` (bool): Activate SerializingConsumer if 'False' else
-            AvroConsumer (legacy) is used. Will be removed when confluent-kafka will deprecate this.
-            Default: `True`.
+        - ``deserializing`` (bool): Activates DeserializingConsumer with deserialization capabilities.
+            Default: `False`.
 
         Note:
         Configuration parameters are described in more detail at
@@ -125,16 +120,7 @@ class KafkaConsumer():
         if group_id is None:
             group_id = str(uuid.uuid4())
 
-        if schema_registry_url and legacy:
-            consumer = AvroConsumer({
-                'bootstrap.servers': '{}:{}'.format(server, port),
-                'group.id': group_id,
-                'enable.auto.commit': enable_auto_commit,
-                'allow.auto.create.topics': auto_create_topics,
-                'auto.offset.reset': auto_offset_reset,
-                'schema.registry.url': schema_registry_url,
-                **kwargs})
-        elif not legacy:
+        if deserializing:
             consumer = DeserializingConsumer({
                 'bootstrap.servers': '{}:{}'.format(server, port),
                 'group.id': group_id,
