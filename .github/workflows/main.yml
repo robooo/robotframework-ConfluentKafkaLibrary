@@ -27,8 +27,10 @@ jobs:
 
       - name: Spin up kafka
         run: cd examples && docker compose up -d && cd ..
+      - name: Upgrade pip, setuptools, and wheel
+        run: python3 -m pip install --upgrade pip setuptools wheel
       - name: Install python requirements
-        run: pip install .[all]
+        run: pip install --upgrade .[all]
       - name: Wait for services
         run: while [ -n "$(docker container ls -a | grep starting)" ]; do sleep 2; done;
       - name: Docker inspect
