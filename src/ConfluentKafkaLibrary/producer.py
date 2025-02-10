@@ -1,77 +1,36 @@
 import uuid
-import os
 from confluent_kafka import SerializingProducer
 from confluent_kafka import Producer
-
-try:
-    from avro import schema
-    from confluent_kafka import avro
-    from confluent_kafka.avro import AvroProducer
-except ImportError:
-    pass
 
 class KafkaProducer():
 
     def __init__(self):
         self.producers = {}
 
-    def load_schema(self, data):
-        if os.path.exists(data):
-            data = avro.load(data)
-        elif isinstance(data,str):
-            data = str(data)
-            data = avro.loads(data)
-        if not isinstance(data, schema.RecordSchema):
-            raise Exception("Data is stil not in schema.RecordSchema format, data: " + data)
-        return data
-
     def create_producer(
         self,
         server='127.0.0.1',
         port='9092',
         group_id=None,
-        schema_registry_url=None,
-        value_schema=None,
-        key_schema=None,
         key_serializer=None,
         value_serializer=None,
-        legacy=True,
+        serializing=False,
         **kwargs
     ):
         """Create Kafka Producer and returns its `group_id` as string.
-        If `schema_registry_url` is used, Kafka Producer client which does avro schema
-        encoding to messages is created instead.
 
         Keyword Arguments:
         - ``server``: (str): IP address / domain, that the consumer should
             contact to bootstrap initial cluster metadata.
             Default: `127.0.0.1`.
         - ``port`` (int): Port number. Default: `9092`.
-        - ``schema_registry_url`` (str): *required* for Avro Consumer. Full URL to avro schema endpoint.
-        - ``value_schema`` (str): Optional default avro schema for value or path to file with schema. Default: `None`
-        - ``key_schema`` (str): Optional default avro schema for key. Default: `None`
-        - ``legacy`` (bool): Activate SerializingProducer if 'False' else
-            AvroProducer (legacy) is used. Will be removed when confluent-kafka will deprecate this.
-            Default: `True`.
-
+        - ``serializing`` (bool): Activate SerializingProducer with serialization capabilities.
+            Default: `False`
         """
         if group_id is None:
             group_id = str(uuid.uuid4())
 
-        if schema_registry_url and legacy:
-            if value_schema:
-                value_schema = self.load_schema(value_schema)
-            if key_schema:
-                key_schema = self.load_schema(key_schema)
-
-            producer = AvroProducer({
-                'bootstrap.servers': '{}:{}'.format(server, port),
-                'schema.registry.url': schema_registry_url,
-                **kwargs},
-                default_key_schema=key_schema,
-                default_value_schema=value_schema
-            )
-        elif not legacy:
+        if serializing:
             producer = SerializingProducer({
                 'bootstrap.servers': '{}:{}'.format(server, port),
                 'key.serializer': key_serializer,

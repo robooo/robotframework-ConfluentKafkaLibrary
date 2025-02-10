@@ -32,7 +32,7 @@ class ConfluentKafkaLibrary(*IMPORTS):
 
     *Basic Consumer with predefined group_id*
 
-    | ${group_id}= | `Create Consumer` | group_id=mygroup | # if group_id is not defined uuid4() is gemerated |
+    | ${group_id}= | `Create Consumer` | group_id=mygroup | # if group_id is not defined uuid4() is generated |
     | `Subscribe Topic` | group_id=${group_id} | topics=test_topic |
     | ${result}= | `Poll` | group_id=${group_id} | max_records=5 |
     | `Log` | ${result} |
@@ -57,20 +57,6 @@ class ConfluentKafkaLibrary(*IMPORTS):
     | ${messages}= | Poll | group_id=${group_id} | max_records=3 | decode_format=utf_8 |
     | ${json} | Convert String to JSON | ${messages}[0] |
     | ${jsonValue} | Get value from JSON | ${json} | $.key |
-
-    *Run Avro Consumer over HTTPS and threaded:*
-
-    | ${thread}= | `Start Consumer Threaded` |
-    | | ...  topics=test_topic |
-    | | ...  schema_registry_url=https://localhost:8081 |
-    | | ...  auto_offset_reset=earliest | # We want to get all messages |
-    | | ...  security.protocol=ssl |
-    | | ...  schema.registry.ssl.ca.location=/home/user/cert/caproxy.pem |
-    | | ...  ssl.ca.location=/home/user/cert/caproxy.pem |
-    | | ...  ssl.certificate.location=/home/user/cert/kafka-client-cert.pem |
-    | | ...  ssl.key.location=/home/user/cert/kafka-client-key.pem |
-    | `Log` | `Execute commands which should push some data to topic` |
-    | ${messages}= | `Get Messages From Thread` | ${thread} |
 
     """
 
