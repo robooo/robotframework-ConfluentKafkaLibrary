@@ -30,7 +30,9 @@ jobs:
       - name: Upgrade pip, setuptools, and wheel
         run: python3 -m pip install --upgrade pip setuptools wheel
       - name: Install python requirements
-        run: pip install --upgrade .[all]
+        run: pip install --force-reinstall .[all]
+      - name: Check for broken dependencies
+        run: pip check
       - name: Wait for services
         run: while [ -n "$(docker container ls -a | grep starting)" ]; do sleep 2; done;
       - name: Docker inspect
