@@ -23,11 +23,12 @@ pip install robotframework-confluentkafkalibrary
 ```
 
 Extra packages:
-* [avro] = ['fastavro >= 1.3.2', 'avro >= 1.11.1']
-* [json] = ['jsonschema >= 3.2.0']
-* [protobuf] = ['protobuf >= 4.22.0']
-* [schemaregistry] = ['httpx>=0.26', 'cachetools >= 5.5.0', 'attrs >= 24.3.0']
-To install all dependencies use `[all]` extension like:
+* `[avro]` = `['fastavro >= 1.3.2', 'avro >= 1.11.1']`
+* `[json]` = `['jsonschema >= 3.2.0', 'pyrsistent >= 0.20.0']`
+* `[protobuf]` = `['protobuf >= 4.22.0', 'googleapis-common-protos >= 1.66.0']`
+* `[schemaregistry]` = `['httpx>=0.26', 'cachetools >= 5.5.0', 'attrs >= 24.3.0']`
+
+* To install all dependencies use `[all]` extension like:
 
 ```
 pip install robotframework-confluentkafkalibrary[all]
