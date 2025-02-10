@@ -9,8 +9,11 @@ from .admin_client import KafkaAdminClient
 from .version import VERSION
 
 IMPORTS = KafkaConsumer, KafkaProducer, KafkaAdminClient
-from .serialization import Serializer, Deserializer
-IMPORTS += Serializer, Deserializer
+try:
+    from .serialization import Serializer, Deserializer
+    IMPORTS += Serializer, Deserializer
+except ImportError:
+    pass
 
 #class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializer):
 class ConfluentKafkaLibrary(*IMPORTS):
