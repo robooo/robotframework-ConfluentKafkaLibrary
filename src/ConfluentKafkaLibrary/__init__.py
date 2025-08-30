@@ -1,6 +1,14 @@
 import confluent_kafka
 from confluent_kafka import ConsumerGroupState
-from confluent_kafka.schema_registry import SchemaRegistryClient
+
+try:
+    from confluent_kafka.schema_registry import SchemaRegistryClient
+    _SCHEMA_REGISTRY_CLIENT_AVAILABLE = True
+except ImportError:
+    _SCHEMA_REGISTRY_CLIENT_AVAILABLE = False
+    raise ImportError("SchemaRegistry requires additional dependencies to be installed. \
+                       Please install with 'pip install robotframework-confluentkafkalibrary[schemaregistry]'")
+
 from confluent_kafka.admin import AdminClient, NewTopic, NewPartitions, ConfigResource
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 from .consumer import KafkaConsumer
@@ -9,11 +17,12 @@ from .admin_client import KafkaAdminClient
 from .version import VERSION
 
 IMPORTS = KafkaConsumer, KafkaProducer, KafkaAdminClient
-try:
-    from .serialization import Serializer, Deserializer
-    IMPORTS += Serializer, Deserializer
-except ImportError:
-    pass
+if _SCHEMA_REGISTRY_CLIENT_AVAILABLE:
+    try:
+        from .serialization import Serializer, Deserializer
+        IMPORTS += Serializer, Deserializer
+    except ImportError:
+        pass
 
 #class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializer):
 class ConfluentKafkaLibrary(*IMPORTS):
