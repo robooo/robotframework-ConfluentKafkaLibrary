@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "robotframework-confluentkafkalibrary"
+dynamic = ["version"]
+description = "Confluent Kafka library for Robot Framework"
+readme = "README.md"
+authors = [
+    {name = "Robert Karasek", email = "robo.karasek@gmail.com"},
+]
+license = "Apache-2.0"
+license-files = ["LICEN[CS]E*"]
+keywords = ["robotframework", "confluent", "kafka"]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Testing",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "robotframework >= 3.2.1",
+    "confluent-kafka == 2.9.0",
+    "requests >= 2.25.1",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/robooo/robotframework-ConfluentKafkaLibrary"
+
+[project.optional-dependencies]
+avro = [
+    "fastavro >= 1.3.2",
+    "avro >= 1.11.1",
+]
+json = [
+    "jsonschema >= 3.2.0",
+    "pyrsistent >= 0.20.0",
+]
+protobuf = [
+    "protobuf >= 4.22.0",
+    "googleapis-common-protos >= 1.66.0",
+]
+schemaregistry = [
+    "httpx>=0.26",
+    "cachetools >= 5.5.0",
+    "attrs >= 24.3.0",
+    "authlib >= 1.0.0",
+]
+all = [
+    "robotframework-confluentkafkalibrary[avro]",
+    "robotframework-confluentkafkalibrary[json]",
+    "robotframework-confluentkafkalibrary[protobuf]",
+    "robotframework-confluentkafkalibrary[schemaregistry]",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = {attr = "ConfluentKafkaLibrary.version.VERSION"}
