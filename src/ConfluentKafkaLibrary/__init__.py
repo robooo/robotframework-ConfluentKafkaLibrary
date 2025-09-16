@@ -4,10 +4,10 @@ from confluent_kafka import ConsumerGroupState
 try:
     from confluent_kafka.schema_registry import SchemaRegistryClient
     _SCHEMA_REGISTRY_CLIENT_AVAILABLE = True
-except ImportError:
+    _SCHEMA_REGISTRY_IMPORT_ERROR = None
+except ImportError as e:
+    _SCHEMA_REGISTRY_IMPORT_ERROR = e
     _SCHEMA_REGISTRY_CLIENT_AVAILABLE = False
-    raise ImportError("SchemaRegistry requires additional dependencies to be installed. \
-                       Please install with 'pip install robotframework-confluentkafkalibrary[schemaregistry]'")
 
 from confluent_kafka.admin import AdminClient, NewTopic, NewPartitions, ConfigResource
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
@@ -21,7 +21,8 @@ if _SCHEMA_REGISTRY_CLIENT_AVAILABLE:
     try:
         from .serialization import Serializer, Deserializer
         IMPORTS += Serializer, Deserializer
-    except ImportError:
+    except ImportError as e:
+        print(e)
         pass
 
 #class ConfluentKafkaLibrary(KafkaConsumer, KafkaProducer, Serializer, Deserializer):
@@ -140,4 +141,11 @@ class ConfluentKafkaLibrary(*IMPORTS):
         return ConfigResource(restype=restype, name=name, **kwargs)
 
     def get_schema_registry_client(self, conf):
+        if not _SCHEMA_REGISTRY_CLIENT_AVAILABLE:
+            raise ImportError(
+                "SchemaRegistry requires additional dependencies to be installed or one of its transitive dependencies is missing. "
+                "Please install with 'pip install robotframework-confluentkafkalibrary[schemaregistry]'.\n"
+                "If the error persists, check for missing dependencies in your environment.\n"
+                f"ImportError: {_SCHEMA_REGISTRY_IMPORT_ERROR}"
+            )
         return SchemaRegistryClient(conf)

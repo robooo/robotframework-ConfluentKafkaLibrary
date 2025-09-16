@@ -12,7 +12,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     # This latest python way can't find the librdkafka.h files
     # - name: Set up Python
     #   uses: actions/setup-python@v4
@@ -22,7 +22,7 @@ jobs:
       run: pip install .[all]
     - name: Generate keyword documentation
       run: python3 -m robot.libdoc -f html src/ConfluentKafkaLibrary docs/index.html
-    - uses: stefanzweifel/git-auto-commit-action@v5
+    - uses: stefanzweifel/git-auto-commit-action@v6
       with:
         file_pattern: docs/index.html
         commit_message: Add keyword documentation

@@ -2,7 +2,7 @@
 
 ConfluentKafkaLibrary library is a wrapper for the [confluent-kafka-python](https://github.com/confluentinc/confluent-kafka-python).
 
-ConfluentKafkaLibrary is compatible with the latest version of confluent-kafka-python, where the library versions have a 1:1 correspondence (e.g., ConfluentKafkaLibrary 1.3.0 corresponds to confluent-kafka-python 1.3.0). Bug fixes and updates are denoted by a trailing hyphen, such as `1.3.0-1`.
+ConfluentKafkaLibrary is compatible with the latest version of confluent-kafka-python, where the library versions have a 1:1 correspondence (e.g., ConfluentKafkaLibrary 2.9.0 corresponds to confluent-kafka-python 2.9.0). Bug fixes and updates are denoted by a post-release identifier, such as `2.9.0.post1`.
 
 ## Documentation
 
