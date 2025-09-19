@@ -96,6 +96,9 @@ class ConfluentKafkaLibrary(*IMPORTS):
             BuiltIn().set_global_variable('${CONSUMER_GROUP_STATE_DEAD}', confluent_kafka.ConsumerGroupState.DEAD)
             BuiltIn().set_global_variable('${CONSUMER_GROUP_STATE_EMPTY}', confluent_kafka.ConsumerGroupState.EMPTY)
 
+            BuiltIn().set_global_variable('${CONSUMER_GROUP_TYPE_UNKNOWN}', confluent_kafka.ConsumerGroupType.UNKNOWN)
+            BuiltIn().set_global_variable('${CONSUMER_GROUP_TYPE_CONSUMER}', confluent_kafka.ConsumerGroupType.CONSUMER)
+            BuiltIn().set_global_variable('${CONSUMER_GROUP_TYPE_CLASSIC}', confluent_kafka.ConsumerGroupType.CLASSIC)
         except RobotNotRunningError as e:
             pass
 
