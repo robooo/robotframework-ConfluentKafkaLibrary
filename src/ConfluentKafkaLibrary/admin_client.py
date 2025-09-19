@@ -39,13 +39,13 @@ class KafkaAdminClient():
         future = self.admin_clients[group_id].list_consumer_groups(request_timeout=request_timeout, states=set(states))
         return future.result()
 
-    def describe_groups(self, group_id, group_ids, request_timeout=10):
+    def describe_groups(self, group_id, group_ids, request_timeout=10, **kwargs):
         """Describe consumer groups.
         - ``group_ids`` (list(str)): List of group_ids which need to be described.
         - ``request_timeout`` (int): Maximum response time before timing out.
             Default: `10`.
         """
-        response = self.admin_clients[group_id].describe_consumer_groups(group_ids, request_timeout=request_timeout)
+        response = self.admin_clients[group_id].describe_consumer_groups(group_ids, request_timeout=request_timeout, **kwargs)
 
         groups_results={}
         for con_id in group_ids:
