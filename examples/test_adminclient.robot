@@ -32,7 +32,8 @@ AdminClient List Consumer Groups
 
     ${admin_client_id}=  Create Admin Client
     ${states}=  Create List  ${CONSUMER_GROUP_STATE_STABLE}
-    ${groups}=  List Groups  ${admin_client_id}  states=${states}
+    ${types}=  Create List  ${CONSUMER_GROUP_TYPE_CLASSIC}
+    ${groups}=  List Groups  ${admin_client_id}  states=${states}  types=${types}
     Log  ${groups}
     Log  ${groups.valid}
     FOR  ${group}  IN  @{groups.valid}
@@ -40,6 +41,7 @@ AdminClient List Consumer Groups
       IF  "${group_id}" == "${group.group_id}"
         Log  ${group.group_id}
         Log  ${group.state}
+        Log  ${group.type}
         Pass Execution  "Consumer found in list"
       END
     END
