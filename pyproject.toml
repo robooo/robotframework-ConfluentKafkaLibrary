@@ -21,7 +21,7 @@ classifiers = [
 requires-python = ">=3.8"
 dependencies = [
     "robotframework >= 3.2.1",
-    "confluent-kafka == 2.11.0",
+    "confluent-kafka == 2.11.1",
     "requests >= 2.25.1",
 ]
 
@@ -46,6 +46,7 @@ schemaregistry = [
     "cachetools >= 5.5.0",
     "attrs >= 24.3.0",
     "authlib >= 1.0.0",
+    "orjson >= 3.10",
 ]
 all = [
     "robotframework-confluentkafkalibrary[avro]",
