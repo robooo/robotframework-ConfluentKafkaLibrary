@@ -21,7 +21,7 @@ classifiers = [
 requires-python = ">=3.8"
 dependencies = [
     "robotframework >= 3.2.1",
-    "confluent-kafka == 2.12.0",
+    "confluent-kafka == 2.12.2",
     "requests >= 2.25.1",
 ]
 
@@ -36,6 +36,7 @@ avro = [
 json = [
     "jsonschema >= 3.2.0",
     "pyrsistent >= 0.20.0",
+    "orjson >= 3.10",
 ]
 protobuf = [
     "protobuf >= 4.22.0",
@@ -45,8 +46,8 @@ schemaregistry = [
     "httpx>=0.26",
     "cachetools >= 5.5.0",
     "attrs >= 24.3.0",
+    "certifi",
     "authlib >= 1.0.0",
-    "orjson >= 3.10",
 ]
 all = [
     "robotframework-confluentkafkalibrary[avro]",
