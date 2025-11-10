@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   broker:
     image: confluentinc/cp-server:7.8.0
