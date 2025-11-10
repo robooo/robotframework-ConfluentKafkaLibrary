@@ -40,7 +40,7 @@ jobs:
       - name: Show python version
         run: python3 --version
       - name: Execute tests
-        run: python3 -m robot -d ./docs examples/
+        run: cd examples && python3 -m robot -d ../docs .
       - name: Archive test log
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
