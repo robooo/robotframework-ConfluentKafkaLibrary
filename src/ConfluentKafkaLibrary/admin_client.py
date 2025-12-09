@@ -231,3 +231,9 @@ class KafkaAdminClient():
             except (TypeError, ValueError ) as e:
                 return f"Invalid input: {e}"
         return config_results
+
+    def close_admin(self, group_id):
+        """Close down and terminate the Kafka Admin.
+        """
+        # simply deleting client will close connection
+        del self.admin_clients[group_id]
