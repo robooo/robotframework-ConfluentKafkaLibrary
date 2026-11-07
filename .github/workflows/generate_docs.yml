@@ -22,7 +22,7 @@ jobs:
       run: pip install .[all]
     - name: Generate keyword documentation
       run: python3 -m robot.libdoc -f html src/ConfluentKafkaLibrary docs/index.html
-    - uses: stefanzweifel/git-auto-commit-action@v6
+    - uses: stefanzweifel/git-auto-commit-action@v7
       with:
         file_pattern: docs/index.html
         commit_message: Add keyword documentation
