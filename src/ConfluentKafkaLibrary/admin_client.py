@@ -25,6 +25,18 @@ class KafkaAdminClient():
         self.admin_clients[group_id] = admin_client
         return group_id
 
+    def close_admin_client(self, group_id):
+        """Close down and terminate the Kafka Admin Client.
+
+        confluent-kafka AdminClient has no ``close()`` method. The underlying librdkafka
+        handle is destroyed once the last reference to the client is dropped, which is what
+        this keyword does. Without it the client stays alive (and keeps reconnecting)
+        until the end of the Robot Framework execution.
+        - ``group_id`` (str): id of the admin client returned by `Create Admin Client`.
+        """
+        if self.admin_clients.pop(group_id, None) is None:
+            raise ValueError(f"Admin client with group_id '{group_id}' does not exist!")
+
     def list_groups(self, group_id, states=None, types=None, request_timeout=10):
         """List consumer groups.
         - ``states`` (list(ConsumerGroupState)): filter consumer groups which are currently in these states.

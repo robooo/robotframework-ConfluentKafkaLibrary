@@ -174,6 +174,15 @@ AdminClient Describe Cluster
     ${cluster}=  Describe Cluster  ${admin_client_id}
     Should Not Be Empty  ${cluster.cluster_id}
 
+AdminClient Close
+    ${admin_client_id}=  Create Admin Client
+    ${topics}=  List Topics  ${admin_client_id}
+    Should Not Be Empty  ${topics}
+    Close Admin Client  ${admin_client_id}
+    Run Keyword And Expect Error  ValueError: *  List Topics  ${admin_client_id}
+    Run Keyword And Expect Error  ValueError: Admin client with group_id '${admin_client_id}' does not exist!
+    ...  Close Admin Client  ${admin_client_id}
+
 *** Keywords ***
 All Messages Are Delivered
     [Arguments]  ${producer_id}
