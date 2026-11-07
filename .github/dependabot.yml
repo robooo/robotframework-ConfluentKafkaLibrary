@@ -1,0 +1,27 @@
+version: 2
+updates:
+  # actions/checkout, actions/upload-artifact, pypi-publish, ... in .github/workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Kafka images used by the tests in examples/docker-compose.yml
+  - package-ecosystem: "docker-compose"
+    directory: "/examples"
+    schedule:
+      interval: "weekly"
+    groups:
+      confluent-platform:
+        patterns: ["*"]
+
+  # A PR for every new confluent-kafka release, as a reminder.
+  # "increase" raises the minimum (e.g. >= 2.16.1 -> >= 2.17.0). Merge it only when
+  # a new baseline release (X.Y.Z.post1) is wanted, otherwise close it.
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    versioning-strategy: increase
+    allow:
+      - dependency-name: "confluent-kafka"

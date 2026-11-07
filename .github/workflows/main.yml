@@ -10,6 +10,10 @@ on:
   pull_request:
     branches: [ master ]
 
+  # Weekly run against the newest confluent-kafka release, to catch upstream breaking changes early
+  schedule:
+    - cron: '0 6 * * 1'
+
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -19,6 +23,11 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # minimum: the lowest confluent-kafka allowed by pyproject.toml; latest: newest compatible release
+        confluent-kafka: [minimum, latest]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -37,6 +46,13 @@ jobs:
         run: python3 -m pip install --upgrade pip setuptools wheel
       - name: Install python requirements
         run: pip install --force-reinstall .[all]
+      - name: Install minimum confluent-kafka
+        if: matrix.confluent-kafka == 'minimum'
+        run: |
+          MIN=$(python3 -c "import re,tomllib; d=tomllib.load(open('pyproject.toml','rb'))['project']['dependencies']; print(re.search(r'confluent-kafka\s*>=\s*([\w.]+)', ' '.join(d)).group(1))")
+          pip install "confluent-kafka==$MIN"
+      - name: Show confluent-kafka version
+        run: python3 -c "import confluent_kafka; print(confluent_kafka.version(), confluent_kafka.libversion())"
       - name: Check for broken dependencies
         run: pip check
       - name: Wait for services
@@ -51,5 +67,5 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: log.html
+          name: log-${{ matrix.confluent-kafka }}.html
           path: docs/log.html
