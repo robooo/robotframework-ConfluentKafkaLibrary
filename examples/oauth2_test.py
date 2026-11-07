@@ -1,5 +1,4 @@
 import time
-import functools
 import json
 from robot.libraries.BuiltIn import BuiltIn
 
@@ -38,9 +37,11 @@ def oauth_cb_test_consumer(oauth_config):
     return test_token, expiry_time
 
 
-def get_test_producer_token(oauth_config=None):
-    return functools.partial(oauth_cb_test_producer, oauth_config or {})
+# librdkafka calls oauth_cb with its own `sasl.oauthbearer.config` string as the only argument.
+# Since confluent-kafka 2.13.0 the callback is called already while the client is created.
+def get_test_producer_token():
+    return oauth_cb_test_producer
 
 
-def get_test_consumer_token(oauth_config=None):
-    return functools.partial(oauth_cb_test_consumer, oauth_config or {})
+def get_test_consumer_token():
+    return oauth_cb_test_consumer
