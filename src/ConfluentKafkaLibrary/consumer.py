@@ -1,3 +1,4 @@
+import time
 import uuid
 from threading import Thread
 from confluent_kafka import Consumer, KafkaException, KafkaError, TopicPartition
@@ -44,11 +45,15 @@ class GetMessagesThread(Thread):
     def run(self):
         while self._is_running:
             try:
-                self.messages += self.consumer.poll(group_id=self.group_id, only_value=self.only_value)
+                self.messages += self.consumer.poll(group_id=self.group_id, only_value=self.only_value, poll_attempts=1)
             except RuntimeError:
                 self.consumer.unsubscribe(self.group_id)
                 self.consumer.close_consumer(self.group_id)
                 self._is_running = False
+            # Since confluent-kafka 2.16.0 calls on one Consumer are serialized. Without a pause
+            # this loop re-acquires the consumer immediately and other keywords using the same
+            # group_id (List Topics, Get Assignment, ...) would block forever.
+            time.sleep(0.001)
 
     def get_group_id(self):
         return self.group_id
