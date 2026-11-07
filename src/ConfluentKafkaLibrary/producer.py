@@ -83,3 +83,26 @@ class KafkaProducer():
         """Purge messages currently handled by the producer instance.
         """
         self.producers[group_id].purge(**kwargs)
+
+    def close_producer(self, group_id, timeout=None):
+        """Flush outstanding messages, close down and terminate the Kafka Producer.
+        Returns the number of messages which were not delivered and had to be purged.
+
+        - ``group_id`` (str): id of the producer returned by `Create Producer`.
+        - ``timeout`` (float): Maximum time in seconds to wait for delivery of outstanding
+            messages. Messages still undelivered after the timeout are purged (dropped).
+            If not set, waits until all messages are delivered or failed, which can take
+            up to ``message.timeout.ms`` (librdkafka default: 5 minutes) when Kafka is down.
+            Default: `None`.
+        """
+        producer = self.producers.pop(group_id, None)
+        if producer is None:
+            raise ValueError(f"Producer with group_id '{group_id}' does not exist!")
+
+        purged = 0
+        if timeout is not None:
+            purged = producer.flush(float(timeout))
+            if purged:
+                producer.purge()
+        producer.close()
+        return purged

@@ -103,22 +103,31 @@ class ConfluentKafkaLibrary(*IMPORTS):
             pass
 
     def list_topics(self, group_id, topic=None):
-        """Request Metadata from cluster. Could be executed with consumer or producer group_id too.
+        """Request Metadata from cluster. Could be executed with consumer, producer or admin client group_id.
         - ``topic`` (str):  If specified, only request info about this topic, else return for all topics in cluster.
         Default: `None`.
-        - ``group_id`` (str): *required* id of the created consumer or producer.
+        - ``group_id`` (str): *required* id of the created consumer, producer or admin client.
         """
         if group_id is None:
             raise TypeError
 
-        if group_id in self.admin_clients:
-            return self.admin_clients[group_id].list_topics().topics
-        if group_id in self.consumers:
-            return self.consumers[group_id].list_topics(topic).topics
-        if group_id in self.producers:
-            return self.producers[group_id].list_topics(topic).topics
+        return self._get_client(group_id).list_topics(topic).topics
 
-        raise ValueError('Consumer or producer group_id is wrong or does not exists!')
+    def get_cluster_id(self, group_id, timeout=10):
+        """Returns the cluster id from the broker metadata. Could be executed with consumer,
+        producer or admin client group_id.
+        Note: this API is marked as experimental in confluent-kafka-python.
+        - ``group_id`` (str): *required* id of the created consumer, producer or admin client.
+        - ``timeout`` (float): Maximum response time in seconds before timing out, -1 for infinite.
+            Default: `10`.
+        """
+        return self._get_client(group_id).cluster_id(timeout=float(timeout))
+
+    def _get_client(self, group_id):
+        for clients in (self.admin_clients, self.consumers, self.producers):
+            if group_id in clients:
+                return clients[group_id]
+        raise ValueError('Consumer, producer or admin client group_id is wrong or does not exists!')
 
     def new_topic(self, topic, **kwargs):
         """Instantiate a NewTopic object. Specifies per-topic settings for passing to AdminClient.create_topics().

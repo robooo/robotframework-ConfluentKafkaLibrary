@@ -19,6 +19,10 @@ AdminClient Topic Creation
     FOR  ${topic}  IN  @{topic_names}
       List Should Contain Value  ${topics}  ${topic}
     END
+    ${topics}=  List Topics  ${admin_client_id}  topic=admintesting1
+    ${listed}=  Get Dictionary Keys  ${topics}
+    ${expected}=  Create List  admintesting1
+    Lists Should Be Equal  ${expected}  ${listed}
     [Teardown]  Delete Topics  ${admin_client_id}  ${topic_names}
 
 AdminClient List Consumer Groups
@@ -173,6 +177,19 @@ AdminClient Describe Cluster
     ${admin_client_id}=  Create Admin Client
     ${cluster}=  Describe Cluster  ${admin_client_id}
     Should Not Be Empty  ${cluster.cluster_id}
+
+Get Cluster Id From All Client Types
+    ${admin_client_id}=  Create Admin Client
+    ${producer_id}=  Create Producer
+    ${consumer_id}=  Create Consumer
+    ${cluster}=  Describe Cluster  ${admin_client_id}
+    FOR  ${client_id}  IN  ${admin_client_id}  ${producer_id}  ${consumer_id}
+      ${cluster_id}=  Get Cluster Id  ${client_id}
+      Should Be Equal  ${cluster.cluster_id}  ${cluster_id}
+    END
+    [Teardown]  Run Keywords  Close Consumer  ${consumer_id}  AND
+    ...  Close Producer  ${producer_id}  AND
+    ...  Close Admin Client  ${admin_client_id}
 
 AdminClient Close
     ${admin_client_id}=  Create Admin Client

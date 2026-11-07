@@ -138,6 +138,29 @@ Purge Test
     ${count}=  Flush  ${producer_id}  timeout=${0}
     Should Be Equal As Integers  0  ${count}
 
+Close Producer Delivers Outstanding Messages
+    ${topic}=  Evaluate  'closeproducer-' + str(uuid.uuid4())  modules=uuid
+    ${producer_id}=  Create Producer
+    Produce  group_id=${producer_id}  topic=${topic}  value=Closed  partition=${P_ID}
+    ${purged}=  Close Producer  ${producer_id}  # no Flush, close itself delivers the message
+    Should Be Equal As Integers  0  ${purged}
+    Run Keyword And Expect Error  ValueError: Producer with group_id '${producer_id}' does not exist!
+    ...  Close Producer  ${producer_id}
+
+    ${group_id}=  Create Consumer  auto_offset_reset=earliest
+    Subscribe Topic  group_id=${group_id}  topics=${topic}
+    ${messages}=  Poll  group_id=${group_id}  max_records=1  decode_format=utf8
+    ${data}=  Create List  Closed
+    Lists Should Be Equal  ${data}  ${messages}
+    [Teardown]  Basic Teardown  ${group_id}
+
+Close Producer With Timeout Purges Undelivered Messages
+    ${producer_id}=  Create Producer  port=1  # nothing listens there, messages can't be delivered
+    Produce  group_id=${producer_id}  topic=${TEST_TOPIC}  value=Lost
+    Produce  group_id=${producer_id}  topic=${TEST_TOPIC}  value=Lost
+    ${purged}=  Close Producer  ${producer_id}  timeout=${1}
+    Should Be Equal As Integers  2  ${purged}
+
 Offsets Test
     ${group_id}=  Create Consumer  enable.auto.offset.store=${False}
     Subscribe Topic  group_id=${group_id}  topics=${TEST_TOPIC}
