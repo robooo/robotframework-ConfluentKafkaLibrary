@@ -1,9 +1,13 @@
-import time
+import inspect
+import queue
 import uuid
-from threading import Thread
+from collections import deque
+from concurrent.futures import Future, TimeoutError as FutureTimeoutError
+from threading import Event, Lock, Thread
 from confluent_kafka import Consumer, KafkaException, KafkaError, TopicPartition
 from confluent_kafka import DeserializingConsumer
 from confluent_kafka.admin import AdminClient
+from robot.api import logger
 
 try:
     from confluent_kafka.avro.serializer import SerializerError
@@ -12,6 +16,16 @@ except ImportError:
 
 
 class GetMessagesThread(Thread):
+    """Background consumer which collects messages from topics.
+
+    The consumer is created, used and closed only inside this thread. librdkafka consumers are
+    not thread-safe and since confluent-kafka 2.16.0 cross-thread calls block each other.
+    Other keywords reach the consumer through `_ThreadedConsumerProxy`, which queues the call
+    and the thread executes it between two polls.
+    """
+
+    POLL_TIMEOUT = 0.1
+    POLL_BATCH = 500
 
     def __init__(
         self,
@@ -20,62 +34,149 @@ class GetMessagesThread(Thread):
         topics='',
         group_id=None,
         only_value=True,
+        max_messages=None,
         **kwargs
     ):
-
         super().__init__()
         self.daemon = True
         self.server = server
         self.port = port
-        self._is_running = True
+        self.group_id = group_id
         self.only_value = only_value
-        self.consumer = KafkaConsumer()
-        self.group_id = self.consumer.create_consumer(group_id=group_id,
-                                                      server=server,
-                                                      port=port,
-                                                      **kwargs)
         self.kwargs = kwargs
-        if not isinstance(topics, list):
-            topics = [topics]
-        self.consumer.subscribe_topic(self.group_id, topics=topics)
-        self.messages = []
-        self.messages += self.consumer.poll(group_id=self.group_id, only_value=self.only_value)
+        self.topics = topics if isinstance(topics, list) else [topics]
+        self.error = None
+        self._is_running = True
+        self._started = Event()
+        self._assigned = Event()
+        self._calls = queue.Queue()
+        self._messages_lock = Lock()
+        self.messages = deque(maxlen=int(max_messages) if max_messages else None)
         self.start()
 
     def run(self):
-        while self._is_running:
+        kafka_consumer = KafkaConsumer()
+        try:
+            kafka_consumer.create_consumer(group_id=self.group_id, server=self.server,
+                                           port=self.port, **self.kwargs)
+            kafka_consumer.subscribe_topic(self.group_id, topics=self.topics,
+                                           on_assign=lambda consumer, partitions: self._assigned.set())
+            self._started.set()
+            while self._is_running:
+                self._execute_calls(kafka_consumer.consumers[self.group_id])
+                try:
+                    messages = kafka_consumer.poll(group_id=self.group_id, only_value=self.only_value,
+                                                   timeout=self.POLL_TIMEOUT, poll_attempts=1,
+                                                   max_records=self.POLL_BATCH)
+                except KafkaException as e:
+                    if e.args and isinstance(e.args[0], KafkaError) and not e.args[0].fatal():
+                        logger.debug(f'Threaded consumer {self.group_id}: {e}')
+                        continue
+                    raise
+                if messages:
+                    with self._messages_lock:
+                        self.messages.extend(messages)
+        except Exception as e:
+            self.error = e
+        finally:
+            self._is_running = False
+            self._started.set()
+            self._fail_pending_calls()
+            consumer = kafka_consumer.consumers.get(self.group_id)
+            if consumer is not None:
+                try:
+                    consumer.close()
+                except Exception as e:
+                    self.error = self.error or e
+
+    def _execute_calls(self, consumer):
+        while True:
             try:
-                self.messages += self.consumer.poll(group_id=self.group_id, only_value=self.only_value, poll_attempts=1)
-            except RuntimeError:
-                self.consumer.unsubscribe(self.group_id)
-                self.consumer.close_consumer(self.group_id)
+                name, args, kwargs, future = self._calls.get_nowait()
+            except queue.Empty:
+                return
+            if name == 'close':
                 self._is_running = False
-            # Since confluent-kafka 2.16.0 calls on one Consumer are serialized. Without a pause
-            # this loop re-acquires the consumer immediately and other keywords using the same
-            # group_id (List Topics, Get Assignment, ...) would block forever.
-            time.sleep(0.001)
+                future.set_result(None)
+                continue
+            try:
+                future.set_result(getattr(consumer, name)(*args, **kwargs))
+            except Exception as e:
+                future.set_exception(e)
+
+    def _fail_pending_calls(self):
+        while True:
+            try:
+                _, _, _, future = self._calls.get_nowait()
+            except queue.Empty:
+                return
+            future.set_exception(RuntimeError(f'Threaded consumer {self.group_id} is not running!'))
+
+    def call(self, name, *args, **kwargs):
+        """Execute ``consumer.<name>(*args, **kwargs)`` inside the consumer thread and return its result."""
+        if not self.is_alive():
+            self._raise_if_failed()
+            raise RuntimeError(f'Threaded consumer {self.group_id} is not running!')
+        future = Future()
+        self._calls.put((name, args, kwargs, future))
+        while True:
+            try:
+                return future.result(timeout=0.5)
+            except FutureTimeoutError:
+                if not self.is_alive() and not future.done():
+                    self._fail_pending_calls()
+
+    def wait_until_started(self, assignment_timeout):
+        self._started.wait()
+        self._raise_if_failed()
+        if assignment_timeout and not self._assigned.wait(float(assignment_timeout)):
+            logger.warn(f'Threaded consumer {self.group_id} got no partition assignment within '
+                        f'{assignment_timeout}s (do the topics {self.topics} exist?). It keeps trying in '
+                        f'the background, messages produced before the assignment may be missed.')
+
+    def _raise_if_failed(self):
+        if self.error is not None:
+            raise RuntimeError(f'Threaded consumer {self.group_id} failed: {self.error!r}') from self.error
 
     def get_group_id(self):
         return self.group_id
 
     def get_messages(self):
-        return self.messages[:]
+        self._raise_if_failed()
+        with self._messages_lock:
+            return list(self.messages)
 
     def clear_messages(self):
-        self.messages.clear()
+        with self._messages_lock:
+            self.messages.clear()
 
-    def stop_consumer(self):
+    def stop_consumer(self, delete_group=True):
         self._is_running = False
         self.join()
-        self.consumer.unsubscribe(self.group_id)
-        self.consumer.close_consumer(self.group_id)
-        admin_client = AdminClient({'bootstrap.servers': f'{self.server}:{self.port}', **self.kwargs})
+        if not delete_group:
+            return None
+        # Python parameters of `Create Consumer` (auto_offset_reset, ...) are not librdkafka properties,
+        # the rest (security, oauth_cb, ...) is needed to connect the admin client the same way.
+        consumer_arguments = inspect.signature(KafkaConsumer.create_consumer).parameters
+        conf = {k: v for k, v in self.kwargs.items() if k not in consumer_arguments}
+        admin_client = AdminClient({'bootstrap.servers': f'{self.server}:{self.port}', **conf})
         response = admin_client.delete_consumer_groups([self.group_id], request_timeout=10)
         try:
             response[self.group_id].result()
         except Exception as e:
             return e
         return response[self.group_id].exception()
+
+
+class _ThreadedConsumerProxy():
+    """Stands in for the threaded consumer in ``KafkaConsumer.consumers``, so all consumer keywords
+    keep working with the threaded `group_id`. Every method call is executed by the consumer thread."""
+
+    def __init__(self, thread):
+        self._thread = thread
+
+    def __getattr__(self, name):
+        return lambda *args, **kwargs: self._thread.call(name, *args, **kwargs)
 
 
 class KafkaConsumer():
@@ -319,7 +420,6 @@ class KafkaConsumer():
             return [record.decode(str(decode_format)) for record in data]
         return data
 
-    # Experimental - getting messages from kafka topic every second
     def start_consumer_threaded(
         self,
         topics,
@@ -327,6 +427,8 @@ class KafkaConsumer():
         server='127.0.0.1',
         port='9092',
         only_value=True,
+        max_messages=None,
+        assignment_timeout=10,
         **kwargs
     ):
         """Run consumer in daemon thread and store data from topics. To read and work with this
@@ -335,24 +437,36 @@ class KafkaConsumer():
            This is useful when you are reading always the same topics and you don't want to create
            consumer in each test to poll data. You can create as many consumers in the Test setup
            as you want and then in test just read data with `Get Messages From Thread` keyword.
+           Other consumer keywords (e.g. `List Topics`, `Get Position`) can be used with the
+           thread's `group_id` (see `Get Thread Group Id`), they are executed by the consumer thread.
         - ``topics`` (list): List of topics for subscription.
         - ``group_id`` (str or uuid.uuid4() if not set) : name of the consumer group to join for
             dynamic partition assignment (if enabled), and to use for fetching and
             committing offsets. If None, unique string is generated  (via uuid.uuid4())
             and offset commits are disabled. Default: `None`.
+        - ``max_messages`` (int): Keep only the newest ``max_messages`` records, older are dropped.
+            Default: `None` (unlimited).
+        - ``assignment_timeout`` (float): Seconds to wait for the partition assignment before
+            returning, so the consumer is subscribed before the test continues. A warning is
+            logged when it expires. `0` returns immediately. Default: `10`.
+            Note: with ``auto_offset_reset=latest`` the start offset is resolved shortly after the
+            assignment, use ``earliest`` if no message produced right after the start may be missed.
+        Other arguments are the same as for `Create Consumer`.
         """
         if group_id is None:
             group_id = str(uuid.uuid4())
         if topics is None:
             raise ValueError("Topics can not be empty!")
 
-        consumer_thread = GetMessagesThread(server, port, topics, group_id=group_id, only_value=only_value, **kwargs)
-        group_id = consumer_thread.group_id
-        self.consumers[group_id] = consumer_thread.consumer.consumers[group_id]
+        consumer_thread = GetMessagesThread(server, port, topics, group_id=group_id, only_value=only_value,
+                                            max_messages=max_messages, **kwargs)
+        consumer_thread.wait_until_started(assignment_timeout)
+        self.consumers[group_id] = _ThreadedConsumerProxy(consumer_thread)
         return consumer_thread
 
     def get_messages_from_thread(self, running_thread, decode_format=None):
-        """Returns all records gathered from specific thread
+        """Returns all records gathered from specific thread.
+        Fails if the consumer thread stopped because of an error.
         - ``running_thread`` (Thread object) - thread which was executed with
             `Start Consumer Threaded` keyword
         - ``decode_format`` (str) - If you need to decode data to specific format
@@ -376,6 +490,16 @@ class KafkaConsumer():
         except Exception as e:
             return f"Messages were not removed from thread {running_thread}!\n{e}"
 
-    def stop_consumer_threaded(self, running_thread):
-        resp = running_thread.stop_consumer()
-        return resp
+    def stop_consumer_threaded(self, running_thread, delete_group=True):
+        """Stop the consumer thread, close its consumer and by default delete its consumer group.
+        Returns `None` on success, otherwise the error of the consumer group deletion.
+        - ``running_thread`` (Thread object) - thread which was executed with
+            `Start Consumer Threaded` keyword
+        - ``delete_group`` (bool): Delete the consumer group after the consumer is closed.
+            Default: `True`.
+        """
+        group_id = running_thread.get_group_id()
+        consumer = self.consumers.get(group_id)
+        if isinstance(consumer, _ThreadedConsumerProxy) and consumer._thread is running_thread:
+            del self.consumers[group_id]
+        return running_thread.stop_consumer(delete_group=delete_group)

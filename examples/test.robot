@@ -126,6 +126,45 @@ Remove And Publish New Messages From Threaded Consumer
     Should Be Equal  ${data}  ${thread_messages2}
     [Teardown]  Clear Messages From Thread  ${MAIN_THREAD}
 
+Threaded Consumer Keywords Are Executed Without Blocking
+    ${start}=  Evaluate  time.monotonic()  modules=time
+    ${assignment}=  Get Assignment  ${THREADED_GROUPID}
+    ${elapsed}=  Evaluate  time.monotonic() - ${start}  modules=time
+    Should Not Be Empty  ${assignment}
+    Should Be True  ${elapsed} < 1  Get Assignment took ${elapsed}s
+
+Threaded Consumer Keeps Only Max Messages
+    ${topic}=  Evaluate  'threaded-max-' + str(uuid.uuid4())  modules=uuid
+    FOR  ${value}  IN  first  second  third  # producing first creates the topic
+      Produce  group_id=${PRODUCER_ID}  topic=${topic}  value=${value}  partition=${0}
+    END
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${PRODUCER_ID}
+    ${thread}=  Start Consumer Threaded  topics=${topic}  auto_offset_reset=earliest  max_messages=${2}
+    ${expected}=  Create List  second  third
+    Wait Until Keyword Succeeds  20x  0.5s  Thread Messages Should Be  ${thread}  ${expected}
+    [Teardown]  Stop Consumer Threaded  ${thread}
+
+Close Consumer Stops Threaded Consumer
+    ${thread}=  Start Consumer Threaded  topics=${TEST_TOPIC}
+    ${group_id}=  Get Thread Group Id  ${thread}
+    Close Consumer  ${group_id}
+    Wait Until Keyword Succeeds  10x  0.5s  Thread Should Be Stopped  ${thread}
+    Run Keyword And Expect Error  ValueError: *  List Topics  ${group_id}
+    ${messages}=  Get Messages From Thread  ${thread}
+    ${resp}=  Stop Consumer Threaded  ${thread}
+    Log  ${resp}
+
+Threaded Consumer Reports Startup Error
+    Run Keyword And Expect Error  Threaded consumer * failed: *Invalid value*auto.offset.reset*
+    ...  Start Consumer Threaded  topics=${TEST_TOPIC}  auto_offset_reset=invalid
+
+Stop Threaded Consumer Started With Consumer Arguments
+    # Create Consumer arguments (auto_offset_reset, ...) must not be passed to the AdminClient
+    # which deletes the consumer group, otherwise librdkafka rejects them as unknown properties.
+    ${thread}=  Start Consumer Threaded  topics=${TEST_TOPIC}  auto_offset_reset=earliest  enable_auto_commit=${False}
+    ${resp}=  Stop Consumer Threaded  ${thread}
+    Should Be Equal  ${resp}  ${None}
+
 Purge Test
     ${producer_id}=  Create Producer  message.timeout.ms=${30000}
     Produce  group_id=${producer_id}  topic=${TEST_TOPIC}  value=After  partition=${P_ID}
@@ -229,6 +268,16 @@ Unassign Teardown
     ${admin_client_id}=  Create Admin Client
     ${resp}=  Delete Groups  ${admin_client_id}  group_ids=${groups}
     Log  ${resp}
+
+Thread Messages Should Be
+    [Arguments]  ${thread}  ${expected}
+    ${messages}=  Get Messages From Thread  ${thread}  decode_format=utf-8
+    Lists Should Be Equal  ${expected}  ${messages}
+
+Thread Should Be Stopped
+    [Arguments]  ${thread}
+    ${alive}=  Evaluate  $thread.is_alive()
+    Should Not Be True  ${alive}
 
 Stop Thread
     ${resp}=  Stop Consumer Threaded  ${MAIN_THREAD}
