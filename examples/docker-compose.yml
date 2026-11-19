@@ -7,7 +7,7 @@ services:
       - '9092:9092'
       - '29092:29092'
     healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 9092"]
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/9092'"]  # no nc in cp 8.x images
       interval: 10s
       timeout: 5s
       retries: 5
@@ -35,7 +35,7 @@ services:
     ports:
       - '8081:8081'
     healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 8081"]
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/8081'"]  # no nc in cp 8.x images
       interval: 10s
       timeout: 5s
       retries: 5
@@ -54,7 +54,7 @@ services:
     ports:
       - 8082:8082
     healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 8082"]
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/8082'"]  # no nc in cp 8.x images
       interval: 10s
       timeout: 5s
       retries: 5
