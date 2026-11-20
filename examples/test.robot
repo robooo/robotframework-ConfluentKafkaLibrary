@@ -166,7 +166,8 @@ Stop Threaded Consumer Started With Consumer Arguments
     Should Be Equal  ${resp}  ${None}
 
 Purge Test
-    ${producer_id}=  Create Producer  message.timeout.ms=${30000}
+    # linger.ms keeps the messages in the local queue, so they can't be sent before the first purge
+    ${producer_id}=  Create Producer  message.timeout.ms=${30000}  linger.ms=${10000}
     Produce  group_id=${producer_id}  topic=${TEST_TOPIC}  value=After  partition=${P_ID}
     Produce  group_id=${producer_id}  topic=${TEST_TOPIC}  value=Clear  partition=${P_ID}
 
@@ -174,7 +175,8 @@ Purge Test
     ${count}=  Flush  ${producer_id}  timeout=${0}
     Should Be Equal As Integers  2  ${count}
     Purge  group_id=${producer_id}
-    ${count}=  Flush  ${producer_id}  timeout=${0}
+    # purged messages leave the queue when their delivery reports are served, flush waits for that
+    ${count}=  Flush  ${producer_id}  timeout=${5}
     Should Be Equal As Integers  0  ${count}
 
 Close Producer Delivers Outstanding Messages
