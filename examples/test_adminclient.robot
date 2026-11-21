@@ -79,6 +79,34 @@ AdminClient Describe Consumer Groups
     [Teardown]  Run Keywords  Basic Teardown  ${group_id}  AND
                 ...  Basic Teardown  ${group2_id}
 
+AdminClient List Group Offsets
+    # Checks from outside which messages a consumer group has consumed (committed).
+    ${topic}=  Evaluate  'admin-offsets-' + str(uuid.uuid4())  modules=uuid
+    ${producer_id}=  Create Producer
+    FOR  ${value}  IN  first  second
+      Produce  ${producer_id}  topic=${topic}  value=${value}  partition=${0}
+    END
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${producer_id}
+    ${group_id}=  Create Consumer  auto_offset_reset=earliest  enable_auto_commit=${False}
+    Subscribe Topic  ${group_id}  topics=${topic}
+    ${messages}=  Poll  group_id=${group_id}  max_records=2
+    Commit  ${group_id}
+
+    ${admin_client_id}=  Create Admin Client
+    ${offsets}=  List Group Offsets  ${admin_client_id}  ${group_id}
+    ${partitions}=  Set Variable  ${offsets}[${group_id}]
+    Length Should Be  ${partitions}  1
+    Should Be Equal  ${partitions[0].topic}  ${topic}
+    Should Be Equal As Integers  ${partitions[0].offset}  2
+
+    ${tp}=  Create Topic Partition  ${topic}  ${0}
+    ${offsets}=  List Group Offsets  ${admin_client_id}  ${group_id}  topic_partitions=${tp}
+    ${partitions}=  Set Variable  ${offsets}[${group_id}]
+    Should Be Equal As Integers  ${partitions[0].offset}  2
+    [Teardown]  Run Keywords  Basic Teardown  ${group_id}  AND
+                ...  Close Admin Client  ${admin_client_id}  AND
+                ...  Close Producer  ${producer_id}
+
 AdminClient Delete Consumer Groups
     ${producer_group_id}=  Create Producer
     Produce  ${producer_group_id}  topic=admindeltest  value=Hello  partition=${0}

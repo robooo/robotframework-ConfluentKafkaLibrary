@@ -213,6 +213,32 @@ Offsets Test
     Store Offsets  group_id=${group_id}  offsets=${offsets}
     [Teardown]  Unassign Teardown  ${group_id}
 
+Commit And Get Committed Offsets
+    # Without auto commit nothing is committed until Commit is called.
+    # The committed offset is the next message to consume (last consumed + 1).
+    ${topic}=  Evaluate  'commit-' + str(uuid.uuid4())  modules=uuid
+    FOR  ${value}  IN  first  second  third
+      Produce  group_id=${PRODUCER_ID}  topic=${topic}  value=${value}  partition=${0}
+    END
+    Wait Until Keyword Succeeds  10x  0.5s  All Messages Are Delivered  ${PRODUCER_ID}
+    ${group_id}=  Create Consumer  auto_offset_reset=earliest  enable_auto_commit=${False}
+    Subscribe Topic  group_id=${group_id}  topics=${topic}
+    ${tp}=  Create Topic Partition  ${topic}  ${0}
+
+    ${messages}=  Poll  group_id=${group_id}  max_records=1  only_value=${False}
+    ${committed}=  Get Committed Offsets  ${group_id}  ${tp}  timeout=${10}
+    Should Be Equal As Integers  ${committed[0].offset}  ${OFFSET_INVALID}
+
+    Commit  ${group_id}  message=${messages[0]}
+    ${committed}=  Get Committed Offsets  ${group_id}  ${tp}  timeout=${10}
+    Should Be Equal As Integers  ${committed[0].offset}  1
+
+    ${messages}=  Poll  group_id=${group_id}  max_records=2
+    Commit  ${group_id}  # commits the current position
+    ${committed}=  Get Committed Offsets  ${group_id}  ${tp}  timeout=${10}
+    Should Be Equal As Integers  ${committed[0].offset}  3
+    [Teardown]  Basic Teardown  ${group_id}
+
 *** Keywords ***
 Starting Test
     Set Suite Variable  ${TEST_TOPIC}  test
