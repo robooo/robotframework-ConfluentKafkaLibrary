@@ -1,6 +1,6 @@
 import uuid
 from confluent_kafka.admin import AdminClient
-from confluent_kafka import KafkaException, TopicCollection
+from confluent_kafka import ConsumerGroupTopicPartitions, KafkaException, TopicCollection, TopicPartition
 
 
 class KafkaAdminClient():
@@ -71,6 +71,35 @@ class KafkaAdminClient():
                 return f"Failed to describe group {con_id}: {e}"
             except (TypeError, ValueError ) as e:
                 return f"Invalid input: {e}"
+        return groups_results
+
+    def list_group_offsets(self, group_id, group_ids, topic_partitions=None, require_stable=False, request_timeout=10):
+        """List committed offsets of consumer groups.
+        Returns a dictionary with the group id as key and a list of `TopicPartition` as value
+        (or the exception if the request for that group failed). The offset is the next message
+        the group will consume.
+        - ``group_ids`` (str or list(str)): Consumer group(s) to query.
+        - ``topic_partitions`` (`TopicPartition` or list of `TopicPartition`): Only list these
+            partitions. Default: `None` (all partitions with committed offsets).
+        - ``require_stable`` (bool): Return only offsets of completed transactions. Default: `False`.
+        - ``request_timeout`` (int): Maximum response time before timing out.
+            Default: `10`.
+        """
+        if not isinstance(group_ids, list):
+            group_ids = [group_ids]
+        if isinstance(topic_partitions, TopicPartition):
+            topic_partitions = [topic_partitions]
+
+        # The confluent-kafka API supports only a single group per request.
+        groups_results = {}
+        for con_id in group_ids:
+            request = [ConsumerGroupTopicPartitions(con_id, topic_partitions)]
+            try:
+                response = self.admin_clients[group_id].list_consumer_group_offsets(
+                    request, require_stable=require_stable, request_timeout=request_timeout)
+                groups_results[con_id] = response[con_id].result().topic_partitions
+            except KafkaException as e:
+                groups_results[con_id] = e
         return groups_results
 
     def delete_groups(self, group_id, group_ids, request_timeout=10):

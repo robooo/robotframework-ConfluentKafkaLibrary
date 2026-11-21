@@ -351,6 +351,41 @@ class KafkaConsumer():
         """
         self.consumers[group_id].store_offsets(**kwargs)
 
+    def commit(self, group_id, message=None, offsets=None, asynchronous=False):
+        """Commit offsets of the consumer group. Needed when the consumer was created with
+        ``enable_auto_commit=False``. By convention the committed offset is the next message
+        to consume (last consumed offset + 1).
+        Returns the committed `TopicPartition` list, or `None` when ``asynchronous`` is `True`.
+
+        - ``message`` (Message): Commit the offset of this message + 1, see `Poll` with
+            ``only_value=False``. Default: `None`.
+        - ``offsets`` (`TopicPartition` or list of `TopicPartition`): Commit these offsets.
+            Default: `None`.
+        - ``asynchronous`` (bool): Return immediately instead of waiting for the commit result.
+            Default: `False`.
+
+        If neither ``message`` nor ``offsets`` is set, the current positions of the assigned
+        partitions are committed.
+        """
+        kwargs = {}
+        if message is not None:
+            kwargs['message'] = message
+        if offsets is not None:
+            kwargs['offsets'] = [offsets] if isinstance(offsets, TopicPartition) else offsets
+        return self.consumers[group_id].commit(asynchronous=asynchronous, **kwargs)
+
+    def get_committed_offsets(self, group_id, topic_partitions, timeout=None):
+        """Retrieve committed offsets of the consumer group for the given partitions.
+        Returns a list of `TopicPartition`, the offset is `${OFFSET_INVALID}` if nothing was committed.
+
+        - ``topic_partitions`` (`TopicPartition` or list of `TopicPartition`): Partitions to query.
+        - ``timeout`` (float): Request timeout in seconds. Default: `None` (wait indefinitely).
+        """
+        if isinstance(topic_partitions, TopicPartition):
+            topic_partitions = [topic_partitions]
+        kwargs = {} if timeout is None else {'timeout': float(timeout)}
+        return self.consumers[group_id].committed(topic_partitions, **kwargs)
+
     def poll(
         self,
         group_id,
