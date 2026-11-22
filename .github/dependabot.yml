@@ -17,7 +17,7 @@ updates:
 
   # A PR for every new confluent-kafka release, as a reminder.
   # "increase" raises the minimum (e.g. >= 2.16.1 -> >= 2.17.0). Merge it only when
-  # a new baseline release (X.Y.Z.post1) is wanted, otherwise close it.
+  # the library needs the newer confluent-kafka, otherwise close it.
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
