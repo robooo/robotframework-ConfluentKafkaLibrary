@@ -2,7 +2,17 @@
 
 ConfluentKafkaLibrary library is a wrapper for the [confluent-kafka-python](https://github.com/confluentinc/confluent-kafka-python).
 
-ConfluentKafkaLibrary version names follow confluent-kafka-python: ConfluentKafkaLibrary `X.Y.Z.postN` requires at least confluent-kafka-python `X.Y.Z` and is tested with it (e.g., 2.16.1.post2 requires `confluent-kafka >= 2.16.1, < 3`). Newer confluent-kafka-python releases are allowed and tested weekly in CI. The first release for each confluent-kafka-python version is `.post1`, further fixes increment the post number. If you need a fixed version, pin `confluent-kafka` in your own requirements.
+## Versioning
+
+Since `2026.11.0`, ConfluentKafkaLibrary uses its own date-based version (`YEAR.MONTH.PATCH`). It used to match confluent-kafka-python 1:1 (`X.Y.Z.postN`), but the library now works with a range of confluent-kafka-python versions, so a matching version number would be misleading.
+
+The supported confluent-kafka-python range is in the package requirements and tested in CI (the minimum and the latest version, weekly). pip installs the newest version in that range; pin `confluent-kafka` in your own requirements if you need a specific one.
+
+| ConfluentKafkaLibrary | confluent-kafka-python |
+|---|---|
+| 2026.11.0 | >= 2.16.1, < 3 |
+| 2.16.1.post2, 2.16.1.post3 | >= 2.16.1, < 3 |
+| X.Y.Z.postN (up to 2.16.1.post1) | == X.Y.Z |
 
 ## Documentation
 
